@@ -1,0 +1,48 @@
+# Production: образы из GitHub Container Registry (ghcr.io)
+# В .env на сервере: GHCR_IMAGE=<owner>/<repo>, IMAGE_TAG=main или <sha>
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bloodofjesus-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-liberation_db}
+      POSTGRES_USER: ${POSTGRES_USER:-liberation_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-liberation_user}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: ghcr.io/${GHCR_IMAGE}:${IMAGE_TAG}-backend
+    container_name: bloodofjesus-backend
+    command: gunicorn liberation_ministry.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${POSTGRES_DB:-liberation_db}
+      POSTGRES_USER: ${POSTGRES_USER:-liberation_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: ghcr.io/${GHCR_IMAGE}:${IMAGE_TAG}-frontend
+    container_name: bloodofjesus-frontend
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
