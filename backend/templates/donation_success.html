@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Благодарим за пожертвование</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-red-50 to-white flex items-center justify-center px-4">
+    <div class="max-w-2xl mx-auto text-center">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 border-2 border-gray-100">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
+                <i data-lucide="check-circle" class="w-12 h-12 text-green-600"></i>
+            </div>
+            
+            <h1 class="text-3xl sm:text-4xl font-bold text-[#8B0000] mb-4">
+                Благодарим вас!
+            </h1>
+            
+            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                Ваше пожертвование успешно получено. Благодарим вас за поддержку служения освобождения и исцеления. Да благословит вас Господь!
+            </p>
+            
+            <div class="bg-red-50 rounded-lg p-6 mb-8">
+                <p class="text-gray-700 italic">
+                    "Каждый уделяй по расположению сердца, не с огорчением и не с принуждением; ибо доброхотно дающего любит Бог."
+                    <br>
+                    <span class="text-sm text-gray-600">- 2 Коринфянам 9:7</span>
+                </p>
+            </div>
+            
+            <a href="{% url 'home' %}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors shadow-lg">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                Вернуться на главную
+            </a>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

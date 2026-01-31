@@ -1,0 +1,476 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Освобождение и Исцеление через Силу Христа</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white">
+    
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl sm:text-2xl font-bold text-[#8B0000]">
+                        Освобождение во Христе
+                    </h1>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-[#8B0000] transition-colors">Главная</a>
+                    <a href="#materials" class="text-gray-700 hover:text-[#8B0000] transition-colors">Материалы</a>
+                    <a href="#donations" class="text-gray-700 hover:text-[#8B0000] transition-colors">Пожертвования</a>
+                    <a href="#contact" class="text-gray-700 hover:text-[#8B0000] transition-colors">Контакты</a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-md hover:bg-gray-100">
+                    <i data-lucide="menu" class="h-6 w-6 text-[#8B0000]"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <nav id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="#home" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Главная</a>
+                <a href="#materials" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Материалы</a>
+                <a href="#donations" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Пожертвования</a>
+                <a href="#contact" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-red-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center space-y-8">
+                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#8B0000] leading-tight">
+                        Освобождение и Исцеление<br />через Силу Христа
+                    </h2>
+                    
+                    <p class="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+                        Обретите свободу от угнетения и исцеление души через любовь, веру и власть в Иисусе Христе через Святой Дух
+                    </p>
+
+                    <div class="flex flex-wrap justify-center gap-8 pt-8">
+                        <div class="flex flex-col items-center space-y-3 p-6 rounded-lg hover:bg-white transition-colors">
+                            <div class="w-16 h-16 bg-[#8B0000] rounded-full flex items-center justify-center">
+                                <i data-lucide="heart" class="w-8 h-8 text-white"></i>
+                            </div>
+                            <h3 class="font-semibold text-gray-900">Любовь</h3>
+                            <p class="text-sm text-gray-600 text-center max-w-xs">
+                                Божья любовь исцеляет и восстанавливает
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col items-center space-y-3 p-6 rounded-lg hover:bg-white transition-colors">
+                            <div class="w-16 h-16 bg-[#8B0000] rounded-full flex items-center justify-center">
+                                <i data-lucide="shield" class="w-8 h-8 text-white"></i>
+                            </div>
+                            <h3 class="font-semibold text-gray-900">Защита</h3>
+                            <p class="text-sm text-gray-600 text-center max-w-xs">
+                                Власть во имя Иисуса над тьмой
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col items-center space-y-3 p-6 rounded-lg hover:bg-white transition-colors">
+                            <div class="w-16 h-16 bg-[#8B0000] rounded-full flex items-center justify-center">
+                                <i data-lucide="sparkles" class="w-8 h-8 text-white"></i>
+                            </div>
+                            <h3 class="font-semibold text-gray-900">Свобода</h3>
+                            <p class="text-sm text-gray-600 text-center max-w-xs">
+                                Освобождение от духовного угнетения
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-8">
+                        <a href="#materials" class="inline-block px-8 py-4 bg-[#8B0000] text-white rounded-full hover:bg-[#A52A2A] transition-colors shadow-lg hover:shadow-xl">
+                            Начать обучение
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Materials Section -->
+        <section id="materials" class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-[#8B0000] mb-4">
+                        Материалы для обучения
+                    </h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Бесплатные ресурсы для вашего духовного роста и освобождения
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {% for material in materials %}
+                    <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#8B0000] hover:shadow-xl transition-all duration-300 group">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-[#8B0000] transition-colors">
+                                <i data-lucide="{{ material.icon_name|lower }}" class="w-6 h-6 text-[#8B0000] group-hover:text-white transition-colors"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                {{ material.get_material_type_display }}
+                            </span>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                            {{ material.title }}
+                        </h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            {{ material.description }}
+                        </p>
+
+                        <a href="{% url 'download_material' material.id %}" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Скачать
+                        </a>
+                    </div>
+                    {% empty %}
+                    <!-- Если нет материалов в БД, показываем примеры -->
+                    <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#8B0000] hover:shadow-xl transition-all duration-300 group">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-[#8B0000] transition-colors">
+                                <i data-lucide="book" class="w-6 h-6 text-[#8B0000] group-hover:text-white transition-colors"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">PDF</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Основы духовной войны</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Руководство по противостоянию духовному угнетению</p>
+                        <button class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Скачать
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#8B0000] hover:shadow-xl transition-all duration-300 group">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-[#8B0000] transition-colors">
+                                <i data-lucide="file-text" class="w-6 h-6 text-[#8B0000] group-hover:text-white transition-colors"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">PDF</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Молитвы освобождения</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Сборник молитв для изгнания демонов и исцеления</p>
+                        <button class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Скачать
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#8B0000] hover:shadow-xl transition-all duration-300 group">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-[#8B0000] transition-colors">
+                                <i data-lucide="video" class="w-6 h-6 text-[#8B0000] group-hover:text-white transition-colors"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Видео</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Видео-курс: Власть во Христе</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Полный видеокурс о духовной власти верующего</p>
+                        <button class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Скачать
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#8B0000] hover:shadow-xl transition-all duration-300 group">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-[#8B0000] transition-colors">
+                                <i data-lucide="headphones" class="w-6 h-6 text-[#8B0000] group-hover:text-white transition-colors"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">MP3</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Аудио проповеди</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Коллекция проповедей об исцелении и свободе</p>
+                        <button class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Скачать
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#8B0000] hover:shadow-xl transition-all duration-300 group">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-[#8B0000] transition-colors">
+                                <i data-lucide="file-check" class="w-6 h-6 text-[#8B0000] group-hover:text-white transition-colors"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">PDF</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Свидетельства освобождения</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Реальные истории чудес и освобождения</p>
+                        <button class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Скачать
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-[#8B0000] hover:shadow-xl transition-all duration-300 group">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-[#8B0000] transition-colors">
+                                <i data-lucide="book" class="w-6 h-6 text-[#8B0000] group-hover:text-white transition-colors"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">PDF</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Практическое руководство</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">Практические шаги к духовной свободе</p>
+                        <button class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Скачать
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Donation Section -->
+        <section id="donations" class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-red-50 to-white">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-[#8B0000] rounded-full mb-6">
+                        <i data-lucide="heart" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-[#8B0000] mb-4">
+                        Поддержать служение
+                    </h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Ваши пожертвования помогают распространять Евангелие свободы и исцеления для тех, кто в этом нуждается
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl p-8 sm:p-12 border-2 border-gray-100">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="mb-6 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800{% else %}bg-red-50 text-red-800{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'create_donation' %}" id="donation-form">
+                        {% csrf_token %}
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                            <button type="button" class="donation-amount px-6 py-4 border-2 border-gray-200 rounded-lg hover:border-[#8B0000] hover:bg-red-50 transition-all" data-amount="500">
+                                <span class="text-lg font-semibold text-gray-900">500 ₽</span>
+                            </button>
+                            <button type="button" class="donation-amount px-6 py-4 border-2 border-gray-200 rounded-lg hover:border-[#8B0000] hover:bg-red-50 transition-all" data-amount="1000">
+                                <span class="text-lg font-semibold text-gray-900">1000 ₽</span>
+                            </button>
+                            <button type="button" class="donation-amount px-6 py-4 border-2 border-gray-200 rounded-lg hover:border-[#8B0000] hover:bg-red-50 transition-all" data-amount="2000">
+                                <span class="text-lg font-semibold text-gray-900">2000 ₽</span>
+                            </button>
+                            <button type="button" class="donation-amount px-6 py-4 border-2 border-gray-200 rounded-lg hover:border-[#8B0000] hover:bg-red-50 transition-all" data-amount="5000">
+                                <span class="text-lg font-semibold text-gray-900">5000 ₽</span>
+                            </button>
+                        </div>
+
+                        <div class="space-y-4 mb-8">
+                            <div class="relative">
+                                <input type="number" name="amount" id="amount-input" required min="1" step="0.01" placeholder="Другая сумма" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#8B0000] focus:outline-none">
+                            </div>
+                            <div class="relative">
+                                <input type="email" name="email" placeholder="Email (необязательно)" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#8B0000] focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <button type="submit" class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors shadow-lg">
+                                <i data-lucide="credit-card" class="w-5 h-5"></i>
+                                Пожертвовать через ЮKassa
+                            </button>
+                        </div>
+
+                        <p class="text-sm text-gray-500 text-center mt-6">
+                            Все пожертвования используются для распространения Благой вести и помощи нуждающимся
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Form -->
+        <section id="contact" class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-[#8B0000] mb-4">
+                        Свяжитесь с нами
+                    </h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Мы готовы помочь вам на пути к духовной свободе. Напишите нам, и мы обязательно ответим
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-50 to-white rounded-2xl shadow-xl p-8 sm:p-12 border-2 border-gray-100">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="mb-6 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800{% else %}bg-red-50 text-red-800{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'contact_submit' %}" class="space-y-6">
+                        {% csrf_token %}
+                        
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                Ваше имя
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                                <input type="text" id="name" name="name" required class="block w-full pl-10 pr-3 py-3 border-2 border-gray-200 rounded-lg focus:border-[#8B0000] focus:outline-none" placeholder="Введите ваше имя">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                Email
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="mail" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                                <input type="email" id="email" name="email" required class="block w-full pl-10 pr-3 py-3 border-2 border-gray-200 rounded-lg focus:border-[#8B0000] focus:outline-none" placeholder="ваш@email.com">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                Сообщение
+                            </label>
+                            <div class="relative">
+                                <div class="absolute top-3 left-0 pl-3 pointer-events-none">
+                                    <i data-lucide="message-square" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                                <textarea id="message" name="message" required rows="6" class="block w-full pl-10 pr-3 py-3 border-2 border-gray-200 rounded-lg focus:border-[#8B0000] focus:outline-none resize-none" placeholder="Напишите ваше сообщение..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-[#8B0000] text-white rounded-lg hover:bg-[#A52A2A] transition-colors shadow-lg hover:shadow-xl">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                            Отправить сообщение
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#8B0000] text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Освобождение во Христе</h3>
+                    <p class="text-red-100 leading-relaxed">
+                        Служение освобождения, исцеления и восстановления через силу Иисуса Христа и Святого Духа
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Навигация</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-red-100 hover:text-white transition-colors">Главная</a></li>
+                        <li><a href="#materials" class="text-red-100 hover:text-white transition-colors">Материалы</a></li>
+                        <li><a href="#donations" class="text-red-100 hover:text-white transition-colors">Пожертвования</a></li>
+                        <li><a href="#contact" class="text-red-100 hover:text-white transition-colors">Контакты</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Мы в соцсетях</h4>
+                    <div class="flex gap-4">
+                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors" aria-label="YouTube">
+                            <i data-lucide="youtube" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors" aria-label="Telegram">
+                            <i data-lucide="send" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-red-800 pt-8">
+                <div class="text-center text-red-100">
+                    <p class="mb-2">
+                        "И познаете истину, и истина сделает вас свободными" - Иоанна 8:32
+                    </p>
+                    <p class="text-sm">
+                        © 2026 Освобождение во Христе. Все права защищены.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Donation amount buttons
+        const donationButtons = document.querySelectorAll('.donation-amount');
+        const amountInput = document.getElementById('amount-input');
+        
+        donationButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const amount = button.getAttribute('data-amount');
+                amountInput.value = amount;
+                
+                // Visual feedback
+                donationButtons.forEach(btn => {
+                    btn.classList.remove('border-[#8B0000]', 'bg-red-50');
+                    btn.classList.add('border-gray-200');
+                });
+                button.classList.remove('border-gray-200');
+                button.classList.add('border-[#8B0000]', 'bg-red-50');
+            });
+        });
+
+        // Clear selection when typing custom amount
+        amountInput.addEventListener('input', () => {
+            donationButtons.forEach(btn => {
+                btn.classList.remove('border-[#8B0000]', 'bg-red-50');
+                btn.classList.add('border-gray-200');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Python зависимости для Django проекта
+Django>=4.2,<5.0
+yookassa>=3.0.0
+pillow>=10.0.0
+python-decouple>=3.8
+psycopg2-binary>=2.9.0  # Для PostgreSQL
+# или
+# mysqlclient>=2.1.0  # Для MySQL

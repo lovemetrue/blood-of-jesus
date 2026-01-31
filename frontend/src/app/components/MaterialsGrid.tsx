@@ -1,0 +1,104 @@
+import { Download, Book, FileText, Video, Headphones, FileCheck } from 'lucide-react';
+
+const materials = [
+  {
+    id: 1,
+    title: 'Основы духовной войны',
+    description: 'Руководство по противостоянию духовному угнетению',
+    icon: Book,
+    type: 'PDF'
+  },
+  {
+    id: 2,
+    title: 'Молитвы освобождения',
+    description: 'Сборник молитв для изгнания демонов и исцеления',
+    icon: FileText,
+    type: 'PDF'
+  },
+  {
+    id: 3,
+    title: 'Видео-курс: Власть во Христе',
+    description: 'Полный видеокурс о духовной власти верующего',
+    icon: Video,
+    type: 'Видео'
+  },
+  {
+    id: 4,
+    title: 'Аудио проповеди',
+    description: 'Коллекция проповедей об исцелении и свободе',
+    icon: Headphones,
+    type: 'MP3'
+  },
+  {
+    id: 5,
+    title: 'Свидетельства освобождения',
+    description: 'Реальные истории чудес и освобождения',
+    icon: FileCheck,
+    type: 'PDF'
+  },
+  {
+    id: 6,
+    title: 'Практическое руководство',
+    description: 'Практические шаги к духовной свободе',
+    icon: Book,
+    type: 'PDF'
+  }
+];
+
+export function MaterialsGrid() {
+  const handleDownload = (title: string) => {
+    alert(`Загрузка материала: ${title}`);
+  };
+
+  return (
+    <section id="materials" className="py-20 px-4 sm:px-6 lg:px-8 bg-transparent" aria-labelledby="materials-heading">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 id="materials-heading" className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Материалы для обучения
+          </h2>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Бесплатные ресурсы для вашего духовного роста и освобождения
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {materials.map((material) => {
+            const Icon = material.icon;
+            return (
+              <article
+                key={material.id}
+                className="bg-gray-900/50 backdrop-blur-sm border-2 border-gray-800 rounded-2xl p-6 hover:border-[#DC143C] hover:shadow-xl hover:shadow-red-900/20 transition-all duration-300 group"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 bg-red-950/50 rounded-lg flex items-center justify-center group-hover:bg-[#DC143C] transition-colors" aria-hidden="true">
+                    <Icon className="w-6 h-6 text-[#DC143C] group-hover:text-white transition-colors" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 bg-gray-800 px-3 py-1 rounded-full">
+                    {material.type}
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  {material.title}
+                </h3>
+                <p className="text-gray-400 mb-6 leading-relaxed">
+                  {material.description}
+                </p>
+
+                <button
+                  onClick={() => handleDownload(material.title)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors shadow-lg shadow-red-900/30"
+                  aria-label={`Скачать ${material.title}`}
+                >
+                  <Download className="w-5 h-5" aria-hidden="true" />
+                  Скачать
+                </button>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
