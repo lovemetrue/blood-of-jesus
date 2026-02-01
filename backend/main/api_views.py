@@ -1,9 +1,12 @@
 import json
+import logging
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 def _send_contact_notifications(contact):
@@ -66,11 +69,24 @@ def contact_submit(request):
     from .forms import ContactForm
     form = ContactForm(data)
 
-    if form.is_valid():
+    if not form.is_valid():
+        return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+    try:
         contact = form.save()
+    except Exception as e:
+        logger.exception('Contact form save failed: %s', e)
+        return JsonResponse({
+            'success': False,
+            'error': 'Не удалось сохранить сообщение. Попробуйте позже или напишите на jesusthehealer@yandex.ru',
+        }, status=500)
+
+    try:
         _send_contact_notifications(contact)
-        return JsonResponse({'success': True, 'message': 'Спасибо! Ваше сообщение отправлено.'})
-    return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+    except Exception as e:
+        logger.exception('Contact notifications failed: %s', e)
+
+    return JsonResponse({'success': True, 'message': 'Спасибо! Ваше сообщение отправлено.'})
 
 
 def materials_list(request):
