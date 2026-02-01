@@ -234,14 +234,6 @@ jobs:
           sleep 15
           curl -sf "https://${{ vars.DOMAIN }}/api/health/" || curl -sf "http://${{ secrets.VPS_HOST }}:80/api/health/" || true
 
-      - name: Notify Telegram
-        if: always()
-        run: |
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-            -d "parse_mode=Markdown" \
-            -d "text=*${{ github.repository }}*%0A${{ github.event.head_commit.message }}%0AStatus: ${{ job.status }}%0ABranch: ${{ github.ref }}%0A[Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" || true
-
   # ========== РЕЛИЗ (при пуше тега v*) ==========
   release:
     needs: build-and-push
