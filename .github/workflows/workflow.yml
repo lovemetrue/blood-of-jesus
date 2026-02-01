@@ -233,29 +233,3 @@ jobs:
         run: |
           sleep 15
           curl -sf "https://${{ vars.DOMAIN }}/api/health/" || curl -sf "http://${{ secrets.VPS_HOST }}:80/api/health/" || true
-
-  # ========== РЕЛИЗ (при пуше тега v*) ==========
-  release:
-    needs: build-and-push
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: Release ${{ github.ref_name }}
-          body: |
-            ## Docker Images (GHCR)
-            - Backend: `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.ref_name }}`
-            - Frontend: `${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:${{ github.ref_name }}`
-            - Domain: https://${{ vars.DOMAIN }}
-          draft: false
-          generate_release_notes: true
