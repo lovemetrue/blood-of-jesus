@@ -1,5 +1,6 @@
-# Production: образы из GitHub Container Registry (ghcr.io)
-# В .env на сервере: GHCR_IMAGE=<owner>/<repo>, IMAGE_TAG=main или <sha>
+# Production: образы из Docker Hub
+# При деплое: DOCKERHUB_IMAGE=<user>/<repo>, IMAGE_TAG=main или <sha>
+# На VPS перед pull выполняется docker login — снимает лимит Docker Hub
 services:
   db:
     image: postgres:16-alpine
@@ -17,7 +18,7 @@ services:
       retries: 5
 
   backend:
-    image: ghcr.io/${GHCR_IMAGE}-backend:${IMAGE_TAG}
+    image: ${DOCKERHUB_IMAGE}-backend:${IMAGE_TAG}
     container_name: bloodofjesus-backend
     command: gunicorn liberation_ministry.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
@@ -35,7 +36,7 @@ services:
         condition: service_healthy
 
   frontend:
-    image: ghcr.io/${GHCR_IMAGE}-frontend:${IMAGE_TAG}
+    image: ${DOCKERHUB_IMAGE}-frontend:${IMAGE_TAG}
     container_name: bloodofjesus-frontend
     ports:
       - "127.0.0.1:8080:80"
