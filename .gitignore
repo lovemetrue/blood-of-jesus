@@ -1,0 +1,2 @@
+# SSL-сертификаты и ключи (не коммитить)
+deploy/ssl-letsencrypt/*.pem

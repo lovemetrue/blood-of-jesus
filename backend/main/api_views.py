@@ -2,6 +2,57 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.conf import settings
+
+
+def _send_contact_notifications(contact):
+    """Отправка уведомлений при новой заявке: админу и автоответ отправителю."""
+    admin_email = getattr(settings, 'CONTACT_NOTIFY_EMAIL', '') or getattr(settings, 'ADMIN_EMAIL', '')
+    from_email = settings.DEFAULT_FROM_EMAIL
+    if not admin_email:
+        return
+
+    # Уведомление администратору
+    subject_admin = f'[bloodofjesus.ru] Новая заявка от {contact.name}'
+    body_admin = (
+        f'Поступила новая заявка с сайта.\n\n'
+        f'Имя: {contact.name}\n'
+        f'Email: {contact.email}\n'
+        f'Телефон: {contact.phone or "—"}\n\n'
+        f'Сообщение:\n{contact.message}\n\n'
+        f'Ответьте на это письмо или зайдите в админку: {getattr(settings, "SITE_URL", "")}/admin/'
+    )
+    try:
+        send_mail(
+            subject_admin,
+            body_admin,
+            from_email,
+            [admin_email],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
+
+    # Автоответ отправителю
+    subject_reply = 'Мы получили ваше сообщение — bloodofjesus.ru'
+    body_reply = (
+        f'Здравствуйте, {contact.name}!\n\n'
+        'Мы получили ваше сообщение и свяжемся с вами в ближайшее время.\n\n'
+        'С уважением,\nСлужение «Кровь Иисуса»\n'
+        f'Написать нам: {getattr(settings, "CONTACT_REPLY_ADDRESS", "") or from_email}'
+    )
+    try:
+        send_mail(
+            subject_reply,
+            body_reply,
+            from_email,
+            [contact.email],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
+
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -16,7 +67,8 @@ def contact_submit(request):
     form = ContactForm(data)
 
     if form.is_valid():
-        form.save()
+        contact = form.save()
+        _send_contact_notifications(contact)
         return JsonResponse({'success': True, 'message': 'Спасибо! Ваше сообщение отправлено.'})
     return JsonResponse({'success': False, 'errors': form.errors}, status=400)
 

@@ -1,7 +1,12 @@
+# Единый compose: локальная разработка и сборка образов под linux/amd64 (совместимо с VPS)
+# Использование: docker compose up -d --build  (сборка под linux/amd64 на Mac)
+# Переменные из .env: POSTGRES_*, SECRET_KEY и т.д.
+
 services:
   db:
     image: postgres:16-alpine
     container_name: bloodofjesus-db
+    platform: linux/amd64
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -18,8 +23,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: bloodofjesus-backend:local
+    platform: linux/amd64
     container_name: bloodofjesus-backend
     command: gunicorn liberation_ministry.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    ports:
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./backend:/app
       - static_volume:/app/staticfiles
@@ -39,6 +48,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: bloodofjesus-frontend:local
+    platform: linux/amd64
     container_name: bloodofjesus-frontend
     ports:
       - "127.0.0.1:8080:80"
