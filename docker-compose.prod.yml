@@ -21,6 +21,8 @@ services:
     image: ${DOCKERHUB_IMAGE}-backend:${IMAGE_TAG}
     container_name: bloodofjesus-backend
     command: gunicorn liberation_ministry.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    ports:
+      - "127.0.0.1:8000:8000"
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
