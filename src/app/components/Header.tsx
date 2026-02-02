@@ -1,6 +1,6 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import logo from "figma:asset/1ffc03932991ef448218cca5299bacb62cbaab28.png";
+import logo from "@/assets/logo.png";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
