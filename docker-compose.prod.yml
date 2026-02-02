@@ -1,12 +1,15 @@
 # Production: образы из Docker Hub
 # При деплое: DOCKERHUB_IMAGE=<user>/<repo>, IMAGE_TAG=main или <sha>
 # На VPS перед pull выполняется docker login — снимает лимит Docker Hub
+# network_mode: host для backend — нужен IPv6 для SMTP Яндекса (IPv4 заблокирован провайдером)
 services:
   db:
     image: postgres:16-alpine
     container_name: bloodofjesus-db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-liberation_db}
       POSTGRES_USER: ${POSTGRES_USER:-liberation_user}
@@ -20,16 +23,15 @@ services:
   backend:
     image: ${DOCKERHUB_IMAGE}-backend:${IMAGE_TAG}
     container_name: bloodofjesus-backend
-    command: gunicorn liberation_ministry.wsgi:application --bind 0.0.0.0:8000 --workers 3
-    ports:
-      - "127.0.0.1:8000:8000"
+    network_mode: host
+    command: gunicorn liberation_ministry.wsgi:application --bind 127.0.0.1:8000 --workers 3
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: db
+      POSTGRES_HOST: 127.0.0.1
       POSTGRES_DB: ${POSTGRES_DB:-liberation_db}
       POSTGRES_USER: ${POSTGRES_USER:-liberation_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
