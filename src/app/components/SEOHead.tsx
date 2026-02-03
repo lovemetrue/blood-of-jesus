@@ -108,6 +108,15 @@ export function SEOHead({
       
       tag.setAttribute('content', content);
     });
+
+    // Метатег referrer для правильного определения источника переходов
+    let referrerTag = document.querySelector('meta[name="referrer"]');
+    if (!referrerTag) {
+      referrerTag = document.createElement('meta');
+      referrerTag.setAttribute('name', 'referrer');
+      document.head.appendChild(referrerTag);
+    }
+    referrerTag.setAttribute('content', 'origin');
   }, [title, description, keywords, ogImage]);
 
   return (

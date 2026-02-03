@@ -122,3 +122,24 @@ CONTACT_REPLY_ADDRESS = config('CONTACT_REPLY_ADDRESS', default='jesusthehealer@
 YOOKASSA_SHOP_ID = config('YOOKASSA_SHOP_ID', default='')
 YOOKASSA_SECRET_KEY = config('YOOKASSA_SECRET_KEY', default='')
 SITE_URL = config('SITE_URL', default='https://bloodofjesus.ru')
+
+# ========== HTTPS / SSL Security Settings ==========
+# Принудительное использование HTTPS (только для production)
+USE_HTTPS = config('USE_HTTPS', default=False, cast=bool)
+
+if USE_HTTPS or not DEBUG:
+    # Принудительный редирект HTTP -> HTTPS
+    SECURE_SSL_REDIRECT = True
+    # Указывает Django, что соединение безопасное (через прокси)
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Безопасные cookies только через HTTPS
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # HSTS (HTTP Strict Transport Security) - браузер будет использовать только HTTPS
+    SECURE_HSTS_SECONDS = 31536000  # 1 год
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    # Другие настройки безопасности
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
