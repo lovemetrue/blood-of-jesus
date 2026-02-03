@@ -1,5 +1,5 @@
 import { Heart, Shield, Sparkles } from "lucide-react";
-import heroImage from "@/assets/logo-4fS-_4Sj.png.jpeg";
+import heroImage from "@/assets/87dea475728492b77f108a11cbe676bc39a21a72.png";
 
 export function Hero() {
   return (
@@ -35,7 +35,7 @@ export function Hero() {
             <div className="transform scale-90 origin-center">
               <img
                 src={heroImage}
-                alt="Свобода от угнетения, целостность в духе, душе и теле. 'Вот Агнец Божий, Который берет на Себя грех мира'"
+                alt="Духовное освобождение через Святой Дух - символическое изображение освобождения души"
                 className="w-full max-w-full sm:max-w-full lg:max-w-full xl:max-w-[768px] h-auto min-h-[300px] sm:min-h-[400px] md:min-h-[450px] lg:min-h-[500px] object-cover rounded-2xl shadow-2xl shadow-red-900/30"
               />
             </div>
