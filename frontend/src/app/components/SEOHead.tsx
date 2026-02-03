@@ -14,6 +14,70 @@ export function SEOHead({
   ogImage = '/og-image.png'
 }: SEOHeadProps) {
   useEffect(() => {
+    // Яндекс Метрика - загрузка скрипта
+    const ymId = 106606875;
+    const scriptUrl = `https://mc.yandex.ru/metrika/tag.js?id=${ymId}`;
+    
+    // Проверяем, не загружен ли уже скрипт
+    let scriptExists = false;
+    for (let j = 0; j < document.scripts.length; j++) {
+      if ((document.scripts[j] as HTMLScriptElement).src === scriptUrl) {
+        scriptExists = true;
+        break;
+      }
+    }
+
+    if (!scriptExists) {
+      // Инициализируем функцию ym до загрузки скрипта
+      (window as any).ym = (window as any).ym || function(...args: any[]) {
+        ((window as any).ym.a = (window as any).ym.a || []).push(args);
+      };
+      (window as any).ym.l = 1 * new Date().getTime();
+
+      // Создаем и загружаем скрипт
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.async = true;
+      script.src = scriptUrl;
+      
+      // Инициализируем Метрику после загрузки скрипта
+      script.onload = () => {
+        if ((window as any).ym) {
+          (window as any).ym(ymId, 'init', {
+            ssr: true,
+            webvisor: true,
+            clickmap: true,
+            ecommerce: 'dataLayer',
+            referrer: document.referrer,
+            url: location.href,
+            accurateTrackBounce: true,
+            trackLinks: true
+          });
+        }
+      };
+
+      const firstScript = document.getElementsByTagName('script')[0];
+      if (firstScript && firstScript.parentNode) {
+        firstScript.parentNode.insertBefore(script, firstScript);
+      } else {
+        document.head.appendChild(script);
+      }
+    } else {
+      // Если скрипт уже загружен, просто инициализируем
+      if ((window as any).ym) {
+        (window as any).ym(ymId, 'init', {
+          ssr: true,
+          webvisor: true,
+          clickmap: true,
+          ecommerce: 'dataLayer',
+          referrer: document.referrer,
+          url: location.href,
+          accurateTrackBounce: true,
+          trackLinks: true
+        });
+      }
+    }
+
     // Update document title
     document.title = title;
 
@@ -46,5 +110,18 @@ export function SEOHead({
     });
   }, [title, description, keywords, ogImage]);
 
-  return null;
+  return (
+    <>
+      {/* Яндекс Метрика noscript для пользователей без JavaScript */}
+      <noscript>
+        <div>
+          <img
+            src="https://mc.yandex.ru/watch/106606875"
+            style={{ position: 'absolute', left: '-9999px' }}
+            alt=""
+          />
+        </div>
+      </noscript>
+    </>
+  );
 }
