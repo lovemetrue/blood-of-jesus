@@ -117,6 +117,31 @@ export function SEOHead({
       document.head.appendChild(referrerTag);
     }
     referrerTag.setAttribute('content', 'origin');
+
+    // Добавляем favicon ссылки динамически
+    const faviconLinks = [
+      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicons/favicon-32x32.png' },
+      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicons/favicon-16x16.png' },
+      { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicons/favicon-48x48.png' },
+      { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicons/apple-touch-icon.png' },
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ];
+
+    faviconLinks.forEach(({ rel, type, sizes, href }) => {
+      const selector = sizes 
+        ? `link[rel="${rel}"][sizes="${sizes}"]`
+        : `link[rel="${rel}"][type="${type}"]`;
+      
+      let link = document.querySelector(selector);
+      if (!link) {
+        link = document.createElement('link');
+        link.setAttribute('rel', rel);
+        if (type) link.setAttribute('type', type);
+        if (sizes) link.setAttribute('sizes', sizes);
+        document.head.appendChild(link);
+      }
+      link.setAttribute('href', href);
+    });
   }, [title, description, keywords, ogImage]);
 
   return (
