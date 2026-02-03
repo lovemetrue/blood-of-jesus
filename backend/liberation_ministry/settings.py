@@ -80,6 +80,27 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Valkey/Redis Cache Configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f"redis://{config('VALKEY_HOST', default='valkey')}:{config('VALKEY_PORT', default='6379')}/1",
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            'SOCKET_TIMEOUT': 5,
+            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+            'IGNORE_EXCEPTIONS': True,  # Не падать, если Valkey недоступен
+        },
+        'KEY_PREFIX': 'bloodofjesus',
+        'TIMEOUT': 300,  # 5 минут по умолчанию
+    }
+}
+
+# Session cache backend (опционально, для ускорения сессий)
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+
 # CORS for frontend
 CORS_ALLOWED_ORIGINS = config('CORS_ORIGINS', default='https://bloodofjesus.ru,https://www.bloodofjesus.ru,http://localhost:5173', cast=lambda v: [s.strip() for s in v.split(',')])
 CORS_ALLOW_CREDENTIALS = True

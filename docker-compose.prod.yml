@@ -20,6 +20,20 @@ services:
       timeout: 5s
       retries: 5
 
+  valkey:
+    image: valkey/valkey:7.2-alpine
+    container_name: bloodofjesus-valkey
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: valkey-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - valkey_data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   backend:
     image: ${DOCKERHUB_IMAGE}-backend:${IMAGE_TAG}
     container_name: bloodofjesus-backend
@@ -35,8 +49,12 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-liberation_db}
       POSTGRES_USER: ${POSTGRES_USER:-liberation_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      VALKEY_HOST: 127.0.0.1
+      VALKEY_PORT: 6379
     depends_on:
       db:
+        condition: service_healthy
+      valkey:
         condition: service_healthy
 
   frontend:
@@ -53,3 +71,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  valkey_data:

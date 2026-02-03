@@ -3,8 +3,10 @@ import logging
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_page
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.cache import cache
 
 logger = logging.getLogger(__name__)
 
@@ -89,12 +91,20 @@ def contact_submit(request):
 
 
 def materials_list(request):
-    """API: Список материалов"""
+    """API: Список материалов (кэшируется на 1 час, автоматически инвалидируется при изменении)"""
     from .models import Material
-    materials = Material.objects.filter(is_active=True).values(
-        'id', 'title', 'description', 'material_type', 'icon_name', 'file'
-    )
-    return JsonResponse({'materials': list(materials)})
+    from .cache_utils import get_or_set_cache
+    
+    def fetch_materials():
+        """Функция для получения материалов из БД"""
+        return list(Material.objects.filter(is_active=True).values(
+            'id', 'title', 'description', 'material_type', 'icon_name', 'file'
+        ))
+    
+    # Получаем из кэша или БД (кэш на 1 час)
+    materials = get_or_set_cache('materials_list_active', fetch_materials, timeout=3600)
+    
+    return JsonResponse({'materials': materials})
 
 
 @csrf_exempt
