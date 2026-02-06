@@ -142,6 +142,67 @@ export function SEOHead({
       }
       link.setAttribute('href', href);
     });
+
+    // Добавляем структурированные данные для локации (LocalBusiness schema)
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Служение освобождения и исцеления",
+      "description": "Служение духовного освобождения, изгнания демонов и исцеления души через веру и власть в Иисусе Христе",
+      "url": "https://bloodofjesus.ru",
+      "telephone": "+79944178986",
+      "email": "jesusthehealer@yandex.ru",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Санкт-Петербург",
+        "addressCountry": "RU",
+        "addressRegion": "Санкт-Петербург"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Россия"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "59.9343",
+        "longitude": "30.3351"
+      },
+      "sameAs": [
+        "https://www.youtube.com/@BloodandWaterRU",
+        "https://t.me/lifespeakingteam"
+      ]
+    };
+
+    // Удаляем старый скрипт структурированных данных, если есть
+    const oldScript = document.getElementById('main-structured-data');
+    if (oldScript) {
+      oldScript.remove();
+    }
+
+    // Добавляем структурированные данные в head
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    script.id = 'main-structured-data';
+    document.head.appendChild(script);
+
+    // Добавляем мета-теги для геолокации
+    const geoMetaTags = [
+      { name: 'geo.region', content: 'RU-SPE' },
+      { name: 'geo.placename', content: 'Санкт-Петербург' },
+      { name: 'geo.position', content: '59.9343;30.3351' },
+      { name: 'ICBM', content: '59.9343, 30.3351' }
+    ];
+
+    geoMetaTags.forEach(({ name, content }) => {
+      let tag = document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', name);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    });
   }, [title, description, keywords, ogImage]);
 
   return (
