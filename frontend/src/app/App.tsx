@@ -3,23 +3,21 @@ import { Hero } from "@/app/components/Hero";
 import { MaterialsGrid } from "@/app/components/MaterialsGrid";
 import { DonationSection } from "@/app/components/DonationSection";
 import { ContactForm } from "@/app/components/ContactForm";
+import { DocumentsPage } from "@/app/components/DocumentsPage";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
 import { SEOHead } from "@/app/components/SEOHead";
 import { useEffect, useState } from "react";
 
 export default function App() {
-  const [donationSuccess, setDonationSuccess] = useState(false);
+  const [showDocuments, setShowDocuments] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('donation') === 'success') {
-      setDonationSuccess(true);
-      window.history.replaceState({}, '', window.location.pathname);
+    // Проверяем URL для открытия страницы документов
+    if (window.location.pathname === '/documents' || window.location.hash === '#documents') {
+      setShowDocuments(true);
     }
-  }, []);
 
-  useEffect(() => {
     // Русскоязычные сообщения валидации для обязательных полей
     const inputs = document.querySelectorAll('input[required], textarea[required]');
     inputs.forEach((input) => {
@@ -40,15 +38,44 @@ export default function App() {
     });
   }, []);
 
+  // Обработчик клика на ссылку документов
+  useEffect(() => {
+    const handleDocumentLink = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href="/documents"]');
+      if (link) {
+        e.preventDefault();
+        setShowDocuments(true);
+        window.history.pushState({}, '', '/documents');
+      }
+    };
+
+    document.addEventListener('click', handleDocumentLink);
+    return () => document.removeEventListener('click', handleDocumentLink);
+  }, []);
+
+  if (showDocuments) {
+    return (
+      <>
+        <SEOHead />
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+          <FloatingCross />
+          <div className="relative z-10">
+            <Header />
+            <DocumentsPage onBack={() => {
+              setShowDocuments(false);
+              window.history.pushState({}, '', '/');
+            }} />
+            <Footer />
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <SEOHead />
-      {donationSuccess && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in">
-          Благодарим за пожертвование! Да благословит вас Господь.
-          <button onClick={() => setDonationSuccess(false)} className="ml-4 underline">Закрыть</button>
-        </div>
-      )}
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
         <FloatingCross />
         <div className="relative z-10">

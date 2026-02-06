@@ -1,18 +1,42 @@
-import { Youtube, Send } from "lucide-react";
+import { Youtube, Send, Mail, Phone, MapPin, FileText, Scroll } from "lucide-react";
 
 export function Footer() {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <footer className="bg-gray-950 border-t border-red-900/20 text-white py-12 px-4 sm:px-6 lg:px-8" role="contentinfo">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-xl font-bold mb-4">
               Служение освобождения
             </h3>
-            <p className="text-red-100 leading-relaxed">
-              Освобождение и восстановления через любовь Иисуса
-              Христа.
+            <p className="text-red-100 leading-relaxed text-sm mb-4">
+              Освобождение и восстановления через любовь Иисуса Христа.
             </p>
+            <div className="flex gap-4">
+              <a
+                href="https://www.youtube.com/@BloodandWaterRU"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+                aria-label="YouTube"
+              >
+                <Youtube className="w-5 h-5" />
+              </a>
+              <a
+                href="https://t.me/lifespeakingteam"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+                aria-label="Telegram"
+              >
+                <Send className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
           <nav aria-label="Навигация в футере">
@@ -22,48 +46,32 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() =>
-                    document
-                      .getElementById("home")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                  className="text-red-100 hover:text-white transition-colors"
+                  onClick={() => scrollToSection("home")}
+                  className="text-red-100 hover:text-white transition-colors text-sm"
                 >
                   Главная
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() =>
-                    document
-                      .getElementById("materials")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                  className="text-red-100 hover:text-white transition-colors"
+                  onClick={() => scrollToSection("materials")}
+                  className="text-red-100 hover:text-white transition-colors text-sm"
                 >
                   Материалы
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() =>
-                    document
-                      .getElementById("donations")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                  className="text-red-100 hover:text-white transition-colors"
+                  onClick={() => scrollToSection("donations")}
+                  className="text-red-100 hover:text-white transition-colors text-sm"
                 >
                   Пожертвования
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() =>
-                    document
-                      .getElementById("contact")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                  className="text-red-100 hover:text-white transition-colors"
+                  onClick={() => scrollToSection("contact")}
+                  className="text-red-100 hover:text-white transition-colors text-sm"
                 >
                   Контакты
                 </button>
@@ -73,40 +81,51 @@ export function Footer() {
 
           <div>
             <h4 className="text-lg font-semibold mb-4">
-              Мы в соцсетях
+              Контакты
             </h4>
-            <div className="flex gap-4">
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-6 h-6" />
-              </a>
-              <a
-                href="https://telegram.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
-                aria-label="Telegram"
-              >
-                <Send className="w-6 h-6" />
-              </a>
-            </div>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-start gap-2">
+                <Phone className="w-4 h-4 text-[#DC143C] mt-0.5 flex-shrink-0" />
+                <a href="tel:+79944178986" className="text-red-100 hover:text-white transition-colors">
+                  +7 994 417 89 86
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <Mail className="w-4 h-4 text-[#DC143C] mt-0.5 flex-shrink-0" />
+                <a href="mailto:jesusthehealer@yandex.ru" className="text-red-100 hover:text-white transition-colors">
+                  jesusthehealer@yandex.ru
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-[#DC143C] mt-0.5 flex-shrink-0" />
+                <span className="text-red-100">
+                  Санкт-Петербург
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold mb-4">
+              Документы
+            </h4>
+            <a
+              href="/documents"
+              className="text-red-100 hover:text-white transition-colors text-sm flex items-center gap-2"
+            >
+              <FileText className="w-4 h-4" />
+              Реквизиты и договор оферты
+            </a>
           </div>
         </div>
 
         <div className="border-t border-red-800 pt-8">
           <div className="text-center text-red-100">
             <p className="mb-2">
-              "И познаете истину, и истина сделает вас
-              свободными" - Иоанна 8:32
+              "И познаете истину, и истина сделает вас свободными" - Иоанна 8:32
             </p>
             <p className="text-sm">
-              © 2026 Освобождение во Христе. Все права
-              защищены.
+              © 2026 Освобождение во Христе. Все права защищены.
             </p>
           </div>
         </div>

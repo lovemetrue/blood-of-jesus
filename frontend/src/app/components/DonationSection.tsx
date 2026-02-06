@@ -22,6 +22,15 @@ export function DonationSection() {
           <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto px-2">
             Ваши пожертвования помогают распространять Евангелие свободы и исцеления для тех, кто в этом нуждается
           </p>
+          <div className="mt-4 text-sm text-gray-500 max-w-2xl mx-auto px-2">
+            <p className="mb-2">Пожертвования используются на следующие цели:</p>
+            <ul className="list-disc list-outside space-y-1 text-left pl-5">
+              <li>Распространение Евангелия и духовное просвещение</li>
+              <li>Проведение служений духовного освобождения и исцеления</li>
+              <li>Поддержка нуждающихся и помощь в кризисных ситуациях</li>
+              <li>Поддержка служителей и развитие Тела Христа</li>
+            </ul>
+          </div>
         </div>
 
         <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800">
