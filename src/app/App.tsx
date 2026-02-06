@@ -16,8 +16,16 @@ export default function App() {
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
   useEffect(() => {
+    // Нормализуем URL при загрузке (убираем trailing slash, кроме корня)
+    const currentPath = window.location.pathname;
+    if (currentPath !== '/' && currentPath.endsWith('/')) {
+      const normalizedPath = currentPath.slice(0, -1);
+      window.history.replaceState({}, '', normalizedPath + window.location.search + window.location.hash);
+    }
+    
     // Проверяем URL для открытия страницы документов
-    const pathname = window.location.pathname;
+    // Нормализуем pathname (убираем trailing slash)
+    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
     const hash = window.location.hash;
     const search = window.location.search;
     
@@ -63,7 +71,8 @@ export default function App() {
   // Обработчик изменений истории браузера (назад/вперед)
   useEffect(() => {
     const handlePopState = () => {
-      const pathname = window.location.pathname;
+      // Нормализуем pathname (убираем trailing slash)
+      const pathname = window.location.pathname.replace(/\/$/, '') || '/';
       const hash = window.location.hash;
       const search = window.location.search;
       
