@@ -262,6 +262,9 @@ def create_donation(request):
         idempotency_key = str(uuid.uuid4())
         
         # Создание платежа в ЮKassa
+        payment_created = False
+        fallback_used = False
+        
         try:
             payment = create_yookassa_payment(
                 amount=amount,
@@ -270,7 +273,31 @@ def create_donation(request):
                 email=email,
                 payment_method=payment_method
             )
-            
+            payment_created = True
+        except Exception as sbp_error:
+            # Если СБП недоступен, пробуем оплату картой как fallback
+            error_str = str(sbp_error).lower()
+            if payment_method == 'sbp' and ('payment method is not available' in error_str or 'invalid_request' in error_str):
+                logger.warning('SBP payment failed, trying card payment as fallback. Error: %s', sbp_error)
+                try:
+                    payment = create_yookassa_payment(
+                        amount=amount,
+                        donation_id=donation.id,
+                        description='Пожертвование на служение «Кровь Иисуса»',
+                        email=email,
+                        payment_method='card'
+                    )
+                    payment_created = True
+                    fallback_used = True
+                    payment_method = 'card'  # Обновляем для ответа
+                    logger.info('Fallback to card payment successful for donation ID=%s', donation.id)
+                except Exception as fallback_error:
+                    logger.error('Fallback to card payment also failed: %s', fallback_error)
+                    raise sbp_error  # Возвращаем исходную ошибку СБП
+            else:
+                raise  # Если это не ошибка СБП, пробрасываем дальше
+        
+        if payment_created:
             # Сохранение ID платежа
             donation.payment_id = payment.id
             donation.save()
@@ -290,15 +317,21 @@ def create_donation(request):
                     'error': 'Не удалось получить ссылку для оплаты. Попробуйте позже.'
                 }, status=500)
             
-            logger.info('Payment created successfully: payment_id=%s, donation_id=%s, method=%s', 
-                       payment.id, donation.id, payment_method)
+            logger.info('Payment created successfully: payment_id=%s, donation_id=%s, method=%s, fallback_used=%s', 
+                       payment.id, donation.id, payment_method, fallback_used)
             
-            return JsonResponse({
+            response_data = {
                 'success': True,
                 'redirect_url': confirmation_url,
                 'payment_id': payment.id,
                 'payment_method': payment_method
-            })
+            }
+            
+            # Если использован fallback, добавляем предупреждение
+            if fallback_used:
+                response_data['warning'] = 'СБП временно недоступен, используется оплата банковской картой.'
+            
+            return JsonResponse(response_data)
             
         except Exception as e:
             logger.exception('Failed to create YooKassa payment for donation ID=%s: %s', donation.id, e)
@@ -309,10 +342,17 @@ def create_donation(request):
             # Возвращаем понятное сообщение об ошибке
             error_message = 'Не удалось создать платеж. Попробуйте позже или свяжитесь с нами.'
             error_str = str(e).lower()
+            error_repr = repr(e)
             
+            # Детальная обработка ошибок ЮKassa
             if 'payment method is not available' in error_str or 'invalid_request' in error_str:
                 if payment_method == 'sbp':
-                    error_message = 'Оплата через СБП временно недоступна. Пожалуйста, используйте оплату банковской картой.'
+                    error_message = (
+                        'Оплата через СБП временно недоступна. '
+                        'Возможно, СБП не активирован в вашем аккаунте ЮKassa. '
+                        'Пожалуйста, используйте оплату банковской картой или обратитесь в поддержку ЮKassa для активации СБП.'
+                    )
+                    logger.warning('SBP payment method not available. Error details: %s', error_repr)
                 else:
                     error_message = 'Выбранный способ оплаты недоступен. Попробуйте другой способ оплаты.'
             elif 'insufficient' in error_str or 'balance' in error_str:
@@ -321,6 +361,8 @@ def create_donation(request):
                 error_message = 'Неверные данные платежа. Проверьте введенные данные.'
             elif 'timeout' in error_str or 'timed out' in error_str:
                 error_message = 'Превышено время ожидания ответа от платежной системы. Попробуйте позже.'
+            
+            logger.error('Payment creation error details: %s', error_repr)
             
             return JsonResponse({
                 'success': False,

@@ -17,18 +17,27 @@ export default function App() {
 
   useEffect(() => {
     // Проверяем URL для открытия страницы документов
-    if (window.location.pathname === '/documents' || window.location.hash === '#documents') {
+    const pathname = window.location.pathname;
+    const hash = window.location.hash;
+    const search = window.location.search;
+    
+    if (pathname === '/documents' || hash === '#documents') {
       setShowDocuments(true);
-    }
-    
-    // Проверяем URL для страницы пожертвований
-    if (window.location.pathname === '/donations' || window.location.hash === '#donations') {
+      setShowDonations(false);
+      setShowPaymentSuccess(false);
+    } else if (pathname === '/donations' || hash === '#donations') {
       setShowDonations(true);
-    }
-    
-    // Проверяем URL для страницы успешной оплаты
-    if (window.location.pathname === '/payment/success' || window.location.search.includes('donation=success')) {
+      setShowDocuments(false);
+      setShowPaymentSuccess(false);
+    } else if (pathname === '/payment/success' || search.includes('donation=success')) {
       setShowPaymentSuccess(true);
+      setShowDocuments(false);
+      setShowDonations(false);
+    } else {
+      // Сбрасываем все состояния при переходе на главную
+      setShowDocuments(false);
+      setShowDonations(false);
+      setShowPaymentSuccess(false);
     }
 
     // Русскоязычные сообщения валидации для обязательных полей
@@ -51,6 +60,38 @@ export default function App() {
     });
   }, []);
 
+  // Обработчик изменений истории браузера (назад/вперед)
+  useEffect(() => {
+    const handlePopState = () => {
+      const pathname = window.location.pathname;
+      const hash = window.location.hash;
+      const search = window.location.search;
+      
+      if (pathname === '/documents' || hash === '#documents') {
+        setShowDocuments(true);
+        setShowDonations(false);
+        setShowPaymentSuccess(false);
+      } else if (pathname === '/donations' || hash === '#donations') {
+        setShowDonations(true);
+        setShowDocuments(false);
+        setShowPaymentSuccess(false);
+      } else if (pathname === '/payment/success' || search.includes('donation=success')) {
+        setShowPaymentSuccess(true);
+        setShowDocuments(false);
+        setShowDonations(false);
+      } else {
+        setShowDocuments(false);
+        setShowDonations(false);
+        setShowPaymentSuccess(false);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
   // Обработчик клика на ссылку документов
   useEffect(() => {
     const handleDocumentLink = (e: MouseEvent) => {
@@ -59,6 +100,8 @@ export default function App() {
       if (link) {
         e.preventDefault();
         setShowDocuments(true);
+        setShowDonations(false);
+        setShowPaymentSuccess(false);
         window.history.pushState({}, '', '/documents');
       }
     };
@@ -70,6 +113,8 @@ export default function App() {
       if (link) {
         e.preventDefault();
         setShowDonations(true);
+        setShowDocuments(false);
+        setShowPaymentSuccess(false);
         window.history.pushState({}, '', '/donations');
       }
     };

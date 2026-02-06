@@ -1,5 +1,6 @@
 import json
 import uuid
+import logging
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
@@ -8,6 +9,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from .models import ContactMessage, Donation, Material
 from .forms import DonationForm
+
+logger = logging.getLogger(__name__)
 
 
 def create_yookassa_payment(amount, donation_id, description, email=None, idempotency_key=None, payment_method='card'):
@@ -25,10 +28,7 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
     Returns:
         Payment объект от ЮKassa
     """
-    import logging
     from yookassa import Payment, Configuration
-    
-    logger = logging.getLogger(__name__)
     
     # Проверка наличия настроек
     if not settings.YOOKASSA_SHOP_ID or not settings.YOOKASSA_SECRET_KEY:
@@ -55,20 +55,23 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
     
     # Настройка способа оплаты и подтверждения
     if payment_method == 'sbp':
-        # Для СБП используем redirect (QR-код будет на странице ЮKassa)
+        # Для СБП согласно документации: https://yookassa.ru/developers/payment-acceptance/integration-scenarios/manual-integration/other/sbp
+        # Нужно передать payment_method_data с type="sbp" и confirmation с type="redirect"
         payment_data["payment_method_data"] = {
             "type": "sbp"
         }
         payment_data["confirmation"] = {
-            "type": "redirect",  # Redirect для СБП (QR-код будет на странице ЮKassa)
+            "type": "redirect",
             "return_url": f"{settings.SITE_URL}/payment/success"
         }
+        logger.info('Creating SBP payment: amount=%s, donation_id=%s', amount, donation_id)
     else:
         # Для банковской карты используем redirect
         payment_data["confirmation"] = {
             "type": "redirect",
             "return_url": f"{settings.SITE_URL}/payment/success"
         }
+        logger.info('Creating card payment: amount=%s, donation_id=%s', amount, donation_id)
     
     # Добавление чека (если есть email)
     if email:
@@ -88,8 +91,19 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
     # Использование переданного ключа идемпотентности или генерация нового
     key = idempotency_key if idempotency_key else uuid.uuid4()
     
-    payment = Payment.create(payment_data, key)
-    return payment
+    # Логирование запроса для отладки (без секретных данных)
+    logger.info('YooKassa payment request: payment_method=%s, amount=%s, has_receipt=%s', 
+                payment_method, amount, bool(email))
+    logger.debug('Payment data: %s', json.dumps(payment_data, ensure_ascii=False, indent=2))
+    
+    try:
+        payment = Payment.create(payment_data, key)
+        logger.info('YooKassa payment created successfully: payment_id=%s', payment.id)
+        return payment
+    except Exception as e:
+        logger.error('Failed to create YooKassa payment: %s', str(e))
+        logger.error('Payment data that caused error: %s', json.dumps(payment_data, ensure_ascii=False, indent=2))
+        raise
 
 
 @require_http_methods(["POST"])

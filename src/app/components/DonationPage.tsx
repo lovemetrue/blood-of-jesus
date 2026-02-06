@@ -68,6 +68,10 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
       }
 
       if (data.success && data.redirect_url) {
+        // Если использован fallback на карту, показываем предупреждение
+        if (data.warning) {
+          alert(data.warning);
+        }
         // Для всех способов оплаты (включая СБП) используем redirect
         // QR-код для СБП будет отображаться на странице ЮKassa
         window.location.href = data.redirect_url;
@@ -113,7 +117,7 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
           <div className="mt-4 text-sm text-gray-500 max-w-2xl mx-auto px-2">
             <p className="mb-2 text-center">Пожертвования используются на следующие цели:</p>
             <ul className="list-disc list-outside space-y-1 mx-auto w-fit text-left pl-5">
-              <li>Проведить служения освобождения и исцеления души</li>
+              <li>Проводить служения освобождения и исцеления души</li>
               <li>Поддерживать нуждающихся и оказывать помощь в кризисных ситуациях</li>
               <li>Поддерживать служителей и развивать Тела Христа</li>
             </ul>
