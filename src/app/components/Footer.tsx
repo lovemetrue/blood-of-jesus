@@ -1,4 +1,4 @@
-import { Youtube, Send, Mail, Phone, MapPin, FileText, Scroll, Globe } from "lucide-react";
+import { Youtube, Send, Mail, Phone, MapPin, FileText, Scroll } from "lucide-react";
 
 export function Footer() {
   const scrollToSection = (id: string) => {
@@ -111,17 +111,10 @@ export function Footer() {
             </h4>
             <a
               href="/documents"
-              className="text-red-100 hover:text-white transition-colors text-sm flex items-center gap-2 mb-3"
+              className="text-red-100 hover:text-white transition-colors text-sm flex items-center gap-2"
             >
               <FileText className="w-4 h-4" />
               Реквизиты и договор оферты
-            </a>
-            <a
-              href="/location"
-              className="text-red-100 hover:text-white transition-colors text-sm flex items-center gap-2"
-            >
-              <Globe className="w-4 h-4" />
-              География служения
             </a>
           </div>
         </div>

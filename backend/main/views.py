@@ -10,30 +10,65 @@ from .models import ContactMessage, Donation, Material
 from .forms import DonationForm
 
 
-def create_yookassa_payment(amount, donation_id, description, email=None):
+def create_yookassa_payment(amount, donation_id, description, email=None, idempotency_key=None):
+    """
+    Создание платежа в ЮKassa
+    
+    Args:
+        amount: Сумма пожертвования
+        donation_id: ID пожертвования в БД
+        description: Описание платежа
+        email: Email плательщика (опционально)
+        idempotency_key: Ключ идемпотентности (опционально)
+    
+    Returns:
+        Payment объект от ЮKassa
+    """
     from yookassa import Payment, Configuration
+    
+    # Проверка наличия настроек
+    if not settings.YOOKASSA_SHOP_ID or not settings.YOOKASSA_SECRET_KEY:
+        raise ValueError('YooKassa credentials not configured')
+    
     Configuration.account_id = settings.YOOKASSA_SHOP_ID
     Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
-    payment = Payment.create({
-        "amount": {"value": str(amount), "currency": "RUB"},
+    # Формирование данных для платежа
+    payment_data = {
+        "amount": {
+            "value": f"{amount:.2f}",
+            "currency": "RUB"
+        },
         "confirmation": {
             "type": "redirect",
-            "return_url": f"{settings.SITE_URL}/?donation=success"
+            "return_url": f"{settings.SITE_URL}/payment/success"
         },
         "capture": True,
         "description": description,
-        "metadata": {"donation_id": donation_id},
-        "receipt": {
-            "customer": {"email": email or "noreply@example.com"},
+        "metadata": {
+            "donation_id": str(donation_id)
+        }
+    }
+    
+    # Добавление чека (если есть email)
+    if email:
+        payment_data["receipt"] = {
+            "customer": {"email": email},
             "items": [{
-                "description": "Пожертвование на служение",
+                "description": "Пожертвование на служение «Кровь Иисуса»",
                 "quantity": "1.00",
-                "amount": {"value": str(amount), "currency": "RUB"},
-                "vat_code": 1
+                "amount": {
+                    "value": f"{amount:.2f}",
+                    "currency": "RUB"
+                },
+                "vat_code": 1  # НДС не облагается
             }]
         }
-    }, uuid.uuid4())
+    
+    # Использование переданного ключа идемпотентности или генерация нового
+    key = idempotency_key if idempotency_key else uuid.uuid4()
+    
+    payment = Payment.create(payment_data, key)
     return payment
 
 

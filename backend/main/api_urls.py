@@ -5,4 +5,5 @@ urlpatterns = [
     path('contact/', api_views.contact_submit),
     path('materials/', api_views.materials_list),
     path('donations/create/', api_views.create_donation),
+    path('yokassa_webhook/', api_views.yokassa_webhook),
 ]

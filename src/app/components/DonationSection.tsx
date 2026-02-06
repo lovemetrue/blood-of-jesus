@@ -1,11 +1,74 @@
-import { Heart, CreditCard, Banknote } from 'lucide-react';
+import { Heart, CreditCard, Banknote, Loader2, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
 
 export function DonationSection() {
-  const handleDonation = (amount?: number) => {
-    if (amount) {
-      alert(`Спасибо за ваше пожертвование в размере ${amount} руб!`);
-    } else {
-      alert('Спасибо за ваше пожертвование!');
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleAmountSelect = (amount: number) => {
+    setSelectedAmount(amount);
+    setCustomAmount('');
+    setError(null);
+  };
+
+  const handleCustomAmountChange = (value: string) => {
+    setCustomAmount(value);
+    setSelectedAmount(null);
+    setError(null);
+  };
+
+  const handleDonation = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    // Определяем сумму пожертвования
+    const amount = selectedAmount || (customAmount ? parseFloat(customAmount) : null);
+    
+    if (!amount || amount < 1) {
+      setError('Пожалуйста, выберите или введите сумму пожертвования (минимум 1 рубль)');
+      return;
+    }
+
+    if (amount > 1000000) {
+      setError('Максимальная сумма пожертвования составляет 1 000 000 рублей');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/donations/create/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: amount,
+          email: email || undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Не удалось создать платеж');
+      }
+
+      if (data.success && data.redirect_url) {
+        // Редирект на страницу оплаты ЮKassa
+        window.location.href = data.redirect_url;
+      } else {
+        throw new Error('Не получена ссылка для оплаты');
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка. Попробуйте позже.';
+      setError(errorMessage);
+      setIsLoading(false);
     }
   };
 
@@ -34,13 +97,18 @@ export function DonationSection() {
         </div>
 
         <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800">
-          <form aria-label="Форма пожертвований">
+          <form onSubmit={handleDonation} aria-label="Форма пожертвований">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8" role="group" aria-label="Быстрый выбор суммы">
               {[500, 1000, 2000, 5000].map((amount) => (
                 <button
                   key={amount}
-                  onClick={() => handleDonation(amount)}
-                  className="px-3 sm:px-6 py-3 sm:py-4 border-2 border-gray-700 rounded-lg hover:border-[#DC143C] hover:bg-red-950/30 transition-all text-white"
+                  type="button"
+                  onClick={() => handleAmountSelect(amount)}
+                  className={`px-3 sm:px-6 py-3 sm:py-4 border-2 rounded-lg transition-all text-white ${
+                    selectedAmount === amount
+                      ? 'border-[#DC143C] bg-red-950/50'
+                      : 'border-gray-700 hover:border-[#DC143C] hover:bg-red-950/30'
+                  }`}
                 >
                   <span className="text-sm sm:text-lg font-semibold">{amount} ₽</span>
                 </button>
@@ -51,27 +119,54 @@ export function DonationSection() {
               <div className="relative">
                 <input
                   type="number"
+                  min="1"
+                  max="1000000"
+                  step="1"
                   placeholder="Другая сумма"
+                  value={customAmount}
+                  onChange={(e) => handleCustomAmountChange(e.target.value)}
+                  className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-700 rounded-lg focus:border-[#DC143C] focus:outline-none bg-gray-800/50 text-white placeholder-gray-500"
+                />
+              </div>
+              
+              <div className="relative">
+                <input
+                  type="email"
+                  placeholder="Email (необязательно, для отправки чека)"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError(null);
+                  }}
                   className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-gray-700 rounded-lg focus:border-[#DC143C] focus:outline-none bg-gray-800/50 text-white placeholder-gray-500"
                 />
               </div>
             </div>
 
+            {error && (
+              <div className="mb-4 p-3 sm:p-4 bg-red-900/30 border border-red-800 rounded-lg flex items-start gap-2 sm:gap-3">
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm sm:text-base text-red-200">{error}</p>
+              </div>
+            )}
+
             <div className="space-y-3 sm:space-y-4">
               <button
-                onClick={() => handleDonation()}
-                className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors shadow-lg shadow-red-900/30"
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors shadow-lg shadow-red-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-                Пожертвовать картой
-              </button>
-              
-              <button
-                onClick={() => handleDonation()}
-                className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-transparent border-2 border-[#DC143C] text-[#DC143C] rounded-lg hover:bg-red-950/30 transition-colors"
-              >
-                <Banknote className="w-4 h-4 sm:w-5 sm:h-5" />
-                Другие способы
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                    <span>Обработка...</span>
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Пожертвовать картой
+                  </>
+                )}
               </button>
             </div>
 
