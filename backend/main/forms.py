@@ -17,3 +17,8 @@ class ContactForm(forms.ModelForm):
 class DonationForm(forms.Form):
     amount = forms.DecimalField(min_value=1, max_digits=10, decimal_places=2)
     email = forms.EmailField(required=False)
+    payment_method = forms.ChoiceField(
+        choices=[('card', 'Банковская карта'), ('sbp', 'СБП')],
+        required=False,
+        initial='card'
+    )

@@ -10,7 +10,7 @@ from .models import ContactMessage, Donation, Material
 from .forms import DonationForm
 
 
-def create_yookassa_payment(amount, donation_id, description, email=None, idempotency_key=None):
+def create_yookassa_payment(amount, donation_id, description, email=None, idempotency_key=None, payment_method='card'):
     """
     Создание платежа в ЮKassa
     
@@ -20,6 +20,7 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
         description: Описание платежа
         email: Email плательщика (опционально)
         idempotency_key: Ключ идемпотентности (опционально)
+        payment_method: Способ оплаты ('card' или 'sbp')
     
     Returns:
         Payment объект от ЮKassa
@@ -39,16 +40,29 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
             "value": f"{amount:.2f}",
             "currency": "RUB"
         },
-        "confirmation": {
-            "type": "redirect",
-            "return_url": f"{settings.SITE_URL}/payment/success"
-        },
         "capture": True,
         "description": description,
         "metadata": {
             "donation_id": str(donation_id)
         }
     }
+    
+    # Настройка способа оплаты и подтверждения
+    if payment_method == 'sbp':
+        # Для СБП используем QR-код или redirect
+        payment_data["payment_method_data"] = {
+            "type": "sbp"
+        }
+        payment_data["confirmation"] = {
+            "type": "qr",  # QR-код для СБП
+            "return_url": f"{settings.SITE_URL}/payment/success"
+        }
+    else:
+        # Для банковской карты используем redirect
+        payment_data["confirmation"] = {
+            "type": "redirect",
+            "return_url": f"{settings.SITE_URL}/payment/success"
+        }
     
     # Добавление чека (если есть email)
     if email:

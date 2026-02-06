@@ -4,8 +4,8 @@ from django.apps import AppConfig
 class MainConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'main'
+    verbose_name = 'Основное приложение'
 
     def ready(self):
         """Импортируем сигналы при запуске приложения"""
         import main.signals  # noqa
-    verbose_name = 'Основное приложение'

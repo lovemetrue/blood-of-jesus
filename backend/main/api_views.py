@@ -234,6 +234,7 @@ def create_donation(request):
 
         amount = form.cleaned_data['amount']
         email = form.cleaned_data.get('email', '')
+        payment_method = form.cleaned_data.get('payment_method', 'card')
         
         # Валидация суммы
         if amount < 1:
@@ -255,7 +256,7 @@ def create_donation(request):
             status='pending'
         )
         
-        logger.info('Created donation ID=%s, amount=%s', donation.id, amount)
+        logger.info('Created donation ID=%s, amount=%s, payment_method=%s', donation.id, amount, payment_method)
         
         # Генерация idempotency key для предотвращения дублирования
         idempotency_key = str(uuid.uuid4())
@@ -266,18 +267,56 @@ def create_donation(request):
                 amount=amount,
                 donation_id=donation.id,
                 description='Пожертвование на служение «Кровь Иисуса»',
-                email=email
+                email=email,
+                payment_method=payment_method
             )
             
             # Сохранение ID платежа
             donation.payment_id = payment.id
             donation.save()
             
-            # Получение URL для редиректа на страницу оплаты
+            # Получение URL для редиректа или QR-кода для оплаты
             confirmation_url = None
+            qr_code_data = None
+            
             if hasattr(payment, 'confirmation') and payment.confirmation:
                 confirmation_url = getattr(payment.confirmation, 'confirmation_url', None)
+                # Для СБП может быть QR-код в разных полях
+                if hasattr(payment.confirmation, 'qr_data'):
+                    qr_code_data = payment.confirmation.qr_data
+                elif hasattr(payment.confirmation, 'qr_code'):
+                    qr_code_data = payment.confirmation.qr_code
+                # Также проверяем, может быть QR-код в самом объекте confirmation
+                elif payment_method == 'sbp' and hasattr(payment.confirmation, 'data'):
+                    qr_code_data = getattr(payment.confirmation.data, 'qr_data', None)
             
+            # Если это СБП и есть QR-код, возвращаем его
+            if payment_method == 'sbp':
+                if qr_code_data:
+                    logger.info('SBP payment created with QR code: payment_id=%s, donation_id=%s', payment.id, donation.id)
+                    return JsonResponse({
+                        'success': True,
+                        'payment_method': 'sbp',
+                        'qr_code': qr_code_data,
+                        'payment_id': payment.id
+                    })
+                elif confirmation_url:
+                    # Если нет QR-кода, но есть redirect URL, используем его
+                    logger.info('SBP payment created with redirect URL: payment_id=%s, donation_id=%s', payment.id, donation.id)
+                    return JsonResponse({
+                        'success': True,
+                        'redirect_url': confirmation_url,
+                        'payment_id': payment.id,
+                        'payment_method': 'sbp'
+                    })
+                else:
+                    logger.error('No QR code or redirect URL for SBP payment: %s', payment)
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Не удалось получить QR-код для оплаты через СБП. Попробуйте позже.'
+                    }, status=500)
+            
+            # Для обычных платежей нужен redirect URL
             if not confirmation_url:
                 logger.error('No confirmation_url in payment response: %s', payment)
                 return JsonResponse({
@@ -285,12 +324,14 @@ def create_donation(request):
                     'error': 'Не удалось получить ссылку для оплаты. Попробуйте позже.'
                 }, status=500)
             
-            logger.info('Payment created successfully: payment_id=%s, donation_id=%s', payment.id, donation.id)
+            logger.info('Payment created successfully: payment_id=%s, donation_id=%s, method=%s', 
+                       payment.id, donation.id, payment_method)
             
             return JsonResponse({
                 'success': True,
                 'redirect_url': confirmation_url,
-                'payment_id': payment.id
+                'payment_id': payment.id,
+                'payment_method': payment_method
             })
             
         except Exception as e:

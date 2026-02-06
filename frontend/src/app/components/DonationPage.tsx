@@ -1,4 +1,4 @@
-import { Heart, CreditCard, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Heart, CreditCard, Loader2, AlertCircle, ArrowLeft, QrCode, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function DonationPage({ onBack }: { onBack: () => void }) {
@@ -7,10 +7,11 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
   const [email, setEmail] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [qrCode, setQrCode] = useState<string | null>(null);
 
   const handleAmountSelect = (amount: number) => {
     setSelectedAmount(amount);
-    setCustomAmount('');
+    setCustomAmount(amount.toString());
     setError(null);
   };
 
@@ -20,7 +21,7 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
     setError(null);
   };
 
-  const handleDonation = async (e?: React.FormEvent) => {
+  const handleDonation = async (paymentMethod: 'card' | 'sbp' = 'card', e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
     }
@@ -40,6 +41,7 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
 
     setIsLoading(true);
     setError(null);
+    setQrCode(null);
 
     try {
       const response = await fetch('/api/donations/create/', {
@@ -50,6 +52,7 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
         body: JSON.stringify({
           amount: amount,
           email: email || undefined,
+          payment_method: paymentMethod,
         }),
       });
 
@@ -59,9 +62,24 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
         throw new Error(data.error || 'Не удалось создать платеж');
       }
 
-      if (data.success && data.redirect_url) {
-        // Редирект на страницу оплаты ЮKassa
-        window.location.href = data.redirect_url;
+      if (data.success) {
+        if (data.payment_method === 'sbp') {
+          if (data.qr_code) {
+            // Для СБП показываем QR-код
+            setQrCode(data.qr_code);
+            setIsLoading(false);
+          } else if (data.redirect_url) {
+            // Если QR-кода нет, но есть redirect URL, используем его
+            window.location.href = data.redirect_url;
+          } else {
+            throw new Error('Не получен QR-код или ссылка для оплаты через СБП');
+          }
+        } else if (data.redirect_url) {
+          // Для карты - редирект на страницу оплаты ЮKassa
+          window.location.href = data.redirect_url;
+        } else {
+          throw new Error('Не получена ссылка для оплаты');
+        }
       } else {
         throw new Error('Не получена ссылка для оплаты');
       }
@@ -95,8 +113,8 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
             Ваши пожертвования помогают распространять Евангелие свободы и исцеления для тех, кто в этом нуждается
           </p>
           <div className="mt-4 text-sm text-gray-500 max-w-2xl mx-auto px-2">
-            <p className="mb-2">Пожертвования используются на следующие цели:</p>
-            <ul className="list-disc list-outside space-y-1 text-left pl-5">
+            <p className="mb-2 text-center">Пожертвования используются на следующие цели:</p>
+            <ul className="list-disc list-outside space-y-1 mx-auto w-fit text-left pl-5">
               <li>Распространение Евангелия и духовное просвещение</li>
               <li>Проведение служений духовного освобождения и исцеления</li>
               <li>Поддержка нуждающихся и помощь в кризисных ситуациях</li>
@@ -106,7 +124,41 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
         </div>
 
         <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800">
-          <form onSubmit={handleDonation} aria-label="Форма пожертвований">
+          {qrCode ? (
+            <div className="text-center">
+              <div className="mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">
+                  Оплата через СБП
+                </h3>
+                <p className="text-gray-300 mb-6">
+                  Отсканируйте QR-код в приложении вашего банка для оплаты
+                </p>
+                <div className="inline-block p-4 bg-white rounded-lg mb-6">
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrCode)}`}
+                    alt="QR код для оплаты СБП"
+                    className="w-64 h-64 mx-auto"
+                  />
+                </div>
+                <p className="text-sm text-gray-400 mb-6">
+                  Или скопируйте код для оплаты в приложении банка
+                </p>
+                <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                  <code className="text-xs sm:text-sm text-gray-300 break-all">{qrCode}</code>
+                </div>
+                <button
+                  onClick={() => {
+                    setQrCode(null);
+                    setIsLoading(false);
+                  }}
+                  className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                >
+                  Вернуться к выбору способа оплаты
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={(e) => handleDonation('card', e)} aria-label="Форма пожертвований">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8" role="group" aria-label="Быстрый выбор суммы">
               {[500, 1000, 2000, 5000].map((amount) => (
                 <button
@@ -177,12 +229,41 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
                   </>
                 )}
               </button>
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-700"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-gray-900/50 text-gray-400">или</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleDonation('sbp')}
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-transparent border-2 border-[#DC143C] text-[#DC143C] rounded-lg hover:bg-red-950/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                    <span>Обработка...</span>
+                  </>
+                ) : (
+                  <>
+                    <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Оплатить через СБП
+                  </>
+                )}
+              </button>
             </div>
 
             <p className="text-xs sm:text-sm text-gray-500 text-center mt-4 sm:mt-6">
               Все пожертвования используются для распространения Благой вести и помощи нуждающимся
             </p>
           </form>
+          )}
         </div>
       </div>
     </div>
