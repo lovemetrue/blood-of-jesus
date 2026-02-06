@@ -184,6 +184,12 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          YOOKASSA_SHOP_ID: ${{ secrets.YOOKASSA_SHOP_ID }}
+          YOOKASSA_SECRET_KEY: ${{ secrets.YOOKASSA_SECRET_KEY }}
         run: |
           BRANCH="${{ github.ref_name }}"
           DEPLOY_PATH="${{ vars.DEPLOY_PATH || '/www/blood-of-jesus' }}"
@@ -196,10 +202,41 @@ jobs:
           git fetch origin
           git reset --hard origin/$BRANCH
 
+          # Создаем или обновляем .env файл с секретами из GitHub Actions
           if [ ! -f .env ]; then
             cp .env.example .env
-            echo "WARNING: Отредактируйте .env (POSTGRES_PASSWORD, SECRET_KEY)"
           fi
+          
+          # Обновляем переменные окружения из секретов GitHub Actions
+          # Используем более надежный метод с временным файлом для безопасной обработки спецсимволов
+          echo "Обновление .env файла из секретов..."
+          
+          # Функция для безопасного обновления переменной в .env
+          update_env_var() {
+            local var_name=\$1
+            local var_value=\$2
+            if [ -n "\$var_value" ]; then
+              # Экранируем специальные символы для sed
+              local escaped_value=\$(echo "\$var_value" | sed 's/[[\.*^$()+?{|]/\\&/g')
+              if grep -q "^\$var_name=" .env 2>/dev/null; then
+                # Переменная существует - обновляем
+                sed -i "s|^\$var_name=.*|\$var_name=\$escaped_value|" .env
+              else
+                # Переменной нет - добавляем
+                echo "\$var_name=\$var_value" >> .env
+              fi
+            fi
+          }
+          
+          update_env_var "POSTGRES_DB" "\$POSTGRES_DB"
+          update_env_var "POSTGRES_USER" "\$POSTGRES_USER"
+          update_env_var "POSTGRES_PASSWORD" "\$POSTGRES_PASSWORD"
+          update_env_var "SECRET_KEY" "\$SECRET_KEY"
+          update_env_var "YOOKASSA_SHOP_ID" "\$YOOKASSA_SHOP_ID"
+          update_env_var "YOOKASSA_SECRET_KEY" "\$YOOKASSA_SECRET_KEY"
+          
+          echo "Проверка .env файла (без значений):"
+          grep -E "^(POSTGRES_|SECRET_KEY|YOOKASSA_)" .env | sed 's/=.*/=***/' || echo "Не найдено переменных БД"
 
           echo "\$DOCKERHUB_TOKEN" | docker login -u "\$DOCKERHUB_USERNAME" --password-stdin
 
@@ -218,8 +255,24 @@ jobs:
 
           chmod +x deploy.sh
           scp -o StrictHostKeyChecking=no deploy.sh "$VPS_USER@$VPS_HOST:$DEPLOY_PATH/"
+          
+          # Создаем временный файл с переменными окружения для безопасной передачи
+          cat > env_vars.sh << ENV_EOF
+          export DOCKERHUB_IMAGE="$DOCKERHUB_IMAGE"
+          export IMAGE_TAG="$IMAGE_TAG"
+          export DOCKERHUB_USERNAME="$DOCKERHUB_USERNAME"
+          export DOCKERHUB_TOKEN="$DOCKERHUB_TOKEN"
+          export POSTGRES_DB="$POSTGRES_DB"
+          export POSTGRES_USER="$POSTGRES_USER"
+          export POSTGRES_PASSWORD="$POSTGRES_PASSWORD"
+          export SECRET_KEY="$SECRET_KEY"
+          export YOOKASSA_SHOP_ID="$YOOKASSA_SHOP_ID"
+          export YOOKASSA_SECRET_KEY="$YOOKASSA_SECRET_KEY"
+          ENV_EOF
+          
+          scp -o StrictHostKeyChecking=no env_vars.sh "$VPS_USER@$VPS_HOST:$DEPLOY_PATH/"
           ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" \
-            "export DOCKERHUB_IMAGE='$DOCKERHUB_IMAGE'; export IMAGE_TAG='$IMAGE_TAG'; export DOCKERHUB_USERNAME='$DOCKERHUB_USERNAME'; export DOCKERHUB_TOKEN='$DOCKERHUB_TOKEN'; cd $DEPLOY_PATH && bash deploy.sh"
+            "cd $DEPLOY_PATH && source env_vars.sh && bash deploy.sh && rm -f env_vars.sh"
 
       - name: Health check
         run: |
