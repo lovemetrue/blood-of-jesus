@@ -264,6 +264,7 @@ def create_donation(request):
         # Создание платежа в ЮKassa
         payment_created = False
         fallback_used = False
+        payment = None
         
         try:
             payment = create_yookassa_payment(
@@ -297,7 +298,7 @@ def create_donation(request):
             else:
                 raise  # Если это не ошибка СБП, пробрасываем дальше
         
-        if payment_created:
+        if payment_created and payment:
             # Сохранение ID платежа
             donation.payment_id = payment.id
             donation.save()
@@ -333,7 +334,7 @@ def create_donation(request):
             
             return JsonResponse(response_data)
             
-        except Exception as e:
+    except Exception as e:
             logger.exception('Failed to create YooKassa payment for donation ID=%s: %s', donation.id, e)
             # Обновляем статус пожертвования на ошибку
             donation.status = 'failed'
