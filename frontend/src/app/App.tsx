@@ -1,9 +1,9 @@
 import { Header } from "@/app/components/Header";
 import { Hero } from "@/app/components/Hero";
 import { MaterialsGrid } from "@/app/components/MaterialsGrid";
-import { DonationSection } from "@/app/components/DonationSection";
 import { ContactForm } from "@/app/components/ContactForm";
 import { DocumentsPage } from "@/app/components/DocumentsPage";
+import { DonationPage } from "@/app/components/DonationPage";
 import { PaymentSuccess } from "@/app/components/PaymentSuccess";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
@@ -12,12 +12,18 @@ import { useEffect, useState } from "react";
 
 export default function App() {
   const [showDocuments, setShowDocuments] = useState(false);
+  const [showDonations, setShowDonations] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
   useEffect(() => {
     // Проверяем URL для открытия страницы документов
     if (window.location.pathname === '/documents' || window.location.hash === '#documents') {
       setShowDocuments(true);
+    }
+    
+    // Проверяем URL для страницы пожертвований
+    if (window.location.pathname === '/donations' || window.location.hash === '#donations') {
+      setShowDonations(true);
     }
     
     // Проверяем URL для страницы успешной оплаты
@@ -57,8 +63,23 @@ export default function App() {
       }
     };
 
+    // Обработчик клика на ссылку пожертвований
+    const handleDonationLink = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href="/donations"], button[data-donation-link]');
+      if (link) {
+        e.preventDefault();
+        setShowDonations(true);
+        window.history.pushState({}, '', '/donations');
+      }
+    };
+
     document.addEventListener('click', handleDocumentLink);
-    return () => document.removeEventListener('click', handleDocumentLink);
+    document.addEventListener('click', handleDonationLink);
+    return () => {
+      document.removeEventListener('click', handleDocumentLink);
+      document.removeEventListener('click', handleDonationLink);
+    };
   }, []);
 
   if (showPaymentSuccess) {
@@ -71,6 +92,25 @@ export default function App() {
             <Header />
             <PaymentSuccess onBack={() => {
               setShowPaymentSuccess(false);
+              window.history.pushState({}, '', '/');
+            }} />
+            <Footer />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (showDonations) {
+    return (
+      <>
+        <SEOHead />
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+          <FloatingCross />
+          <div className="relative z-10">
+            <Header />
+            <DonationPage onBack={() => {
+              setShowDonations(false);
               window.history.pushState({}, '', '/');
             }} />
             <Footer />
@@ -109,7 +149,6 @@ export default function App() {
           <main>
             <Hero />
             <MaterialsGrid />
-            <DonationSection />
             <ContactForm />
           </main>
           <Footer />

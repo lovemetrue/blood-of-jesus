@@ -111,6 +111,10 @@ export function Footer() {
             </h4>
             <a
               href="/documents"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/documents';
+              }}
               className="text-red-100 hover:text-white transition-colors text-sm flex items-center gap-2"
             >
               <FileText className="w-4 h-4" />

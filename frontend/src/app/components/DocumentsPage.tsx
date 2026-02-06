@@ -2,7 +2,7 @@ import { Building2, FileText, Mail, Phone, MapPin, Scroll, ArrowLeft } from "luc
 import { useState } from "react";
 
 export function DocumentsPage({ onBack }: { onBack: () => void }) {
-  const [activeTab, setActiveTab] = useState<"requisites" | "agreement">("requisites");
+  const [activeTab, setActiveTab] = useState<"requisites" | "agreement" | "location">("requisites");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden pt-16">
@@ -47,6 +47,19 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
           >
             Договор оферты
             {activeTab === "agreement" && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#DC143C]" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("location")}
+            className={`px-6 py-3 text-base font-medium transition-all duration-200 relative ${
+              activeTab === "location"
+                ? "text-[#DC143C]"
+                : "text-gray-400 hover:text-gray-300"
+            }`}
+          >
+            Локация
+            {activeTab === "location" && (
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#DC143C]" />
             )}
           </button>
@@ -250,6 +263,82 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                 <div className="pt-4 border-t border-gray-700">
                   <p className="text-gray-400 text-xs sm:text-sm">
                     Дата последнего обновления: {new Date().toLocaleDateString('ru-RU')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "location" && (
+            <div className="space-y-6 sm:space-y-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-[#DC143C] rounded-full mb-4 sm:mb-6 shadow-lg shadow-red-900/50">
+                  <MapPin className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
+                  Локация служения
+                </h2>
+                <p className="text-base sm:text-lg text-gray-400">
+                  Где мы служим и проводим служения
+                </p>
+              </div>
+
+              <div className="text-gray-300 space-y-6 text-sm sm:text-base leading-relaxed">
+                <div>
+                  <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-[#DC143C]" />
+                    Служение по всей России
+                  </h3>
+                  <p className="mb-3">
+                    Служение «Кровь Иисуса» активно работает по всей территории Российской Федерации, 
+                    неся Благую весть освобождения и исцеления во все регионы страны.
+                  </p>
+                  <p className="mb-3">
+                    Мы проводим служения, обучая людей власти и свободе во Христе, помогая им 
+                    обрести истинную свободу от греха, страха, отверженности и демонического угнетения.
+                  </p>
+                  <p>
+                    Наше служение направлено на то, чтобы каждый человек в России мог узнать о 
+                    любви Иисуса Христа и обрести свободу, которую Он даровал нам через Свою жертву на кресте.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-gray-700">
+                  <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-[#DC143C]" />
+                    Санкт-Петербург
+                  </h3>
+                  <p className="mb-3">
+                    В Санкт-Петербурге мы проводим регулярные служения и встречи, где люди могут 
+                    получить молитву, духовное наставление и поддержку.
+                  </p>
+                  <p className="text-white font-medium">
+                    Санкт-Петербург является одним из основных центров нашего служения, где мы 
+                    активно работаем над распространением Евангелия и помощью нуждающимся.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-gray-700">
+                  <h3 className="text-lg sm:text-xl font-semibold text-white mb-4">
+                    Наша миссия
+                  </h3>
+                  <p className="mb-3">
+                    Мы верим, что каждый человек создан для свободы и предназначен для жизни во Христе. 
+                    Наша цель — помочь людям обрести эту свободу через:
+                  </p>
+                  <ul className="list-disc list-outside pl-5 space-y-2 text-gray-300">
+                    <li>Проведение служений духовного освобождения и исцеления</li>
+                    <li>Обучение власти и свободе во Христе</li>
+                    <li>Распространение Евангелия по всей России</li>
+                    <li>Поддержку и наставление верующих</li>
+                    <li>Помощь нуждающимся в кризисных ситуациях</li>
+                  </ul>
+                </div>
+
+                <div className="pt-4 border-t border-gray-700">
+                  <p className="text-gray-400 text-xs sm:text-sm">
+                    Если вы хотите узнать больше о наших служениях или нуждаетесь в молитвенной поддержке, 
+                    свяжитесь с нами по контактам, указанным в разделе "Реквизиты".
                   </p>
                 </div>
               </div>

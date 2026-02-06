@@ -157,7 +157,10 @@ export function Header() {
                 Контакты
               </button>
               <button
-                onClick={() => scrollToSection("donations")}
+                onClick={() => {
+                  window.location.href = '/donations';
+                }}
+                data-donation-link
                 className="px-4 py-2 text-sm font-medium bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors duration-200 shadow-lg shadow-red-900/30"
               >
                 Пожертвования
@@ -305,13 +308,19 @@ export function Header() {
 
             {/* Контакты и Пожертвования в мобильном меню */}
             <button
-              onClick={() => scrollToSection("contact")}
+              onClick={() => {
+                scrollToSection("contact");
+                setIsMenuOpen(false);
+              }}
               className="block w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
             >
               Контакты
             </button>
             <button
-              onClick={() => scrollToSection("donations")}
+              onClick={() => {
+                window.location.href = '/donations';
+              }}
+              data-donation-link
               className="block w-full text-left px-4 py-3 bg-[#DC143C]/20 text-white hover:bg-[#DC143C]/30 rounded-md transition-all duration-200 font-medium"
             >
               Пожертвования
