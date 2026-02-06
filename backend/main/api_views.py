@@ -275,48 +275,14 @@ def create_donation(request):
             donation.payment_id = payment.id
             donation.save()
             
-            # Получение URL для редиректа или QR-кода для оплаты
+            # Получение URL для редиректа на страницу оплаты
             confirmation_url = None
-            qr_code_data = None
             
             if hasattr(payment, 'confirmation') and payment.confirmation:
                 confirmation_url = getattr(payment.confirmation, 'confirmation_url', None)
-                # Для СБП может быть QR-код в разных полях
-                if hasattr(payment.confirmation, 'qr_data'):
-                    qr_code_data = payment.confirmation.qr_data
-                elif hasattr(payment.confirmation, 'qr_code'):
-                    qr_code_data = payment.confirmation.qr_code
-                # Также проверяем, может быть QR-код в самом объекте confirmation
-                elif payment_method == 'sbp' and hasattr(payment.confirmation, 'data'):
-                    qr_code_data = getattr(payment.confirmation.data, 'qr_data', None)
             
-            # Если это СБП и есть QR-код, возвращаем его
-            if payment_method == 'sbp':
-                if qr_code_data:
-                    logger.info('SBP payment created with QR code: payment_id=%s, donation_id=%s', payment.id, donation.id)
-                    return JsonResponse({
-                        'success': True,
-                        'payment_method': 'sbp',
-                        'qr_code': qr_code_data,
-                        'payment_id': payment.id
-                    })
-                elif confirmation_url:
-                    # Если нет QR-кода, но есть redirect URL, используем его
-                    logger.info('SBP payment created with redirect URL: payment_id=%s, donation_id=%s', payment.id, donation.id)
-                    return JsonResponse({
-                        'success': True,
-                        'redirect_url': confirmation_url,
-                        'payment_id': payment.id,
-                        'payment_method': 'sbp'
-                    })
-                else:
-                    logger.error('No QR code or redirect URL for SBP payment: %s', payment)
-                    return JsonResponse({
-                        'success': False,
-                        'error': 'Не удалось получить QR-код для оплаты через СБП. Попробуйте позже.'
-                    }, status=500)
-            
-            # Для обычных платежей нужен redirect URL
+            # Для всех способов оплаты (включая СБП) используем redirect URL
+            # QR-код для СБП будет отображаться на странице ЮKassa
             if not confirmation_url:
                 logger.error('No confirmation_url in payment response: %s', payment)
                 return JsonResponse({
@@ -342,10 +308,19 @@ def create_donation(request):
             
             # Возвращаем понятное сообщение об ошибке
             error_message = 'Не удалось создать платеж. Попробуйте позже или свяжитесь с нами.'
-            if 'insufficient' in str(e).lower() or 'balance' in str(e).lower():
+            error_str = str(e).lower()
+            
+            if 'payment method is not available' in error_str or 'invalid_request' in error_str:
+                if payment_method == 'sbp':
+                    error_message = 'Оплата через СБП временно недоступна. Пожалуйста, используйте оплату банковской картой.'
+                else:
+                    error_message = 'Выбранный способ оплаты недоступен. Попробуйте другой способ оплаты.'
+            elif 'insufficient' in error_str or 'balance' in error_str:
                 error_message = 'Недостаточно средств на счете. Проверьте баланс и попробуйте снова.'
-            elif 'invalid' in str(e).lower():
+            elif 'invalid' in error_str:
                 error_message = 'Неверные данные платежа. Проверьте введенные данные.'
+            elif 'timeout' in error_str or 'timed out' in error_str:
+                error_message = 'Превышено время ожидания ответа от платежной системы. Попробуйте позже.'
             
             return JsonResponse({
                 'success': False,

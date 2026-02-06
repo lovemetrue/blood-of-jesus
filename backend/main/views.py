@@ -25,7 +25,10 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
     Returns:
         Payment объект от ЮKassa
     """
+    import logging
     from yookassa import Payment, Configuration
+    
+    logger = logging.getLogger(__name__)
     
     # Проверка наличия настроек
     if not settings.YOOKASSA_SHOP_ID or not settings.YOOKASSA_SECRET_KEY:
@@ -33,6 +36,9 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
     
     Configuration.account_id = settings.YOOKASSA_SHOP_ID
     Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
+    
+    # Установка таймаута для запросов к API (30 секунд)
+    Configuration.timeout = 30
 
     # Формирование данных для платежа
     payment_data = {
@@ -49,12 +55,12 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
     
     # Настройка способа оплаты и подтверждения
     if payment_method == 'sbp':
-        # Для СБП используем QR-код или redirect
+        # Для СБП используем redirect (QR-код будет на странице ЮKassa)
         payment_data["payment_method_data"] = {
             "type": "sbp"
         }
         payment_data["confirmation"] = {
-            "type": "qr",  # QR-код для СБП
+            "type": "redirect",  # Redirect для СБП (QR-код будет на странице ЮKassa)
             "return_url": f"{settings.SITE_URL}/payment/success"
         }
     else:
