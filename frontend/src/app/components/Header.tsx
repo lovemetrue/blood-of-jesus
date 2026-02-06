@@ -70,7 +70,34 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
+  const navigateToHome = () => {
+    // Если мы на странице donations, documents или payment-success, возвращаемся на главную
+    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success') {
+      // Возвращаемся на главную страницу
+      window.location.href = '/';
+      return;
+    }
+    
+    // Иначе прокручиваем к секции home на главной странице
+    const element = document.getElementById('home');
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setIsMenuOpen(false);
+    setActiveDropdown(null);
+  };
+
   const scrollToSection = (id: string) => {
+    // Если мы на странице donations, documents или payment-success, возвращаемся на главную
+    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success') {
+      // Возвращаемся на главную страницу
+      window.location.href = '/';
+      return;
+    }
+    
+    // Иначе прокручиваем к секции на главной странице
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
     setIsMenuOpen(false);
@@ -102,7 +129,7 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <button
-              onClick={() => scrollToSection("home")}
+              onClick={navigateToHome}
               className="flex items-center hover:opacity-80 transition-opacity"
               aria-label="На главную"
             >
@@ -117,7 +144,7 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 ml-auto">
             <button
-              onClick={() => scrollToSection("home")}
+              onClick={navigateToHome}
               className="text-gray-300 hover:text-[#DC143C] transition-colors duration-200 py-2 px-1 relative group"
             >
               <span>Главная</span>
@@ -190,7 +217,7 @@ export function Header() {
         >
           <nav className="pb-4 space-y-1 pt-2">
             <button
-              onClick={() => scrollToSection("home")}
+              onClick={navigateToHome}
               className="block w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
             >
               Главная
