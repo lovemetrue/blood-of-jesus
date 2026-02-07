@@ -10,6 +10,8 @@ dist
 frontend/dist
 .vite
 
-# Локальные переменные (секреты)
+# Локальные переменные (секреты — не коммитить в GitHub)
 .env
+.env.local
+.env.*.local
 !.env.example
