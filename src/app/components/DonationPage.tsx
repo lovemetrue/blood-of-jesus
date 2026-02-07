@@ -115,7 +115,6 @@ export function DonationPage({ onBack }: { onBack: () => void }) {
             Ваши пожертвования помогают распространять Евангелие царства, свободы и исцеления, а так же:
           </p>
           <div className="mt-4 text-sm text-gray-500 max-w-2xl mx-auto px-2">
-            <p className="mb-2 text-center">Пожертвования используются на следующие цели:</p>
             <ul className="list-disc list-outside space-y-1 mx-auto w-fit text-left pl-5">
               <li>Проводить служения освобождения и исцеления души</li>
               <li>Поддерживать нуждающихся и оказывать помощь в кризисных ситуациях</li>

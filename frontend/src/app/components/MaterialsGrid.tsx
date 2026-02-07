@@ -1,4 +1,4 @@
-import { Download, Book, FileText, Video, Headphones, FileCheck } from 'lucide-react';
+import { Download, Book, FileCheck } from 'lucide-react';
 
 const materials = [
   {
@@ -10,34 +10,13 @@ const materials = [
   },
   {
     id: 2,
-    title: 'Молитвы освобождения',
-    description: 'Сборник молитв для изгнания демонов и исцеления',
-    icon: FileText,
-    type: 'PDF'
-  },
-  {
-    id: 3,
-    title: 'Видео-курс: Власть во Христе',
-    description: 'Полный видеокурс о духовной власти верующего',
-    icon: Video,
-    type: 'Видео'
-  },
-  {
-    id: 4,
-    title: 'Аудио проповеди',
-    description: 'Коллекция проповедей об исцелении и свободе',
-    icon: Headphones,
-    type: 'MP3'
-  },
-  {
-    id: 5,
     title: 'Свидетельства освобождения',
     description: 'Реальные истории чудес и освобождения',
     icon: FileCheck,
     type: 'PDF'
   },
   {
-    id: 6,
+    id: 3,
     title: 'Практическое руководство',
     description: 'Практические шаги к духовной свободе',
     icon: Book,
@@ -62,7 +41,7 @@ export function MaterialsGrid() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto justify-items-center">
           {materials.map((material) => {
             const Icon = material.icon;
             return (

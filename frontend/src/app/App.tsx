@@ -5,6 +5,7 @@ import { ContactForm } from "@/app/components/ContactForm";
 import { DocumentsPage } from "@/app/components/DocumentsPage";
 import { DonationPage } from "@/app/components/DonationPage";
 import { PaymentSuccess } from "@/app/components/PaymentSuccess";
+import { CursesPage } from "@/app/components/CursesPage";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
 import { SEOHead } from "@/app/components/SEOHead";
@@ -14,6 +15,7 @@ export default function App() {
   const [showDocuments, setShowDocuments] = useState(false);
   const [showDonations, setShowDonations] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [showCurses, setShowCurses] = useState(false);
 
   useEffect(() => {
     // Нормализуем URL при загрузке (убираем trailing slash, кроме корня)
@@ -33,19 +35,27 @@ export default function App() {
       setShowDocuments(true);
       setShowDonations(false);
       setShowPaymentSuccess(false);
+      setShowCurses(false);
     } else if (pathname === '/donations' || hash === '#donations') {
       setShowDonations(true);
       setShowDocuments(false);
       setShowPaymentSuccess(false);
+      setShowCurses(false);
     } else if (pathname === '/payment/success' || search.includes('donation=success')) {
       setShowPaymentSuccess(true);
       setShowDocuments(false);
       setShowDonations(false);
-    } else {
-      // Сбрасываем все состояния при переходе на главную
+      setShowCurses(false);
+    } else if (pathname === '/freedom/curses') {
+      setShowCurses(true);
       setShowDocuments(false);
       setShowDonations(false);
       setShowPaymentSuccess(false);
+    } else {
+      setShowDocuments(false);
+      setShowDonations(false);
+      setShowPaymentSuccess(false);
+      setShowCurses(false);
     }
 
     // Русскоязычные сообщения валидации для обязательных полей
@@ -68,6 +78,18 @@ export default function App() {
     });
   }, []);
 
+  // Прокрутка к секции при переходе по ссылке с хешем (/#materials, /#contact)
+  useEffect(() => {
+    if (showDocuments || showDonations || showPaymentSuccess || showCurses) return;
+    const hash = window.location.hash.slice(1);
+    if (hash === 'materials' || hash === 'contact' || hash === 'home') {
+      const timer = setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showDocuments, showDonations, showPaymentSuccess, showCurses]);
+
   // Обработчик изменений истории браузера (назад/вперед)
   useEffect(() => {
     const handlePopState = () => {
@@ -80,18 +102,27 @@ export default function App() {
         setShowDocuments(true);
         setShowDonations(false);
         setShowPaymentSuccess(false);
+        setShowCurses(false);
       } else if (pathname === '/donations' || hash === '#donations') {
         setShowDonations(true);
         setShowDocuments(false);
         setShowPaymentSuccess(false);
+        setShowCurses(false);
       } else if (pathname === '/payment/success' || search.includes('donation=success')) {
         setShowPaymentSuccess(true);
         setShowDocuments(false);
         setShowDonations(false);
+        setShowCurses(false);
+      } else if (pathname === '/freedom/curses') {
+        setShowCurses(true);
+        setShowDocuments(false);
+        setShowDonations(false);
+        setShowPaymentSuccess(false);
       } else {
         setShowDocuments(false);
         setShowDonations(false);
         setShowPaymentSuccess(false);
+        setShowCurses(false);
       }
     };
 
@@ -111,6 +142,7 @@ export default function App() {
         setShowDocuments(true);
         setShowDonations(false);
         setShowPaymentSuccess(false);
+        setShowCurses(false);
         window.history.pushState({}, '', '/documents');
       }
     };
@@ -124,15 +156,31 @@ export default function App() {
         setShowDonations(true);
         setShowDocuments(false);
         setShowPaymentSuccess(false);
+        setShowCurses(false);
         window.history.pushState({}, '', '/donations');
+      }
+    };
+
+    const handleCursesLink = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href="/freedom/curses"], button[data-curses-link]');
+      if (link) {
+        e.preventDefault();
+        setShowCurses(true);
+        setShowDocuments(false);
+        setShowDonations(false);
+        setShowPaymentSuccess(false);
+        window.history.pushState({}, '', '/freedom/curses');
       }
     };
 
     document.addEventListener('click', handleDocumentLink);
     document.addEventListener('click', handleDonationLink);
+    document.addEventListener('click', handleCursesLink);
     return () => {
       document.removeEventListener('click', handleDocumentLink);
       document.removeEventListener('click', handleDonationLink);
+      document.removeEventListener('click', handleCursesLink);
     };
   }, []);
 
@@ -184,6 +232,25 @@ export default function App() {
             <Header />
             <DocumentsPage onBack={() => {
               setShowDocuments(false);
+              window.history.pushState({}, '', '/');
+            }} />
+            <Footer />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (showCurses) {
+    return (
+      <>
+        <SEOHead />
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+          <FloatingCross />
+          <div className="relative z-10">
+            <Header />
+            <CursesPage onBack={() => {
+              setShowCurses(false);
               window.history.pushState({}, '', '/');
             }} />
             <Footer />

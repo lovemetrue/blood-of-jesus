@@ -86,7 +86,6 @@ export function DonationSection() {
             Ваши пожертвования помогают распространять Евангелие свободы и исцеления для тех, кто в этом нуждается
           </p>
           <div className="mt-4 text-sm text-gray-500 max-w-2xl mx-auto px-2">
-            <p className="mb-2">Пожертвования используются на следующие цели:</p>
             <ul className="list-disc list-outside space-y-1 text-left pl-5">
               <li>Распространение Евангелия и духовное просвещение</li>
               <li>Проведение служений духовного освобождения и исцеления</li>

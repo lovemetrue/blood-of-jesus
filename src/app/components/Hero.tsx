@@ -12,12 +12,13 @@ export function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center mb-12 sm:mb-16">
           <div className="order-2 lg:order-1 space-y-4 sm:space-y-5 lg:space-y-6">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-white leading-tight">
-              Обретите свободу от угнетения и исцеление души
-              через любовь, веру и власть в Иисусе Христе
+              На другой день видит Иоанн идущего к нему Иисуса и говорит:
+              <br />
+              вот Агнец Божий, Который берет на Себя грех мира
             </h2>
             <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
-              Служение духовного освобождения, изгнания демонов
-              и исцеления через силу Святого Духа
+              Служение освобождения, изгнания демонов
+              и исцеления через любовь силу Святого Духа
             </p>
             <button
               onClick={() =>
@@ -50,7 +51,7 @@ export function Hero() {
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-white">Любовь</h3>
             <p className="text-xs sm:text-sm text-gray-400 text-center max-w-xs">
-              Божья любовь исцеляет и восстанавливает
+             Божья любовь исцеляет, корректирует и восстанавливает
             </p>
           </div>
 
@@ -60,7 +61,7 @@ export function Hero() {
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-white">Защита</h3>
             <p className="text-xs sm:text-sm text-gray-400 text-center max-w-xs">
-              Власть во имя Иисуса над тьмой
+            Покрытие всех сфер жизни через завет и послушание
             </p>
           </div>
 
@@ -72,7 +73,7 @@ export function Hero() {
               Свобода
             </h3>
             <p className="text-xs sm:text-sm text-gray-400 text-center max-w-xs">
-              Освобождение от духовного угнетения
+             Ходить в полноте призвания и всех сфер жизни
             </p>
           </div>
         </div>

@@ -71,9 +71,9 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const navigateToHome = () => {
-    // Если мы на странице donations, documents или payment-success, возвращаемся на главную
+    // Если мы на странице donations, documents, payment-success или freedom/curses, возвращаемся на главную
     const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success') {
+    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname === '/freedom/curses') {
       // Возвращаемся на главную страницу
       window.location.href = '/';
       return;
@@ -89,9 +89,9 @@ export function Header() {
   };
 
   const scrollToSection = (id: string) => {
-    // Если мы на странице donations, documents или payment-success, возвращаемся на главную
+    // Если мы на странице donations, documents, payment-success или freedom/curses, возвращаемся на главную
     const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success') {
+    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname === '/freedom/curses') {
       // Возвращаемся на главную страницу
       window.location.href = '/';
       return;
@@ -100,6 +100,13 @@ export function Header() {
     // Иначе прокручиваем к секции на главной странице
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
+    setIsMenuOpen(false);
+    setActiveDropdown(null);
+  };
+
+  const navigateToCurses = () => {
+    window.history.pushState({}, '', '/freedom/curses');
+    window.dispatchEvent(new PopStateEvent('popstate'));
     setIsMenuOpen(false);
     setActiveDropdown(null);
   };
@@ -115,11 +122,17 @@ export function Header() {
       { label: "В наследие", onClick: () => scrollToSection("faith-inheritance") },
       { label: "В ожидания Бога", onClick: () => scrollToSection("faith-expectations") },
     ],
+    covenant: [
+      { label: "Спасения", onClick: () => scrollToSection("covenant-salvation") },
+      { label: "Посвящения", onClick: () => scrollToSection("covenant-dedication") },
+      { label: "Даяния", onClick: () => scrollToSection("covenant-giving") },
+    ],
     freedom: [
       { label: "От отверженности и страха", onClick: () => scrollToSection("freedom-rejection") },
       { label: "От церковных травм", onClick: () => scrollToSection("freedom-church-trauma") },
       { label: "От демонического угнетения", onClick: () => scrollToSection("freedom-demonic") },
       { label: "От рабства греха", onClick: () => scrollToSection("freedom-sin") },
+      { label: "От проклятий", onClick: navigateToCurses },
     ],
   };
 
@@ -164,6 +177,14 @@ export function Header() {
               items={menuItems.faith}
               isOpen={activeDropdown === "faith"}
               onMouseEnter={() => setActiveDropdown("faith")}
+              onMouseLeave={() => setActiveDropdown(null)}
+            />
+
+            <DropdownMenu
+              label="Завет"
+              items={menuItems.covenant}
+              isOpen={activeDropdown === "covenant"}
+              onMouseEnter={() => setActiveDropdown("covenant")}
               onMouseLeave={() => setActiveDropdown(null)}
             />
 
@@ -295,6 +316,42 @@ export function Header() {
               </div>
             </div>
 
+            {/* Завет */}
+            <div className="relative">
+              <button
+                onClick={() =>
+                  setActiveDropdown(activeDropdown === "covenant" ? null : "covenant")
+                }
+                className="flex items-center justify-between w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+              >
+                <span>Завет</span>
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    activeDropdown === "covenant" ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  activeDropdown === "covenant"
+                    ? "max-h-[200px] opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="pl-6 space-y-1">
+                  {menuItems.covenant.map((item, index) => (
+                    <button
+                      key={index}
+                      onClick={item.onClick}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {/* Свобода */}
             <div className="relative">
               <button
@@ -315,7 +372,7 @@ export function Header() {
               <div
                 className={`overflow-hidden transition-all duration-300 ${
                   activeDropdown === "freedom"
-                    ? "max-h-[300px] opacity-100"
+                    ? "max-h-[350px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >

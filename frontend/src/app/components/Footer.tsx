@@ -1,18 +1,13 @@
-import { Youtube, Send, Mail, Phone, MapPin, FileText, Scroll } from "lucide-react";
+import { Youtube, Send, Mail, Phone, MapPin, FileText } from "lucide-react";
 
 export function Footer() {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <footer className="bg-gray-950 border-t border-red-900/20 text-white py-12 px-4 sm:px-6 lg:px-8" role="contentinfo">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-xl font-bold mb-4">
-              Служение освобождения
+              Служение: «Кровь Христа»
             </h3>
             <p className="text-red-100 leading-relaxed text-sm mb-4">
               Освобождение и восстановления через любовь Иисуса Христа.
@@ -45,36 +40,24 @@ export function Footer() {
             </h4>
             <ul className="space-y-2">
               <li>
-                <button
-                  onClick={() => scrollToSection("home")}
-                  className="text-red-100 hover:text-white transition-colors text-sm"
-                >
+                <a href="/" className="text-red-100 hover:text-white transition-colors text-sm">
                   Главная
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => scrollToSection("materials")}
-                  className="text-red-100 hover:text-white transition-colors text-sm"
-                >
+                <a href="/#materials" className="text-red-100 hover:text-white transition-colors text-sm">
                   Материалы
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => scrollToSection("donations")}
-                  className="text-red-100 hover:text-white transition-colors text-sm"
-                >
+                <a href="/donations" className="text-red-100 hover:text-white transition-colors text-sm">
                   Пожертвования
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => scrollToSection("contact")}
-                  className="text-red-100 hover:text-white transition-colors text-sm"
-                >
+                <a href="/#contact" className="text-red-100 hover:text-white transition-colors text-sm">
                   Контакты
-                </button>
+                </a>
               </li>
             </ul>
           </nav>
