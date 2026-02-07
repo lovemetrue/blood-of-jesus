@@ -70,42 +70,31 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
+  const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+  const isOnSubPage = pathname !== '/' && (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
+
   const navigateToHome = () => {
-    // Если мы на странице donations, documents, payment-success или freedom/curses, возвращаемся на главную
-    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname === '/freedom/curses') {
-      // Возвращаемся на главную страницу
+    if (isOnSubPage) {
       window.location.href = '/';
       return;
     }
-    
-    // Иначе прокручиваем к секции home на главной странице
-    const element = document.getElementById('home');
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    document.getElementById('home')?.scrollIntoView({ behavior: "smooth" });
     setIsMenuOpen(false);
     setActiveDropdown(null);
   };
 
   const scrollToSection = (id: string) => {
-    // Если мы на странице donations, documents, payment-success или freedom/curses, возвращаемся на главную
-    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-    if (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname === '/freedom/curses') {
-      // Возвращаемся на главную страницу
+    if (isOnSubPage) {
       window.location.href = '/';
       return;
     }
-    
-    // Иначе прокручиваем к секции на главной странице
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setIsMenuOpen(false);
     setActiveDropdown(null);
   };
 
-  const navigateToCurses = () => {
-    window.history.pushState({}, '', '/freedom/curses');
+  const navigateToPage = (path: string) => {
+    window.history.pushState({}, '', path);
     window.dispatchEvent(new PopStateEvent('popstate'));
     setIsMenuOpen(false);
     setActiveDropdown(null);
@@ -113,34 +102,34 @@ export function Header() {
 
   const menuItems = {
     love: [
-      { label: "К Богу", onClick: () => scrollToSection("love-god") },
-      { label: "К себе", onClick: () => scrollToSection("love-self") },
-      { label: "К ближнему", onClick: () => scrollToSection("love-neighbor") },
+      { label: "К Богу", onClick: () => navigateToPage("/love/god") },
+      { label: "К себе", onClick: () => navigateToPage("/love/self") },
+      { label: "К ближнему", onClick: () => navigateToPage("/love/neighbor") },
     ],
     faith: [
-      { label: "В обетования", onClick: () => scrollToSection("faith-promises") },
-      { label: "В наследие", onClick: () => scrollToSection("faith-inheritance") },
-      { label: "В ожидания Бога", onClick: () => scrollToSection("faith-expectations") },
+      { label: "В обетования", onClick: () => navigateToPage("/faith/promises") },
+      { label: "В наследие", onClick: () => navigateToPage("/faith/inheritance") },
+      { label: "В ожидания Бога", onClick: () => navigateToPage("/faith/expectations") },
     ],
     covenant: [
-      { label: "Спасения", onClick: () => scrollToSection("covenant-salvation") },
-      { label: "Посвящения", onClick: () => scrollToSection("covenant-dedication") },
-      { label: "Даяния", onClick: () => scrollToSection("covenant-giving") },
+      { label: "Спасения", onClick: () => navigateToPage("/covenant/salvation") },
+      { label: "Посвящения", onClick: () => navigateToPage("/covenant/dedication") },
+      { label: "Даяния", onClick: () => navigateToPage("/covenant/giving") },
     ],
     freedom: [
-      { label: "От отверженности и страха", onClick: () => scrollToSection("freedom-rejection") },
-      { label: "От церковных травм", onClick: () => scrollToSection("freedom-church-trauma") },
-      { label: "От демонического угнетения", onClick: () => scrollToSection("freedom-demonic") },
-      { label: "От рабства греха", onClick: () => scrollToSection("freedom-sin") },
-      { label: "От проклятий", onClick: navigateToCurses },
+      { label: "От отверженности и страха", onClick: () => navigateToPage("/freedom/rejection") },
+      { label: "От церковных травм", onClick: () => navigateToPage("/freedom/church-trauma") },
+      { label: "От демонического угнетения", onClick: () => navigateToPage("/freedom/demonic") },
+      { label: "От рабства греха", onClick: () => navigateToPage("/freedom/sin") },
+      { label: "От проклятий", onClick: () => navigateToPage("/freedom/curses") },
     ],
   };
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-black/90 backdrop-blur-md shadow-lg border-b border-red-900/20 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+        <div className="flex justify-between items-center h-16 pt-2">
+          <div className="flex items-center shrink-0">
             <button
               onClick={navigateToHome}
               className="flex items-center hover:opacity-80 transition-opacity"
@@ -215,7 +204,6 @@ export function Header() {
               </button>
             </div>
           </nav>
-
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}

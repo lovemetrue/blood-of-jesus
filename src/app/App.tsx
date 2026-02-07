@@ -6,16 +6,25 @@ import { DocumentsPage } from "@/app/components/DocumentsPage";
 import { DonationPage } from "@/app/components/DonationPage";
 import { PaymentSuccess } from "@/app/components/PaymentSuccess";
 import { CursesPage } from "@/app/components/CursesPage";
+import { HeritagePage } from "@/app/components/HeritagePage";
+import { CovenantSalvationPage } from "@/app/components/CovenantSalvationPage";
+import { CovenantDedicationPage } from "@/app/components/CovenantDedicationPage";
+import { CovenantGivingPage } from "@/app/components/CovenantGivingPage";
+import { FaithPromisesPage } from "@/app/components/FaithPromisesPage";
+import { PlaceholderPage } from "@/app/components/PlaceholderPage";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
 import { SEOHead } from "@/app/components/SEOHead";
+import { isMenuContentRoute } from "@/app/routes";
 import { useEffect, useState } from "react";
+
+const goHome = () => window.history.pushState({}, "", "/");
 
 export default function App() {
   const [showDocuments, setShowDocuments] = useState(false);
   const [showDonations, setShowDonations] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
-  const [showCurses, setShowCurses] = useState(false);
+  const [contentPagePath, setContentPagePath] = useState<string | null>(null);
 
   useEffect(() => {
     // Нормализуем URL при загрузке (убираем trailing slash, кроме корня)
@@ -35,19 +44,19 @@ export default function App() {
       setShowDocuments(true);
       setShowDonations(false);
       setShowPaymentSuccess(false);
-      setShowCurses(false);
+      setContentPagePath(null);
     } else if (pathname === '/donations' || hash === '#donations') {
       setShowDonations(true);
       setShowDocuments(false);
       setShowPaymentSuccess(false);
-      setShowCurses(false);
+      setContentPagePath(null);
     } else if (pathname === '/payment/success' || search.includes('donation=success')) {
       setShowPaymentSuccess(true);
       setShowDocuments(false);
       setShowDonations(false);
-      setShowCurses(false);
-    } else if (pathname === '/freedom/curses') {
-      setShowCurses(true);
+      setContentPagePath(null);
+    } else if (isMenuContentRoute(pathname)) {
+      setContentPagePath(pathname);
       setShowDocuments(false);
       setShowDonations(false);
       setShowPaymentSuccess(false);
@@ -55,7 +64,7 @@ export default function App() {
       setShowDocuments(false);
       setShowDonations(false);
       setShowPaymentSuccess(false);
-      setShowCurses(false);
+      setContentPagePath(null);
     }
 
     // Русскоязычные сообщения валидации для обязательных полей
@@ -80,7 +89,7 @@ export default function App() {
 
   // Прокрутка к секции при переходе по ссылке с хешем (/#materials, /#contact)
   useEffect(() => {
-    if (showDocuments || showDonations || showPaymentSuccess || showCurses) return;
+    if (showDocuments || showDonations || showPaymentSuccess || contentPagePath) return;
     const hash = window.location.hash.slice(1);
     if (hash === 'materials' || hash === 'contact' || hash === 'home') {
       const timer = setTimeout(() => {
@@ -88,7 +97,7 @@ export default function App() {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [showDocuments, showDonations, showPaymentSuccess, showCurses]);
+  }, [showDocuments, showDonations, showPaymentSuccess, contentPagePath]);
 
   // Обработчик изменений истории браузера (назад/вперед)
   useEffect(() => {
@@ -102,19 +111,19 @@ export default function App() {
         setShowDocuments(true);
         setShowDonations(false);
         setShowPaymentSuccess(false);
-        setShowCurses(false);
+        setContentPagePath(null);
       } else if (pathname === '/donations' || hash === '#donations') {
         setShowDonations(true);
         setShowDocuments(false);
         setShowPaymentSuccess(false);
-        setShowCurses(false);
+        setContentPagePath(null);
       } else if (pathname === '/payment/success' || search.includes('donation=success')) {
         setShowPaymentSuccess(true);
         setShowDocuments(false);
         setShowDonations(false);
-        setShowCurses(false);
-      } else if (pathname === '/freedom/curses') {
-        setShowCurses(true);
+        setContentPagePath(null);
+      } else if (isMenuContentRoute(pathname)) {
+        setContentPagePath(pathname);
         setShowDocuments(false);
         setShowDonations(false);
         setShowPaymentSuccess(false);
@@ -122,7 +131,7 @@ export default function App() {
         setShowDocuments(false);
         setShowDonations(false);
         setShowPaymentSuccess(false);
-        setShowCurses(false);
+        setContentPagePath(null);
       }
     };
 
@@ -142,12 +151,11 @@ export default function App() {
         setShowDocuments(true);
         setShowDonations(false);
         setShowPaymentSuccess(false);
-        setShowCurses(false);
+        setContentPagePath(null);
         window.history.pushState({}, '', '/documents');
       }
     };
 
-    // Обработчик клика на ссылку пожертвований
     const handleDonationLink = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const link = target.closest('a[href="/donations"], button[data-donation-link]');
@@ -156,31 +164,34 @@ export default function App() {
         setShowDonations(true);
         setShowDocuments(false);
         setShowPaymentSuccess(false);
-        setShowCurses(false);
+        setContentPagePath(null);
         window.history.pushState({}, '', '/donations');
       }
     };
 
-    const handleCursesLink = (e: MouseEvent) => {
+    const handleMenuContentLink = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const link = target.closest('a[href="/freedom/curses"], button[data-curses-link]');
+      const link = target.closest('a[href^="/love/"], a[href^="/faith/"], a[href^="/covenant/"], a[href^="/freedom/"]');
       if (link) {
-        e.preventDefault();
-        setShowCurses(true);
-        setShowDocuments(false);
-        setShowDonations(false);
-        setShowPaymentSuccess(false);
-        window.history.pushState({}, '', '/freedom/curses');
+        const href = (link as HTMLAnchorElement).getAttribute('href');
+        if (href && isMenuContentRoute(href)) {
+          e.preventDefault();
+          setContentPagePath(href);
+          setShowDocuments(false);
+          setShowDonations(false);
+          setShowPaymentSuccess(false);
+          window.history.pushState({}, '', href);
+        }
       }
     };
 
     document.addEventListener('click', handleDocumentLink);
     document.addEventListener('click', handleDonationLink);
-    document.addEventListener('click', handleCursesLink);
+    document.addEventListener('click', handleMenuContentLink);
     return () => {
       document.removeEventListener('click', handleDocumentLink);
       document.removeEventListener('click', handleDonationLink);
-      document.removeEventListener('click', handleCursesLink);
+      document.removeEventListener('click', handleMenuContentLink);
     };
   }, []);
 
@@ -241,7 +252,48 @@ export default function App() {
     );
   }
 
-  if (showCurses) {
+  const renderContentPage = () => {
+    if (!contentPagePath) return null;
+    const onBack = () => {
+      setContentPagePath(null);
+      goHome();
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    };
+    switch (contentPagePath) {
+      case "/faith/inheritance":
+        return <HeritagePage onBack={onBack} />;
+      case "/covenant/salvation":
+        return <CovenantSalvationPage onBack={onBack} />;
+      case "/covenant/dedication":
+        return <CovenantDedicationPage onBack={onBack} />;
+      case "/covenant/giving":
+        return <CovenantGivingPage onBack={onBack} />;
+      case "/freedom/curses":
+        return <CursesPage onBack={onBack} />;
+      case "/love/god":
+        return <PlaceholderPage title="Любовь к Богу" onBack={onBack} />;
+      case "/love/self":
+        return <PlaceholderPage title="Любовь к себе" onBack={onBack} />;
+      case "/love/neighbor":
+        return <PlaceholderPage title="Любовь к ближнему" onBack={onBack} />;
+      case "/faith/promises":
+        return <FaithPromisesPage onBack={onBack} />;
+      case "/faith/expectations":
+        return <PlaceholderPage title="В ожидания Бога" onBack={onBack} />;
+      case "/freedom/rejection":
+        return <PlaceholderPage title="От отверженности и страха" onBack={onBack} />;
+      case "/freedom/church-trauma":
+        return <PlaceholderPage title="От церковных травм" onBack={onBack} />;
+      case "/freedom/demonic":
+        return <PlaceholderPage title="От демонического угнетения" onBack={onBack} />;
+      case "/freedom/sin":
+        return <PlaceholderPage title="От рабства греха" onBack={onBack} />;
+      default:
+        return null;
+    }
+  };
+
+  if (contentPagePath && renderContentPage()) {
     return (
       <>
         <SEOHead />
@@ -249,10 +301,7 @@ export default function App() {
           <FloatingCross />
           <div className="relative z-10">
             <Header />
-            <CursesPage onBack={() => {
-              setShowCurses(false);
-              window.history.pushState({}, '', '/');
-            }} />
+            {renderContentPage()}
             <Footer />
           </div>
         </div>
