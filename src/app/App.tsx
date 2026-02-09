@@ -11,6 +11,9 @@ import { CovenantSalvationPage } from "@/app/components/CovenantSalvationPage";
 import { CovenantDedicationPage } from "@/app/components/CovenantDedicationPage";
 import { CovenantGivingPage } from "@/app/components/CovenantGivingPage";
 import { FaithPromisesPage } from "@/app/components/FaithPromisesPage";
+import { LoveGodPage } from "@/app/components/LoveGodPage";
+import { LoveSelfPage } from "@/app/components/LoveSelfPage";
+import { LoveNeighborPage } from "@/app/components/LoveNeighborPage";
 import { PlaceholderPage } from "@/app/components/PlaceholderPage";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
@@ -271,11 +274,11 @@ export default function App() {
       case "/freedom/curses":
         return <CursesPage onBack={onBack} />;
       case "/love/god":
-        return <PlaceholderPage title="Любовь к Богу" onBack={onBack} />;
+        return <LoveGodPage onBack={onBack} />;
       case "/love/self":
-        return <PlaceholderPage title="Любовь к себе" onBack={onBack} />;
+        return <LoveSelfPage onBack={onBack} />;
       case "/love/neighbor":
-        return <PlaceholderPage title="Любовь к ближнему" onBack={onBack} />;
+        return <LoveNeighborPage onBack={onBack} />;
       case "/faith/promises":
         return <FaithPromisesPage onBack={onBack} />;
       case "/faith/expectations":

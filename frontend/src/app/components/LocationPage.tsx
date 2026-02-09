@@ -8,7 +8,7 @@ export function LocationPage({ onBack }: { onBack: () => void }) {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
       "name": "Служение освобождения и исцеления",
-      "description": "Служение духовного освобождения, изгнания демонов и исцеления души через веру и власть в Иисусе Христе",
+      "description": "Служение освобождения, изгнания демонов и исцеления души через веру и власть в Иисусе Христе",
       "url": "https://bloodofjesus.ru",
       "telephone": "+79944178986",
       "email": "jesusthehealer@yandex.ru",
