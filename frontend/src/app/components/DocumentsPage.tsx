@@ -4,13 +4,20 @@ import { useState, useEffect } from "react";
 export function DocumentsPage({ onBack }: { onBack: () => void }) {
   const [activeTab, setActiveTab] = useState<"requisites" | "agreement" | "location">("requisites");
   const [docViewerUrl, setDocViewerUrl] = useState<string>("");
+  const [viewerType, setViewerType] = useState<"office" | "google">("google");
 
   useEffect(() => {
     // Формируем URL для просмотра документа
     const docUrl = window.location.origin + '/oferta_773273875610.docx';
-    // Используем Microsoft Office Online Viewer
-    setDocViewerUrl(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(docUrl)}`);
-  }, []);
+    
+    if (viewerType === "google") {
+      // Используем Google Docs Viewer - лучше отображает документы
+      setDocViewerUrl(`https://docs.google.com/viewer?url=${encodeURIComponent(docUrl)}&embedded=true`);
+    } else {
+      // Используем Microsoft Office Online Viewer как альтернативу
+      setDocViewerUrl(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(docUrl)}`);
+    }
+  }, [viewerType]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden pt-16">
@@ -190,20 +197,30 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                 </h3>
                 <div className="bg-gray-800/50 rounded-lg border border-gray-700 overflow-hidden">
                   {docViewerUrl ? (
-                    <iframe
-                      src={docViewerUrl}
-                      className="w-full"
-                      style={{ height: '600px', minHeight: '600px' }}
-                      title="Просмотр договора оферты"
-                      allowFullScreen
-                    />
+                    <div className="relative w-full" style={{ height: '900px', minHeight: '900px' }}>
+                      <iframe
+                        src={docViewerUrl}
+                        className="w-full h-full absolute inset-0"
+                        style={{ border: 'none' }}
+                        title="Просмотр договора оферты"
+                        allowFullScreen
+                        scrolling="yes"
+                      />
+                    </div>
                   ) : (
-                    <div className="flex items-center justify-center h-[600px] text-gray-400">
+                    <div className="flex items-center justify-center h-[900px] text-gray-400">
                       Загрузка просмотрщика документов...
                     </div>
                   )}
                 </div>
-                <div className="mt-3 flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="mt-3 flex flex-col sm:flex-row gap-3 justify-center items-center">
+                  <button
+                    onClick={() => setViewerType(viewerType === "google" ? "office" : "google")}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Переключить просмотрщик ({viewerType === "google" ? "Office" : "Google"})</span>
+                  </button>
                   <a
                     href="/oferta_773273875610.docx"
                     target="_blank"
@@ -224,7 +241,7 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                   </a>
                 </div>
                 <p className="text-gray-400 text-xs mt-2 text-center">
-                  Если документ не отображается, используйте альтернативные варианты выше
+                  Если документ не отображается полностью, используйте альтернативные варианты выше или прокрутите документ внутри окна просмотра
                 </p>
               </div>
             </div>
