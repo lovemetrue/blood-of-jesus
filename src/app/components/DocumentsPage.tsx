@@ -93,29 +93,26 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                   Банковские реквизиты
                 </h2>
                 <div className="space-y-2 text-gray-300">
-                  <p><span className="text-gray-400">ИНН банка:</span> <span className="text-white">7707083893</span></p>
-                  <p><span className="text-gray-400">ОГРН:</span> <span className="text-white">1027700132195</span></p>
-                  <p><span className="text-gray-400">КПП:</span> <span className="text-white">301502001</span></p>
-                  <p><span className="text-gray-400">ОКПО:</span> <span className="text-white">09104505</span></p>
-                  <p className="mt-3"><span className="text-gray-400">Банк:</span> <span className="text-white">АСТРАХАНСКОЕ ОТДЕЛЕНИЕ N8625 ПАО СБЕРБАНК</span></p>
-                  <p><span className="text-gray-400">БИК:</span> <span className="text-white">041203602</span></p>
-                  <p><span className="text-gray-400">Корр. счет:</span> <span className="text-white">30101810500000000602</span></p>
-                  <p><span className="text-gray-400">Расчетный счет:</span> <span className="text-white">40817810205001506701</span></p>
-                  <p><span className="text-gray-400">SWIFT-код:</span> <span className="text-white">SABRRUMMSE1</span></p>
+                  <p><span className="text-gray-400">Банк-получатель:</span> <span className="text-white">АО "ТБанк"</span></p>
+                  <p><span className="text-gray-400">БИК:</span> <span className="text-white">044525974</span></p>
+                  <p><span className="text-gray-400">Корр. счет:</span> <span className="text-white">30101810145250000974</span></p>
+                  <p><span className="text-gray-400">Расчетный счет:</span> <span className="text-white">40817810800000861767</span></p>
+                  <p><span className="text-gray-400">ИНН банка:</span> <span className="text-white">7710140679</span></p>
+                  <p><span className="text-gray-400">КПП:</span> <span className="text-white">771301001</span></p>
                   <p className="mt-3"><span className="text-gray-400">Валюта:</span> <span className="text-white">Российский рубль (RUB)</span></p>
                 </div>
               </div>
 
-              {/* Адреса банка */}
+              {/* Назначение платежа */}
               <div>
-                <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4">
-                  Адреса банка
+                <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-[#DC143C]" />
+                  Назначение платежа
                 </h2>
-                <div className="space-y-2 text-gray-300">
-                  <p><span className="text-gray-400">Почтовый адрес банка:</span></p>
-                  <p className="text-white">414000, АСТРАХАНЬ, УЛ. КИРОВА, 41</p>
-                  <p className="mt-3"><span className="text-gray-400">Почтовый адрес доп.офиса:</span></p>
-                  <p className="text-white">414057, Г.АСТРАХАНЬ, СОВЕТСКИЙ Р-Н, ПР-Д ВОРОБЬЕВА, 12, ЛИТЕР А</p>
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+                  <p className="text-gray-300 text-sm sm:text-base break-words">
+                    Перевод средств по договору № 5012452081 Панов Дмитрий Александрович НДС не облагается
+                  </p>
                 </div>
               </div>
 
@@ -128,8 +125,8 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-[#DC143C] mt-1 flex-shrink-0" />
                     <div>
-                      <p className="text-gray-400 text-sm">Почтовый адрес доп.офиса банка:</p>
-                      <p className="text-gray-300">414057, Г.АСТРАХАНЬ, СОВЕТСКИЙ Р-Н, ПР-Д ВОРОБЬЕВА, 12, ЛИТЕР А</p>
+                      <p className="text-gray-400 text-sm">Адрес:</p>
+                      <p className="text-gray-300">г. Санкт-Петербург</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -301,6 +298,23 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                     <p><span className="text-gray-400">Адрес:</span> <span className="text-white">г. Санкт-Петербург</span></p>
                     <p><span className="text-gray-400">Телефон:</span> <a href="tel:+79944178986" className="text-white hover:text-[#DC143C] transition-colors">+7 994 417 89 86</a></p>
                     <p><span className="text-gray-400">Email:</span> <a href="mailto:jesusthehealer@yandex.ru" className="text-white hover:text-[#DC143C] transition-colors">jesusthehealer@yandex.ru</a></p>
+                  </div>
+                  <div className="mt-4 mb-3 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <h4 className="text-white font-semibold mb-2">Банковские реквизиты:</h4>
+                    <div className="space-y-1 text-sm text-gray-300">
+                      <p><span className="text-gray-400">Банк-получатель:</span> <span className="text-white">АО "ТБанк"</span></p>
+                      <p><span className="text-gray-400">БИК:</span> <span className="text-white">044525974</span></p>
+                      <p><span className="text-gray-400">Корр. счет:</span> <span className="text-white">30101810145250000974</span></p>
+                      <p><span className="text-gray-400">Расчетный счет:</span> <span className="text-white">40817810800000861767</span></p>
+                      <p><span className="text-gray-400">ИНН банка:</span> <span className="text-white">7710140679</span></p>
+                      <p><span className="text-gray-400">КПП:</span> <span className="text-white">771301001</span></p>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-gray-700">
+                      <p className="text-gray-400 text-xs mb-1">Назначение платежа:</p>
+                      <p className="text-gray-300 text-xs break-words">
+                        Перевод средств по договору № 5012452081 Панов Дмитрий Александрович НДС не облагается
+                      </p>
+                    </div>
                   </div>
                   <p className="mt-4">
                     По всем вопросам, связанным с использованием Сайта, предоставлением услуг и пожертвованиями, 
