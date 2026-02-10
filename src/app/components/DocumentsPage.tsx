@@ -2,7 +2,9 @@ import { Building2, FileText, Mail, Phone, MapPin, Scroll, ArrowLeft, Download }
 import { useState, useEffect } from "react";
 
 export function DocumentsPage({ onBack }: { onBack: () => void }) {
-  const [activeTab, setActiveTab] = useState<"requisites" | "agreement" | "location">("requisites");
+  // TODO: Раскомментировать "agreement" когда нужно будет показать договор оферты
+  // const [activeTab, setActiveTab] = useState<"requisites" | "agreement" | "location">("requisites");
+  const [activeTab, setActiveTab] = useState<"requisites" | "location">("requisites");
   const [docViewerUrl, setDocViewerUrl] = useState<string>("");
   const [viewerType, setViewerType] = useState<"office" | "google">("google");
 
@@ -52,7 +54,8 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#DC143C]" />
             )}
           </button>
-          <button
+          {/* TODO: Раскомментировать когда нужно будет показать договор оферты */}
+          {/* <button
             onClick={() => setActiveTab("agreement")}
             className={`px-6 py-3 text-base font-medium transition-all duration-200 relative ${
               activeTab === "agreement"
@@ -64,7 +67,7 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
             {activeTab === "agreement" && (
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#DC143C]" />
             )}
-          </button>
+          </button> */}
           <button
             onClick={() => setActiveTab("location")}
             className={`px-6 py-3 text-base font-medium transition-all duration-200 relative ${
@@ -93,11 +96,8 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                 <p className="text-gray-300 text-base sm:text-lg">
                   Панов Дмитрий Александрович
                 </p>
-                <p className="text-gray-400 text-sm sm:text-base mt-2">
-                  Самозанятый
-                </p>
                 <p className="text-gray-300 text-base sm:text-lg mt-3">
-                  <span className="text-gray-400">ИНН самозанятого:</span> <span className="text-white font-semibold">773273875610</span>
+                  <span className="text-gray-400">ИНН:</span> <span className="text-white font-semibold">773273875610</span>
                 </p>
               </div>
 
@@ -112,6 +112,7 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                   <p><span className="text-gray-400">БИК:</span> <span className="text-white">044525974</span></p>
                   <p><span className="text-gray-400">Корр. счет:</span> <span className="text-white">30101810145250000974</span></p>
                   <p><span className="text-gray-400">Расчетный счет:</span> <span className="text-white">40817810800000861767</span></p>
+                  <p><span className="text-gray-400">Номер карты:</span> <span className="text-white font-mono">2200 7010 1791 4679</span></p>
                   <p><span className="text-gray-400">ИНН банка:</span> <span className="text-white">7710140679</span></p>
                   <p><span className="text-gray-400">КПП:</span> <span className="text-white">771301001</span></p>
                   <p className="mt-3"><span className="text-gray-400">Валюта:</span> <span className="text-white">Российский рубль (RUB)</span></p>
@@ -168,7 +169,8 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
             </div>
           )}
 
-          {activeTab === "agreement" && (
+          {/* TODO: Раскомментировать когда нужно будет показать договор оферты */}
+          {/* {activeTab === "agreement" && (
             <div className="space-y-6 sm:space-y-8">
               <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-[#DC143C] rounded-full mb-4 sm:mb-6 shadow-lg shadow-red-900/50">
@@ -190,7 +192,6 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                 </a>
               </div>
 
-              {/* Просмотр документа */}
               <div className="mb-8">
                 <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 flex items-center gap-2">
                   <FileText className="w-5 h-5 text-[#DC143C]" />
@@ -246,7 +247,7 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                 </p>
               </div>
             </div>
-          )}
+          )} */}
 
           {activeTab === "location" && (
             <div className="space-y-6 sm:space-y-8">
