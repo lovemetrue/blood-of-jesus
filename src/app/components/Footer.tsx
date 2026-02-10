@@ -49,11 +49,12 @@ export function Footer() {
                   Материалы
                 </a>
               </li>
-              <li>
+              {/* TODO: Раскомментировать когда добавим пожертвования */}
+              {/* <li>
                 <a href="/donations" className="text-red-100 hover:text-white transition-colors text-sm">
                   Пожертвования
                 </a>
-              </li>
+              </li> */}
               <li>
                 <a href="/#contact" className="text-red-100 hover:text-white transition-colors text-sm">
                   Контакты

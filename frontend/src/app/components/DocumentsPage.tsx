@@ -152,8 +152,9 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                 </div>
               </div>
 
+              {/* TODO: Раскомментировать когда добавим пожертвования */}
               {/* Цели пожертвований */}
-              <div>
+              {/* <div>
                 <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4">
                   Цели сбора пожертвований
                 </h2>
@@ -163,7 +164,7 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                   <li>Поддержка нуждающихся и помощь в кризисных ситуациях</li>
                   <li>Поддержка служителей и развитие Тела Христа</li>
                 </ul>
-              </div>
+              </div> */}
             </div>
           )}
 

@@ -71,7 +71,9 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-  const isOnSubPage = pathname !== '/' && (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
+  // TODO: Раскомментировать когда добавим пожертвования
+  // const isOnSubPage = pathname !== '/' && (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
+  const isOnSubPage = pathname !== '/' && (pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
 
   const navigateToHome = () => {
     if (isOnSubPage) {
@@ -189,11 +191,12 @@ export function Header() {
             <div className="flex items-center gap-3 lg:gap-4 ml-4">
               <button
                 onClick={() => scrollToSection("contact")}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-[#DC143C]/20 rounded-lg transition-all duration-200"
+                className="px-4 py-2 text-sm font-medium bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors duration-200 shadow-lg shadow-red-900/30"
               >
                 Контакты
               </button>
-              <button
+              {/* TODO: Раскомментировать когда добавим пожертвования */}
+              {/* <button
                 onClick={() => {
                   window.location.href = '/donations';
                 }}
@@ -201,7 +204,7 @@ export function Header() {
                 className="px-4 py-2 text-sm font-medium bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors duration-200 shadow-lg shadow-red-900/30"
               >
                 Пожертвования
-              </button>
+              </button> */}
             </div>
           </nav>
           {/* Mobile Menu Button */}
@@ -384,11 +387,12 @@ export function Header() {
                 scrollToSection("contact");
                 setIsMenuOpen(false);
               }}
-              className="block w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+              className="block w-full text-left px-4 py-3 bg-[#DC143C]/20 text-white hover:bg-[#DC143C]/30 rounded-md transition-all duration-200 font-medium"
             >
               Контакты
             </button>
-            <button
+            {/* TODO: Раскомментировать когда добавим пожертвования */}
+            {/* <button
               onClick={() => {
                 window.location.href = '/donations';
               }}
@@ -396,7 +400,7 @@ export function Header() {
               className="block w-full text-left px-4 py-3 bg-[#DC143C]/20 text-white hover:bg-[#DC143C]/30 rounded-md transition-all duration-200 font-medium"
             >
               Пожертвования
-            </button>
+            </button> */}
           </nav>
         </div>
       </div>

@@ -3,7 +3,8 @@ import { Hero } from "@/app/components/Hero";
 import { MaterialsGrid } from "@/app/components/MaterialsGrid";
 import { ContactForm } from "@/app/components/ContactForm";
 import { DocumentsPage } from "@/app/components/DocumentsPage";
-import { DonationPage } from "@/app/components/DonationPage";
+// TODO: Раскомментировать когда добавим пожертвования
+// import { DonationPage } from "@/app/components/DonationPage";
 import { PaymentSuccess } from "@/app/components/PaymentSuccess";
 import { CursesPage } from "@/app/components/CursesPage";
 import { HeritagePage } from "@/app/components/HeritagePage";
@@ -25,7 +26,9 @@ const goHome = () => window.history.pushState({}, "", "/");
 
 export default function App() {
   const [showDocuments, setShowDocuments] = useState(false);
-  const [showDonations, setShowDonations] = useState(false);
+  // TODO: Раскомментировать когда добавим пожертвования
+  // const [showDonations, setShowDonations] = useState(false);
+  const showDonations = false; // Временно отключено
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [contentPagePath, setContentPagePath] = useState<string | null>(null);
 
@@ -45,27 +48,34 @@ export default function App() {
     
     if (pathname === '/documents' || hash === '#documents') {
       setShowDocuments(true);
-      setShowDonations(false);
+      // TODO: Раскомментировать когда добавим пожертвования
+      // setShowDonations(false);
       setShowPaymentSuccess(false);
       setContentPagePath(null);
     } else if (pathname === '/donations' || hash === '#donations') {
-      setShowDonations(true);
-      setShowDocuments(false);
-      setShowPaymentSuccess(false);
-      setContentPagePath(null);
+      // TODO: Раскомментировать когда добавим пожертвования
+      // setShowDonations(true);
+      // setShowDocuments(false);
+      // setShowPaymentSuccess(false);
+      // setContentPagePath(null);
+      // Временно перенаправляем на главную
+      window.location.href = '/';
     } else if (pathname === '/payment/success' || search.includes('donation=success')) {
       setShowPaymentSuccess(true);
       setShowDocuments(false);
-      setShowDonations(false);
+      // TODO: Раскомментировать когда добавим пожертвования
+      // setShowDonations(false);
       setContentPagePath(null);
     } else if (isMenuContentRoute(pathname)) {
       setContentPagePath(pathname);
       setShowDocuments(false);
-      setShowDonations(false);
+      // TODO: Раскомментировать когда добавим пожертвования
+      // setShowDonations(false);
       setShowPaymentSuccess(false);
     } else {
       setShowDocuments(false);
-      setShowDonations(false);
+      // TODO: Раскомментировать когда добавим пожертвования
+      // setShowDonations(false);
       setShowPaymentSuccess(false);
       setContentPagePath(null);
     }
@@ -112,27 +122,34 @@ export default function App() {
       
       if (pathname === '/documents' || hash === '#documents') {
         setShowDocuments(true);
-        setShowDonations(false);
+        // TODO: Раскомментировать когда добавим пожертвования
+        // setShowDonations(false);
         setShowPaymentSuccess(false);
         setContentPagePath(null);
       } else if (pathname === '/donations' || hash === '#donations') {
-        setShowDonations(true);
-        setShowDocuments(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
+        // TODO: Раскомментировать когда добавим пожертвования
+        // setShowDonations(true);
+        // setShowDocuments(false);
+        // setShowPaymentSuccess(false);
+        // setContentPagePath(null);
+        // Временно перенаправляем на главную
+        window.location.href = '/';
       } else if (pathname === '/payment/success' || search.includes('donation=success')) {
         setShowPaymentSuccess(true);
         setShowDocuments(false);
-        setShowDonations(false);
+        // TODO: Раскомментировать когда добавим пожертвования
+        // setShowDonations(false);
         setContentPagePath(null);
       } else if (isMenuContentRoute(pathname)) {
         setContentPagePath(pathname);
         setShowDocuments(false);
-        setShowDonations(false);
+        // TODO: Раскомментировать когда добавим пожертвования
+        // setShowDonations(false);
         setShowPaymentSuccess(false);
       } else {
         setShowDocuments(false);
-        setShowDonations(false);
+        // TODO: Раскомментировать когда добавим пожертвования
+        // setShowDonations(false);
         setShowPaymentSuccess(false);
         setContentPagePath(null);
       }
@@ -152,25 +169,27 @@ export default function App() {
       if (link) {
         e.preventDefault();
         setShowDocuments(true);
-        setShowDonations(false);
+        // TODO: Раскомментировать когда добавим пожертвования
+        // setShowDonations(false);
         setShowPaymentSuccess(false);
         setContentPagePath(null);
         window.history.pushState({}, '', '/documents');
       }
     };
 
-    const handleDonationLink = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href="/donations"], button[data-donation-link]');
-      if (link) {
-        e.preventDefault();
-        setShowDonations(true);
-        setShowDocuments(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
-        window.history.pushState({}, '', '/donations');
-      }
-    };
+    // TODO: Раскомментировать когда добавим пожертвования
+    // const handleDonationLink = (e: MouseEvent) => {
+    //   const target = e.target as HTMLElement;
+    //   const link = target.closest('a[href="/donations"], button[data-donation-link]');
+    //   if (link) {
+    //     e.preventDefault();
+    //     setShowDonations(true);
+    //     setShowDocuments(false);
+    //     setShowPaymentSuccess(false);
+    //     setContentPagePath(null);
+    //     window.history.pushState({}, '', '/donations');
+    //   }
+    // };
 
     const handleMenuContentLink = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -181,7 +200,8 @@ export default function App() {
           e.preventDefault();
           setContentPagePath(href);
           setShowDocuments(false);
-          setShowDonations(false);
+          // TODO: Раскомментировать когда добавим пожертвования
+          // setShowDonations(false);
           setShowPaymentSuccess(false);
           window.history.pushState({}, '', href);
         }
@@ -189,11 +209,13 @@ export default function App() {
     };
 
     document.addEventListener('click', handleDocumentLink);
-    document.addEventListener('click', handleDonationLink);
+    // TODO: Раскомментировать когда добавим пожертвования
+    // document.addEventListener('click', handleDonationLink);
     document.addEventListener('click', handleMenuContentLink);
     return () => {
       document.removeEventListener('click', handleDocumentLink);
-      document.removeEventListener('click', handleDonationLink);
+      // TODO: Раскомментировать когда добавим пожертвования
+      // document.removeEventListener('click', handleDonationLink);
       document.removeEventListener('click', handleMenuContentLink);
     };
   }, []);
@@ -217,24 +239,25 @@ export default function App() {
     );
   }
 
-  if (showDonations) {
-    return (
-      <>
-        <SEOHead />
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
-          <FloatingCross />
-          <div className="relative z-10">
-            <Header />
-            <DonationPage onBack={() => {
-              setShowDonations(false);
-              window.history.pushState({}, '', '/');
-            }} />
-            <Footer />
-          </div>
-        </div>
-      </>
-    );
-  }
+  // TODO: Раскомментировать когда добавим пожертвования
+  // if (showDonations) {
+  //   return (
+  //     <>
+  //       <SEOHead />
+  //       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+  //         <FloatingCross />
+  //         <div className="relative z-10">
+  //           <Header />
+  //           <DonationPage onBack={() => {
+  //             setShowDonations(false);
+  //             window.history.pushState({}, '', '/');
+  //           }} />
+  //           <Footer />
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // }
 
   if (showDocuments) {
     return (
