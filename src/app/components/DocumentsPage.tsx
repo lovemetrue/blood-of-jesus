@@ -1,8 +1,16 @@
-import { Building2, FileText, Mail, Phone, MapPin, Scroll, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { Building2, FileText, Mail, Phone, MapPin, Scroll, ArrowLeft, Download } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function DocumentsPage({ onBack }: { onBack: () => void }) {
   const [activeTab, setActiveTab] = useState<"requisites" | "agreement" | "location">("requisites");
+  const [docViewerUrl, setDocViewerUrl] = useState<string>("");
+
+  useEffect(() => {
+    // Формируем URL для просмотра документа
+    const docUrl = window.location.origin + '/oferta_773273875610.docx';
+    // Используем Microsoft Office Online Viewer
+    setDocViewerUrl(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(docUrl)}`);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden pt-16">
@@ -174,8 +182,62 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
                   Пользовательское соглашение
                 </h2>
-                <p className="text-base sm:text-lg text-gray-400">
+                <p className="text-base sm:text-lg text-gray-400 mb-4">
                   Условия использования сайта и предоставления услуг
+                </p>
+                <a
+                  href="/oferta_773273875610.docx"
+                  download="Договор_оферты_Панов_Дмитрий_Александрович.docx"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#DC143C] hover:bg-[#B22222] text-white font-medium rounded-lg transition-colors duration-200 shadow-lg shadow-red-900/30"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>Скачать договор оферты (DOCX)</span>
+                </a>
+              </div>
+
+              {/* Просмотр документа */}
+              <div className="mb-8">
+                <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-[#DC143C]" />
+                  Просмотр документа
+                </h3>
+                <div className="bg-gray-800/50 rounded-lg border border-gray-700 overflow-hidden">
+                  {docViewerUrl ? (
+                    <iframe
+                      src={docViewerUrl}
+                      className="w-full"
+                      style={{ height: '600px', minHeight: '600px' }}
+                      title="Просмотр договора оферты"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-[600px] text-gray-400">
+                      Загрузка просмотрщика документов...
+                    </div>
+                  )}
+                </div>
+                <div className="mt-3 flex flex-col sm:flex-row gap-3 justify-center">
+                  <a
+                    href="/oferta_773273875610.docx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Открыть в новой вкладке</span>
+                  </a>
+                  <a
+                    href={`https://docs.google.com/viewer?url=${encodeURIComponent(window.location.origin + '/oferta_773273875610.docx')}&embedded=true`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Открыть через Google Docs</span>
+                  </a>
+                </div>
+                <p className="text-gray-400 text-xs mt-2 text-center">
+                  Если документ не отображается, используйте альтернативные варианты выше
                 </p>
               </div>
 
