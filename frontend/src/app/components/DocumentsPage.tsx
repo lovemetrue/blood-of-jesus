@@ -340,26 +340,57 @@ export function DocumentsPage({ onBack }: { onBack: () => void }) {
 
                 <div>
                   <h3 className="text-lg sm:text-xl font-semibold text-white mb-3">8. Реквизиты Исполнителя</h3>
-                  <div className="space-y-2 mb-3">
-                    <p><span className="text-gray-400">Исполнитель:</span> <span className="text-white">Панов Дмитрий Александрович</span></p>
-                    <p><span className="text-gray-400">Статус:</span> <span className="text-white">Самозанятый</span></p>
-                    <p><span className="text-gray-400">ИНН самозанятого:</span> <span className="text-white font-semibold">773273875610</span></p>
-                    <p><span className="text-gray-400">Адрес:</span> <span className="text-white">г. Санкт-Петербург</span></p>
-                    <p><span className="text-gray-400">Телефон:</span> <a href="tel:+79944178986" className="text-white hover:text-[#DC143C] transition-colors">+7 994 417 89 86</a></p>
-                    <p><span className="text-gray-400">Email:</span> <a href="mailto:jesusthehealer@yandex.ru" className="text-white hover:text-[#DC143C] transition-colors">jesusthehealer@yandex.ru</a></p>
-                  </div>
-                  <div className="mt-4 mb-3 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
-                    <h4 className="text-white font-semibold mb-2">Банковские реквизиты:</h4>
+                  
+                  {/* Получатель платежей */}
+                  <div className="mb-4">
+                    <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-[#DC143C]" />
+                      Получатель платежей
+                    </h4>
                     <div className="space-y-1 text-sm text-gray-300">
+                      <p><span className="text-gray-400">Получатель:</span> <span className="text-white">Панов Дмитрий Александрович</span></p>
+                      <p><span className="text-gray-400">Статус:</span> <span className="text-white">Самозанятый</span></p>
+                      <p><span className="text-gray-400">ИНН самозанятого:</span> <span className="text-white font-semibold">773273875610</span></p>
+                    </div>
+                  </div>
+
+                  {/* Банковские реквизиты */}
+                  <div className="mb-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-[#DC143C]" />
+                      Банковские реквизиты
+                    </h4>
+                    <div className="space-y-2 text-sm text-gray-300">
                       <p><span className="text-gray-400">Банк-получатель:</span> <span className="text-white">АО "ТБанк"</span></p>
                       <p><span className="text-gray-400">БИК:</span> <span className="text-white">044525974</span></p>
                       <p><span className="text-gray-400">Корр. счет:</span> <span className="text-white">30101810145250000974</span></p>
                       <p><span className="text-gray-400">Расчетный счет:</span> <span className="text-white">40817810800000861767</span></p>
                       <p><span className="text-gray-400">ИНН банка:</span> <span className="text-white">7710140679</span></p>
                       <p><span className="text-gray-400">КПП:</span> <span className="text-white">771301001</span></p>
+                      <p className="mt-2"><span className="text-gray-400">Валюта:</span> <span className="text-white">Российский рубль (RUB)</span></p>
                     </div>
                   </div>
-                  <p className="mt-4">
+
+                  {/* Контактная информация */}
+                  <div className="mb-4">
+                    <h4 className="text-white font-semibold mb-2">Контактная информация</h4>
+                    <div className="space-y-2 text-sm text-gray-300">
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-[#DC143C] mt-1 flex-shrink-0" />
+                        <p><span className="text-gray-400">Адрес:</span> <span className="text-white">г. Санкт-Петербург</span></p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-[#DC143C] flex-shrink-0" />
+                        <p><span className="text-gray-400">Телефон:</span> <a href="tel:+79944178986" className="text-white hover:text-[#DC143C] transition-colors">+7 994 417 89 86</a></p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-[#DC143C] flex-shrink-0" />
+                        <p><span className="text-gray-400">Email:</span> <a href="mailto:jesusthehealer@yandex.ru" className="text-white hover:text-[#DC143C] transition-colors">jesusthehealer@yandex.ru</a></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="mt-4 text-sm text-gray-300">
                     По всем вопросам, связанным с использованием Сайта, предоставлением услуг и пожертвованиями, 
                     вы можете обращаться по указанным выше контактам или использовать контактную информацию, 
                     размещенную в разделе "Реквизиты".
