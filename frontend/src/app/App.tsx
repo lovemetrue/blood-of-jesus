@@ -15,6 +15,7 @@ import { FaithPromisesPage } from "@/app/components/FaithPromisesPage";
 import { LoveGodPage } from "@/app/components/LoveGodPage";
 import { LoveSelfPage } from "@/app/components/LoveSelfPage";
 import { LoveNeighborPage } from "@/app/components/LoveNeighborPage";
+import { FreedomDemonicPage } from "@/app/components/FreedomDemonicPage";
 import { PlaceholderPage } from "@/app/components/PlaceholderPage";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
@@ -311,7 +312,7 @@ export default function App() {
       case "/freedom/church-trauma":
         return <PlaceholderPage title="От церковных травм" onBack={onBack} />;
       case "/freedom/demonic":
-        return <PlaceholderPage title="От демонического угнетения" onBack={onBack} />;
+        return <FreedomDemonicPage onBack={onBack} />;
       case "/freedom/sin":
         return <PlaceholderPage title="От рабства греха" onBack={onBack} />;
       default:
