@@ -81,6 +81,10 @@ export function SEOHead({
     // Update document title
     document.title = title;
 
+    // Canonical URL and og:url (origin + normalized pathname, no query/hash)
+    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+    const absoluteUrl = `${window.location.origin}${pathname}`;
+
     // Update or create meta tags
     const metaTags = [
       { name: 'description', content: description },
@@ -88,6 +92,7 @@ export function SEOHead({
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
       { property: 'og:image', content: ogImage },
+      { property: 'og:url', content: absoluteUrl },
       { property: 'og:type', content: 'website' },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: title },
@@ -108,6 +113,15 @@ export function SEOHead({
       
       tag.setAttribute('content', content);
     });
+
+    // Canonical link
+    let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.setAttribute('href', absoluteUrl);
 
     // Метатег referrer для правильного определения источника переходов
     let referrerTag = document.querySelector('meta[name="referrer"]');

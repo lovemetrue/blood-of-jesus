@@ -20,6 +20,7 @@ import { PlaceholderPage } from "@/app/components/PlaceholderPage";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
 import { SEOHead } from "@/app/components/SEOHead";
+import { DEFAULT_KEYWORDS, getSEOForPath } from "@/app/seo";
 import { isMenuContentRoute } from "@/app/routes";
 import { useEffect, useState } from "react";
 
@@ -222,9 +223,10 @@ export default function App() {
   }, []);
 
   if (showPaymentSuccess) {
+    const seo = getSEOForPath("/payment/success");
     return (
       <>
-        <SEOHead />
+        <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
           <FloatingCross />
           <div className="relative z-10">
@@ -261,9 +263,10 @@ export default function App() {
   // }
 
   if (showDocuments) {
+    const seo = getSEOForPath("/documents");
     return (
       <>
-        <SEOHead />
+        <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
           <FloatingCross />
           <div className="relative z-10">
@@ -321,9 +324,10 @@ export default function App() {
   };
 
   if (contentPagePath && renderContentPage()) {
+    const seo = getSEOForPath(contentPagePath);
     return (
       <>
-        <SEOHead />
+        <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
           <FloatingCross />
           <div className="relative z-10">
@@ -336,9 +340,10 @@ export default function App() {
     );
   }
 
+  const homeSeo = getSEOForPath("/");
   return (
     <>
-      <SEOHead />
+      <SEOHead title={homeSeo.title} description={homeSeo.description} keywords={DEFAULT_KEYWORDS} />
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
         <FloatingCross />
         <div className="relative z-10">

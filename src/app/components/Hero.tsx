@@ -11,11 +11,11 @@ export function Hero() {
         {/* Hero with Image */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center mb-12 sm:mb-16">
           <div className="order-2 lg:order-1 space-y-4 sm:space-y-5 lg:space-y-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-white leading-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-white leading-tight">
               На другой день видит Иоанн идущего к нему Иисуса и говорит:
               <br />
               вот Агнец Божий, Который берет на Себя грех мира
-            </h2>
+            </h1>
             <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
               Служение освобождения, изгнания демонов
               и исцеления через любовь силу Святого Духа
