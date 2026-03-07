@@ -1,6 +1,8 @@
 import { Send, Mail, User, MessageSquare, Phone } from 'lucide-react';
 import { useState } from 'react';
 
+const API_CONTACT_URL = '/api/contact/';
+
 export function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
@@ -8,11 +10,36 @@ export function ContactForm() {
     phone: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitError, setSubmitError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Спасибо, ${formData.name}! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.`);
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setSubmitStatus('idle');
+    setSubmitError('');
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(API_CONTACT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg = data.errors ? Object.values(data.errors).flat().join(' ') : data.error || 'Не удалось отправить сообщение.';
+        setSubmitError(msg);
+        setSubmitStatus('error');
+        return;
+      }
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch {
+      setSubmitError('Ошибка сети. Попробуйте позже или напишите на jesusthehealer@yandex.ru');
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -109,12 +136,21 @@ export function ContactForm() {
               </div>
             </div>
 
+            {submitStatus === 'success' && (
+              <p className="text-green-400 text-sm sm:text-base">
+                Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.
+              </p>
+            )}
+            {submitStatus === 'error' && submitError && (
+              <p className="text-red-400 text-sm sm:text-base">{submitError}</p>
+            )}
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors shadow-lg hover:shadow-xl shadow-red-900/30"
+              disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors shadow-lg hover:shadow-xl shadow-red-900/30 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-              Отправить сообщение
+              {isSubmitting ? 'Отправка...' : 'Отправить сообщение'}
             </button>
           </form>
         </div>
