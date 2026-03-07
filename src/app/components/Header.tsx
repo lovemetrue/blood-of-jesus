@@ -73,7 +73,7 @@ export function Header() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
   // TODO: Раскомментировать когда добавим пожертвования
   // const isOnSubPage = pathname !== '/' && (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
-  const isOnSubPage = pathname !== '/' && (pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
+  const isOnSubPage = pathname !== '/' && (pathname === '/contacts' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
 
   const navigateToHome = () => {
     if (isOnSubPage) {
@@ -132,8 +132,16 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 pt-2">
           <div className="flex items-center shrink-0">
-            <button
-              onClick={navigateToHome}
+            <a
+              href="/"
+              onClick={(e) => {
+                if (!isOnSubPage) {
+                  e.preventDefault();
+                  document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' });
+                  setIsMenuOpen(false);
+                  setActiveDropdown(null);
+                }
+              }}
               className="flex items-center hover:opacity-80 transition-opacity"
               aria-label="На главную"
             >
@@ -142,7 +150,7 @@ export function Header() {
                 alt="Кровь и вода"
                 className="h-12 w-auto"
               />
-            </button>
+            </a>
           </div>
 
           {/* Desktop Navigation */}

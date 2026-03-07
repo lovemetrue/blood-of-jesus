@@ -225,13 +225,33 @@ export default function App() {
       }
     };
 
+    const handleHomeLink = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href="/"], a[href="/#materials"], a[href="/#about"], a[href="/#home"]');
+      if (link) {
+        e.preventDefault();
+        setShowDocuments(false);
+        setShowContacts(false);
+        setShowPaymentSuccess(false);
+        setContentPagePath(null);
+        const href = (link as HTMLAnchorElement).getAttribute('href') || '/';
+        window.history.pushState({}, '', href);
+        const hash = href.includes('#') ? href.split('#')[1] : '';
+        if (hash && (hash === 'materials' || hash === 'about' || hash === 'home')) {
+          setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' }), 100);
+        }
+      }
+    };
+
     document.addEventListener('click', handleDocumentLink);
     document.addEventListener('click', handleContactsLink);
     document.addEventListener('click', handleMenuContentLink);
+    document.addEventListener('click', handleHomeLink);
     return () => {
       document.removeEventListener('click', handleDocumentLink);
       document.removeEventListener('click', handleContactsLink);
       document.removeEventListener('click', handleMenuContentLink);
+      document.removeEventListener('click', handleHomeLink);
     };
   }, []);
 
