@@ -1,11 +1,35 @@
+import { motion } from "motion/react";
+import { fadeSlideUp, viewportOnce } from "@/app/motionVariants";
+
 export function AboutUsSection() {
   return (
-    <section id="about" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent" aria-labelledby="about-heading">
+    <motion.section
+      id="about"
+      className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent"
+      aria-labelledby="about-heading"
+      initial={fadeSlideUp.initial}
+      whileInView={fadeSlideUp.inView}
+      viewport={viewportOnce}
+      transition={fadeSlideUp.transition}
+    >
       <div className="max-w-4xl mx-auto">
-        <h2 id="about-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-8 sm:mb-10 px-2 text-center">
+        <motion.h2
+          id="about-heading"
+          initial={fadeSlideUp.initial}
+          whileInView={fadeSlideUp.inView}
+          viewport={viewportOnce}
+          transition={fadeSlideUp.transition}
+          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-8 sm:mb-10 px-2 text-center"
+        >
           О нас
-        </h2>
-        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800 space-y-6 text-gray-300 leading-relaxed">
+        </motion.h2>
+        <motion.div
+          initial={fadeSlideUp.initial}
+          whileInView={fadeSlideUp.inView}
+          viewport={viewportOnce}
+          transition={fadeSlideUp.transition}
+          className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800 space-y-6 text-gray-300 leading-relaxed"
+        >
           <p>
             Мы с супругой являемся пасторами домашней церкви, а также основателями команды жизни от JGLM — John G. Lake Ministries.
             На протяжении нескольких лет мы искали Божье видение для себя и тела Христа в освобождении, исцелении и практике нашей власти во Христе.
@@ -27,8 +51,8 @@ export function AboutUsSection() {
             <li>Воскрешать мёртвых</li>
             <li>Крестить (погружать в) водой и Духом</li>
           </ul>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

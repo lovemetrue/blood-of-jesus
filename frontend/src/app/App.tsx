@@ -2,7 +2,6 @@ import { Header } from "@/app/components/Header";
 import { Hero } from "@/app/components/Hero";
 import { MaterialsGrid } from "@/app/components/MaterialsGrid";
 import { AboutUsSection } from "@/app/components/AboutUsSection";
-import { ContactForm } from "@/app/components/ContactForm";
 import { ContactsPage } from "@/app/components/ContactsPage";
 import { DocumentsPage } from "@/app/components/DocumentsPage";
 // TODO: Раскомментировать когда добавим пожертвования
@@ -24,6 +23,8 @@ import { FloatingCross } from "@/app/components/FloatingCross";
 import { SEOHead } from "@/app/components/SEOHead";
 import { DEFAULT_KEYWORDS, getSEOForPath } from "@/app/seo";
 import { isMenuContentRoute } from "@/app/routes";
+import { pageTransition } from "@/app/motionVariants";
+import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 
 const goHome = () => window.history.pushState({}, "", "/");
@@ -236,87 +237,24 @@ export default function App() {
     };
   }, []);
 
-  if (showPaymentSuccess) {
-    const seo = getSEOForPath("/payment/success");
-    return (
-      <>
-        <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
-          <FloatingCross />
-          <div className="relative z-10">
-            <Header />
-            <PaymentSuccess onBack={() => {
-              setShowPaymentSuccess(false);
-              window.history.pushState({}, '', '/');
-            }} />
-            <Footer />
-          </div>
-        </div>
-      </>
-    );
-  }
+  const pageKey = showPaymentSuccess
+    ? "payment"
+    : showDocuments
+      ? "documents"
+      : showContacts
+        ? "contacts"
+        : contentPagePath ?? "home";
 
-  // TODO: Раскомментировать когда добавим пожертвования
-  // if (showDonations) {
-  //   return (
-  //     <>
-  //       <SEOHead />
-  //       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
-  //         <FloatingCross />
-  //         <div className="relative z-10">
-  //           <Header />
-  //           <DonationPage onBack={() => {
-  //             setShowDonations(false);
-  //             window.history.pushState({}, '', '/');
-  //           }} />
-  //           <Footer />
-  //         </div>
-  //       </div>
-  //     </>
-  //   );
-  // }
-
-  if (showDocuments) {
-    const seo = getSEOForPath("/documents");
-    return (
-      <>
-        <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
-          <FloatingCross />
-          <div className="relative z-10">
-            <Header />
-            <DocumentsPage onBack={() => {
-              setShowDocuments(false);
-              goHome();
-              window.dispatchEvent(new PopStateEvent("popstate"));
-            }} />
-            <Footer />
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  if (showContacts) {
-    const seo = getSEOForPath("/contacts");
-    return (
-      <>
-        <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
-          <FloatingCross />
-          <div className="relative z-10">
-            <Header />
-            <ContactsPage onBack={() => {
-              setShowContacts(false);
-              goHome();
-              window.dispatchEvent(new PopStateEvent("popstate"));
-            }} />
-            <Footer />
-          </div>
-        </div>
-      </>
-    );
-  }
+  const seo =
+    showPaymentSuccess
+      ? getSEOForPath("/payment/success")
+      : showDocuments
+        ? getSEOForPath("/documents")
+        : showContacts
+          ? getSEOForPath("/contacts")
+          : contentPagePath
+            ? getSEOForPath(contentPagePath)
+            : getSEOForPath("/");
 
   const renderContentPage = () => {
     if (!contentPagePath) return null;
@@ -359,36 +297,57 @@ export default function App() {
     }
   };
 
-  if (contentPagePath && renderContentPage()) {
-    const seo = getSEOForPath(contentPagePath);
-    return (
-      <>
-        <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
-          <FloatingCross />
-          <div className="relative z-10">
-            <Header />
-            {renderContentPage()}
-            <Footer />
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  const homeSeo = getSEOForPath("/");
   return (
     <>
-      <SEOHead title={homeSeo.title} description={homeSeo.description} keywords={DEFAULT_KEYWORDS} />
+      <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
         <FloatingCross />
         <div className="relative z-10">
           <Header />
-          <main>
-            <Hero />
-            <MaterialsGrid />
-            <AboutUsSection />
-          </main>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pageKey}
+              initial={pageTransition.initial}
+              animate={pageTransition.animate}
+              exit={pageTransition.exit}
+              transition={pageTransition.transition}
+            >
+              {showPaymentSuccess && (
+                <PaymentSuccess
+                  onBack={() => {
+                    setShowPaymentSuccess(false);
+                    window.history.pushState({}, "", "/");
+                  }}
+                />
+              )}
+              {!showPaymentSuccess && showDocuments && (
+                <DocumentsPage
+                  onBack={() => {
+                    setShowDocuments(false);
+                    goHome();
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+                  }}
+                />
+              )}
+              {!showPaymentSuccess && !showDocuments && showContacts && (
+                <ContactsPage
+                  onBack={() => {
+                    setShowContacts(false);
+                    goHome();
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+                  }}
+                />
+              )}
+              {!showPaymentSuccess && !showDocuments && !showContacts && contentPagePath && renderContentPage()}
+              {!showPaymentSuccess && !showDocuments && !showContacts && !contentPagePath && (
+                <main>
+                  <Hero />
+                  <MaterialsGrid />
+                  <AboutUsSection />
+                </main>
+              )}
+            </motion.div>
+          </AnimatePresence>
           <Footer />
         </div>
       </div>

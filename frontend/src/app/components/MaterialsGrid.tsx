@@ -1,4 +1,6 @@
 import { Download, Book, FileCheck } from 'lucide-react';
+import { motion } from 'motion/react';
+import { fadeSlideUp, viewportOnce, hoverScale, staggerContainer, staggerItem } from '@/app/motionVariants';
 
 const materials = [
   {
@@ -43,23 +45,54 @@ export function MaterialsGrid() {
   };
 
   return (
-    <section id="materials" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent" aria-labelledby="materials-heading">
+    <motion.section
+      id="materials"
+      className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent"
+      aria-labelledby="materials-heading"
+      initial={fadeSlideUp.initial}
+      whileInView={fadeSlideUp.inView}
+      viewport={viewportOnce}
+      transition={fadeSlideUp.transition}
+    >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10 sm:mb-12 lg:mb-16">
-          <h2 id="materials-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 px-2">
+          <motion.h2
+            id="materials-heading"
+            initial={fadeSlideUp.initial}
+            whileInView={fadeSlideUp.inView}
+            viewport={viewportOnce}
+            transition={fadeSlideUp.transition}
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 px-2"
+          >
             Материалы для обучения
-          </h2>
-          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto px-2">
+          </motion.h2>
+          <motion.p
+            initial={fadeSlideUp.initial}
+            whileInView={fadeSlideUp.inView}
+            viewport={viewportOnce}
+            transition={fadeSlideUp.transition}
+            className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto px-2"
+          >
             Бесплатные ресурсы для вашего духовного роста и освобождения
-          </p>
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto"
+          variants={staggerContainer}
+          initial="initial"
+          whileInView="inView"
+          viewport={{ once: true, amount: 0.1 }}
+        >
           {materials.map((material) => {
             const Icon = material.icon;
             return (
-              <article
+              <motion.article
                 key={material.id}
+                variants={staggerItem}
+                transition={{ duration: 0.4 }}
+                whileHover={hoverScale.whileHover}
+                whileTap={hoverScale.whileTap}
                 className="bg-gray-900/50 backdrop-blur-sm border-2 border-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:border-[#DC143C] hover:shadow-xl hover:shadow-red-900/20 transition-all duration-300 group flex flex-col h-full"
               >
                 <div className="flex items-start justify-between mb-3 sm:mb-4">
@@ -86,11 +119,11 @@ export function MaterialsGrid() {
                   <Download className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                   Скачать
                 </button>
-              </article>
+              </motion.article>
             );
           })}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

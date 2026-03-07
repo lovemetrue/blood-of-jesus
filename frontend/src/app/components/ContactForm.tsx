@@ -1,5 +1,7 @@
 import { Send, Mail, User, MessageSquare, Phone } from 'lucide-react';
 import { useState } from 'react';
+import { motion } from 'motion/react';
+import { fadeSlideUp, viewportOnce, hoverScaleCrimson } from '@/app/motionVariants';
 
 const API_CONTACT_URL = '/api/contact/';
 
@@ -43,18 +45,46 @@ export function ContactForm() {
   };
 
   return (
-    <section id="contact" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent" aria-labelledby="contact-heading">
+    <motion.section
+      id="contact"
+      className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent"
+      aria-labelledby="contact-heading"
+      initial={fadeSlideUp.initial}
+      whileInView={fadeSlideUp.inView}
+      viewport={viewportOnce}
+      transition={fadeSlideUp.transition}
+    >
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
-          <h2 id="contact-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 px-2">
+          <motion.h2
+            id="contact-heading"
+            initial={fadeSlideUp.initial}
+            whileInView={fadeSlideUp.inView}
+            viewport={viewportOnce}
+            transition={fadeSlideUp.transition}
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 px-2"
+          >
             Свяжитесь с нами
-          </h2>
-          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto px-2">
+          </motion.h2>
+          <motion.p
+            initial={fadeSlideUp.initial}
+            whileInView={fadeSlideUp.inView}
+            viewport={viewportOnce}
+            transition={fadeSlideUp.transition}
+            className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto px-2"
+          >
             Мы готовы помочь вам на пути к духовной свободе. Напишите нам, и мы обязательно ответим
-          </p>
+          </motion.p>
         </div>
 
-        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800">
+        <motion.div
+          className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800"
+          initial={fadeSlideUp.initial}
+          whileInView={fadeSlideUp.inView}
+          viewport={viewportOnce}
+          whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.15)" }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6" aria-label="Форма обратной связи">
             <div>
               <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">
@@ -144,17 +174,20 @@ export function ContactForm() {
             {submitStatus === 'error' && submitError && (
               <p className="text-red-400 text-sm sm:text-base">{submitError}</p>
             )}
-            <button
+            <motion.button
               type="submit"
               disabled={isSubmitting}
+              whileHover={isSubmitting ? undefined : hoverScaleCrimson.whileHover}
+              whileTap={isSubmitting ? undefined : hoverScaleCrimson.whileTap}
+              transition={hoverScaleCrimson.transition}
               className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors shadow-lg hover:shadow-xl shadow-red-900/30 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <Send className="w-4 h-4 sm:w-5 sm:h-5" />
               {isSubmitting ? 'Отправка...' : 'Отправить сообщение'}
-            </button>
+            </motion.button>
           </form>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
