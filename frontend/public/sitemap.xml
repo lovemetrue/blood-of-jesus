@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://bloodofjesus.ru/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://bloodofjesus.ru/documents</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://bloodofjesus.ru/contacts</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bloodofjesus.ru/payment/success</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://bloodofjesus.ru/love/god</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://bloodofjesus.ru/love/self</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>

@@ -189,12 +189,12 @@ export function Header() {
 
             {/* Desktop Action Buttons */}
             <div className="flex items-center gap-3 lg:gap-4 ml-4">
-              <button
-                onClick={() => scrollToSection("contact")}
+              <a
+                href="/contacts"
                 className="px-4 py-2 text-sm font-medium bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors duration-200 shadow-lg shadow-red-900/30"
               >
                 Контакты
-              </button>
+              </a>
               {/* TODO: Раскомментировать когда добавим пожертвования */}
               {/* <button
                 onClick={() => {
@@ -382,15 +382,13 @@ export function Header() {
             </div>
 
             {/* Контакты и Пожертвования в мобильном меню */}
-            <button
-              onClick={() => {
-                scrollToSection("contact");
-                setIsMenuOpen(false);
-              }}
+            <a
+              href="/contacts"
+              onClick={() => setIsMenuOpen(false)}
               className="block w-full text-left px-4 py-3 bg-[#DC143C]/20 text-white hover:bg-[#DC143C]/30 rounded-md transition-all duration-200 font-medium"
             >
               Контакты
-            </button>
+            </a>
             {/* TODO: Раскомментировать когда добавим пожертвования */}
             {/* <button
               onClick={() => {

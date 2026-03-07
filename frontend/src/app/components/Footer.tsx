@@ -56,7 +56,7 @@ export function Footer() {
                 </a>
               </li> */}
               <li>
-                <a href="/#contact" className="text-red-100 hover:text-white transition-colors text-sm">
+                <a href="/contacts" className="text-red-100 hover:text-white transition-colors text-sm">
                   Контакты
                 </a>
               </li>
