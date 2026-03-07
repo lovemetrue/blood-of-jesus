@@ -1,5 +1,6 @@
 import json
 import logging
+import threading
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -86,10 +87,19 @@ def contact_submit(request):
             'error': 'Не удалось сохранить сообщение. Попробуйте позже или напишите на jesusthehealer@yandex.ru',
         }, status=500)
 
-    try:
-        _send_contact_notifications(contact)
-    except Exception as e:
-        logger.exception('Contact notifications failed: %s', e)
+    # Отправка писем в фоне — ответ пользователю не ждёт SMTP (избегаем зависания на сервере)
+    contact_pk = contact.pk
+
+    def send_notifications_async():
+        from .models import ContactMessage
+        try:
+            contact_obj = ContactMessage.objects.get(pk=contact_pk)
+            _send_contact_notifications(contact_obj)
+        except Exception as e:
+            logger.exception('Contact notifications failed: %s', e)
+
+    thread = threading.Thread(target=send_notifications_async, daemon=True)
+    thread.start()
 
     return JsonResponse({'success': True, 'message': 'Спасибо! Ваше сообщение отправлено.'})
 
