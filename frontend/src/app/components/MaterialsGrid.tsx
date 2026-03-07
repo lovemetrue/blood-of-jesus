@@ -54,7 +54,7 @@ export function MaterialsGrid() {
       viewport={viewportOnce}
       transition={fadeSlideUp.transition}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[68rem] mx-auto">
         <div className="text-center mb-12 lg:mb-16">
           <motion.h2
             id="materials-heading"
@@ -78,7 +78,7 @@ export function MaterialsGrid() {
         </div>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-7xl mx-auto"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-[68rem] mx-auto"
           variants={staggerContainer}
           initial="initial"
           whileInView="inView"

@@ -129,7 +129,7 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-black/90 backdrop-blur-md shadow-lg border-b border-red-900/20 z-50">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div className="max-w-[68rem] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
         <div className="flex justify-between items-center h-12 pt-1">
           <div className="flex items-center shrink-0">
             <a
