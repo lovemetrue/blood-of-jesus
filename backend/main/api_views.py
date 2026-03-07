@@ -12,8 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 def _send_contact_notifications(contact):
-    """Отправка уведомлений при новой заявке: админу и автоответ отправителю."""
-    admin_email = getattr(settings, 'CONTACT_NOTIFY_EMAIL', '') or getattr(settings, 'ADMIN_EMAIL', '')
+    """Отправка уведомлений при новой заявке: админу (jesusthehealer@yandex.ru) и автоответ отправителю."""
+    admin_email = (
+        getattr(settings, 'CONTACT_NOTIFY_EMAIL', '') or
+        getattr(settings, 'ADMIN_EMAIL', '') or
+        getattr(settings, 'CONTACT_REPLY_ADDRESS', 'jesusthehealer@yandex.ru')
+    )
     from_email = settings.DEFAULT_FROM_EMAIL
     if not admin_email:
         return

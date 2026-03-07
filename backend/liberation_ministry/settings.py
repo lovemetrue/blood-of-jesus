@@ -106,16 +106,21 @@ CORS_ALLOWED_ORIGINS = config('CORS_ORIGINS', default='https://bloodofjesus.ru,h
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = ['https://bloodofjesus.ru', 'https://www.bloodofjesus.ru', 'https://yookassa.ru']
 
+# Письма: по умолчанию только в консоль (логи). Чтобы слать на почту, в .env задать:
+# EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+# EMAIL_HOST=smtp.yandex.ru  EMAIL_PORT=587  EMAIL_USE_TLS=True
+# EMAIL_HOST_USER=jesusthehealer@yandex.ru  EMAIL_HOST_PASSWORD=пароль_приложения
+# DEFAULT_FROM_EMAIL=jesusthehealer@yandex.ru
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.yandex.ru')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@bloodofjesus.ru')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='jesusthehealer@yandex.ru')
 ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@bloodofjesus.ru')
-# Куда слать уведомления о новых заявках (если пусто — используется ADMIN_EMAIL)
-CONTACT_NOTIFY_EMAIL = config('CONTACT_NOTIFY_EMAIL', default='')
+# Куда слать уведомления о новых заявках с формы обратной связи
+CONTACT_NOTIFY_EMAIL = config('CONTACT_NOTIFY_EMAIL', default='jesusthehealer@yandex.ru')
 # Адрес «написать нам» в автоответе отправителю (показывается на сайте)
 CONTACT_REPLY_ADDRESS = config('CONTACT_REPLY_ADDRESS', default='jesusthehealer@yandex.ru')
 
