@@ -2,9 +2,9 @@ import { Youtube, Send, Mail, Phone, MapPin, FileText } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-950 border-t border-red-900/20 text-white py-8 px-3 sm:px-4 lg:px-6" role="contentinfo">
+    <footer className="bg-gray-950 border-t border-red-900/20 text-white py-12 sm:py-16 lg:py-20 px-6 sm:px-8 lg:px-12 xl:px-16" role="contentinfo">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-lg font-bold mb-3">
               Служение: «Кровь Христа»
@@ -107,7 +107,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-red-800 pt-6">
+        <div className="border-t border-red-800 pt-10">
           <div className="text-center text-red-100">
             <p className="mb-1.5 text-xs">
               "И познаете истину, и истина сделает вас свободными" - Иоанна 8:32

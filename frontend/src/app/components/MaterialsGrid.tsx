@@ -47,7 +47,7 @@ export function MaterialsGrid() {
   return (
     <motion.section
       id="materials"
-      className="py-8 sm:py-11 lg:py-14 px-3 sm:px-4 lg:px-6 bg-transparent"
+      className="py-16 sm:py-20 lg:py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-transparent"
       aria-labelledby="materials-heading"
       initial={fadeSlideUp.initial}
       whileInView={fadeSlideUp.inView}
@@ -55,7 +55,7 @@ export function MaterialsGrid() {
       transition={fadeSlideUp.transition}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-7 sm:mb-8 lg:mb-11">
+        <div className="text-center mb-12 lg:mb-16">
           <motion.h2
             id="materials-heading"
             initial={fadeSlideUp.initial}
@@ -78,7 +78,7 @@ export function MaterialsGrid() {
         </div>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 max-w-7xl mx-auto"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-7xl mx-auto"
           variants={staggerContainer}
           initial="initial"
           whileInView="inView"

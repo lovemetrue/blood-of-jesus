@@ -5,7 +5,7 @@ export function AboutUsSection() {
   return (
     <motion.section
       id="about"
-      className="py-8 sm:py-11 lg:py-14 px-3 sm:px-4 lg:px-6 bg-transparent"
+      className="py-16 sm:py-20 lg:py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-transparent"
       aria-labelledby="about-heading"
       initial={fadeSlideUp.initial}
       whileInView={fadeSlideUp.inView}
@@ -19,7 +19,7 @@ export function AboutUsSection() {
           whileInView={fadeSlideUp.inView}
           viewport={viewportOnce}
           transition={fadeSlideUp.transition}
-          className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-6 sm:mb-7 px-2 text-center"
+          className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-10 lg:mb-12 px-2 text-center"
         >
           О нас
         </motion.h2>
@@ -28,7 +28,7 @@ export function AboutUsSection() {
           whileInView={fadeSlideUp.inView}
           viewport={viewportOnce}
           transition={fadeSlideUp.transition}
-          className="bg-gray-900/50 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-xl shadow-red-900/10 p-4 sm:p-6 lg:p-8 border-2 border-gray-800 space-y-4 text-gray-300 leading-relaxed text-sm sm:text-base"
+          className="bg-gray-900/50 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-10 border-2 border-gray-800 space-y-5 text-gray-300 leading-relaxed text-sm sm:text-base"
         >
           <p>
             Мы с супругой являемся пасторами домашней церкви, а также основателями команды жизни от JGLM — John G. Lake Ministries.

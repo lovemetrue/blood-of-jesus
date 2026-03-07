@@ -7,15 +7,15 @@ export function Hero() {
   return (
     <motion.section
       id="home"
-      className="pt-12 pb-10 bg-transparent mt-0"
+      className="pt-16 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24 bg-transparent mt-0"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
         {/* Hero with Image */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:gap-8 items-center mb-8 sm:mb-11">
-          <div className="order-2 lg:order-1 space-y-3 sm:space-y-4 lg:space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-12 lg:mb-16">
+          <div className="order-2 lg:order-1 space-y-4 sm:space-y-5 lg:space-y-6">
             <motion.h1
               initial={fadeSlideUp.initial}
               whileInView={fadeSlideUp.inView}
@@ -59,11 +59,11 @@ export function Hero() {
             viewport={viewportOnce}
             transition={fadeSlideUp.transition}
           >
-            <div className="transform scale-90 origin-center">
+            <div className="transform origin-center w-full flex justify-center lg:justify-end">
               <img
                 src={heroImage}
                 alt="Агнец Божий - Агнус Деи, несущий крест и знамя с надписью 'Вот Агнец Божий, Который берет на Себя грех мира'"
-                className="w-full max-w-full sm:max-w-full lg:max-w-full xl:max-w-[540px] h-auto min-h-[210px] sm:min-h-[280px] md:min-h-[320px] lg:min-h-[350px] object-cover rounded-xl shadow-2xl shadow-red-900/30"
+                className="w-full max-w-[405px] h-auto min-h-[158px] sm:min-h-[210px] md:min-h-[240px] lg:min-h-[262px] object-cover rounded-xl shadow-2xl shadow-red-900/30"
               />
             </div>
           </motion.div>
@@ -71,7 +71,7 @@ export function Hero() {
 
         {/* Features */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 justify-items-center"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-10 justify-items-center"
           variants={staggerContainer}
           initial="initial"
           whileInView="inView"

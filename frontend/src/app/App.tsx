@@ -20,6 +20,7 @@ import { FreedomDemonicPage } from "@/app/components/FreedomDemonicPage";
 import { PlaceholderPage } from "@/app/components/PlaceholderPage";
 import { Footer } from "@/app/components/Footer";
 import { FloatingCross } from "@/app/components/FloatingCross";
+import { Christian3DBackground } from "@/app/components/Christian3DBackground";
 import { SEOHead } from "@/app/components/SEOHead";
 import { DEFAULT_KEYWORDS, getSEOForPath } from "@/app/seo";
 import { isMenuContentRoute } from "@/app/routes";
@@ -320,7 +321,8 @@ export default function App() {
   return (
     <>
       <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+      <div className="min-h-screen relative overflow-hidden">
+        <Christian3DBackground />
         <FloatingCross />
         <div className="relative z-10">
           <Header />
