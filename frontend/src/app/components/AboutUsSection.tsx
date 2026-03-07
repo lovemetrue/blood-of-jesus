@@ -5,7 +5,7 @@ export function AboutUsSection() {
   return (
     <motion.section
       id="about"
-      className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent"
+      className="py-8 sm:py-11 lg:py-14 px-3 sm:px-4 lg:px-6 bg-transparent"
       aria-labelledby="about-heading"
       initial={fadeSlideUp.initial}
       whileInView={fadeSlideUp.inView}
@@ -19,7 +19,7 @@ export function AboutUsSection() {
           whileInView={fadeSlideUp.inView}
           viewport={viewportOnce}
           transition={fadeSlideUp.transition}
-          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-8 sm:mb-10 px-2 text-center"
+          className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-6 sm:mb-7 px-2 text-center"
         >
           О нас
         </motion.h2>
@@ -28,7 +28,7 @@ export function AboutUsSection() {
           whileInView={fadeSlideUp.inView}
           viewport={viewportOnce}
           transition={fadeSlideUp.transition}
-          className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-6 sm:p-8 lg:p-12 border-2 border-gray-800 space-y-6 text-gray-300 leading-relaxed"
+          className="bg-gray-900/50 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-xl shadow-red-900/10 p-4 sm:p-6 lg:p-8 border-2 border-gray-800 space-y-4 text-gray-300 leading-relaxed text-sm sm:text-base"
         >
           <p>
             Мы с супругой являемся пасторами домашней церкви, а также основателями команды жизни от JGLM — John G. Lake Ministries.
@@ -36,13 +36,13 @@ export function AboutUsSection() {
             Очень радостно видеть, как Господь сверхъестественно освобождает и исцеляет людей, когда мы желаем быть проводниками Его любви.
           </p>
           <p className="font-semibold text-white">Мы верим, что Слово Божье:</p>
-          <ul className="list-disc list-inside space-y-2 pl-2">
+          <ul className="list-disc list-inside space-y-1.5 pl-2">
             <li>Есть сам Иисус</li>
             <li>Написано для каждого человека лично, и с каждой страницы Дух Святой говорит лично к человеку</li>
             <li>Должно быть читаемо, слушаемо и исполняемо в жизни каждого рождённого свыше человека</li>
           </ul>
           <p className="font-semibold text-white">Мы верим, что каждый любящий Бога верующий хочет исполнять Его заповеди, и вот некоторые из них:</p>
-          <ul className="list-disc list-inside space-y-2 pl-2">
+          <ul className="list-disc list-inside space-y-1.5 pl-2">
             <li>Исполнять первую и наивысшую заповедь: возлюби Господа Бога твоего всем сердцем твоим, и всею душею твоею, и всем разумением твоим</li>
             <li>Именем Его будут изгонять бесов</li>
             <li>Возложат руки на больных, и они будут здоровы</li>

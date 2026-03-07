@@ -47,7 +47,7 @@ export function MaterialsGrid() {
   return (
     <motion.section
       id="materials"
-      className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-transparent"
+      className="py-8 sm:py-11 lg:py-14 px-3 sm:px-4 lg:px-6 bg-transparent"
       aria-labelledby="materials-heading"
       initial={fadeSlideUp.initial}
       whileInView={fadeSlideUp.inView}
@@ -55,14 +55,14 @@ export function MaterialsGrid() {
       transition={fadeSlideUp.transition}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+        <div className="text-center mb-7 sm:mb-8 lg:mb-11">
           <motion.h2
             id="materials-heading"
             initial={fadeSlideUp.initial}
             whileInView={fadeSlideUp.inView}
             viewport={viewportOnce}
             transition={fadeSlideUp.transition}
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 px-2"
+            className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3 px-2"
           >
             Материалы для обучения
           </motion.h2>
@@ -71,14 +71,14 @@ export function MaterialsGrid() {
             whileInView={fadeSlideUp.inView}
             viewport={viewportOnce}
             transition={fadeSlideUp.transition}
-            className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto px-2"
+            className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto px-2"
           >
             Бесплатные ресурсы для вашего духовного роста и освобождения
           </motion.p>
         </div>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 max-w-7xl mx-auto"
           variants={staggerContainer}
           initial="initial"
           whileInView="inView"
@@ -93,30 +93,30 @@ export function MaterialsGrid() {
                 transition={{ duration: 0.4 }}
                 whileHover={hoverScale.whileHover}
                 whileTap={hoverScale.whileTap}
-                className="bg-gray-900/50 backdrop-blur-sm border-2 border-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:border-[#DC143C] hover:shadow-xl hover:shadow-red-900/20 transition-all duration-300 group flex flex-col h-full"
+                className="bg-gray-900/50 backdrop-blur-sm border-2 border-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 hover:border-[#DC143C] hover:shadow-xl hover:shadow-red-900/20 transition-all duration-300 group flex flex-col h-full"
               >
-                <div className="flex items-start justify-between mb-3 sm:mb-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-950/50 rounded-lg flex items-center justify-center group-hover:bg-[#DC143C] transition-colors" aria-hidden="true">
-                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#DC143C] group-hover:text-white transition-colors" />
+                <div className="flex items-start justify-between mb-2 sm:mb-3">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 bg-red-950/50 rounded-md flex items-center justify-center group-hover:bg-[#DC143C] transition-colors" aria-hidden="true">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#DC143C] group-hover:text-white transition-colors" />
                   </div>
-                  <span className="text-xs font-medium text-gray-500 bg-gray-800 px-2 sm:px-3 py-1 rounded-full">
+                  <span className="text-[10px] font-medium text-gray-500 bg-gray-800 px-1.5 sm:px-2 py-0.5 rounded-full">
                     {material.type}
                   </span>
                 </div>
 
-                <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-1.5">
                   {material.title}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6 leading-relaxed flex-grow">
+                <p className="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4 leading-relaxed flex-grow">
                   {material.description}
                 </p>
 
                 <button
                   onClick={() => handleDownload(material)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors shadow-lg shadow-red-900/30 mt-auto"
+                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 text-xs sm:text-sm bg-[#DC143C] text-white rounded-md hover:bg-[#FF1744] transition-colors shadow-lg shadow-red-900/30 mt-auto"
                   aria-label={`Скачать ${material.title}`}
                 >
-                  <Download className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+                  <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                   Скачать
                 </button>
               </motion.article>

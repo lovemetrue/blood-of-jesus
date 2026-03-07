@@ -23,12 +23,12 @@ function DropdownMenu({ label, items, isOpen, onMouseEnter, onMouseLeave }: Drop
       onMouseLeave={onMouseLeave}
     >
       <button
-        className="flex items-center gap-1 text-gray-300 hover:text-[#DC143C] transition-colors duration-200 py-2 px-1 relative group"
+        className="flex items-center gap-0.5 text-gray-300 hover:text-[#DC143C] transition-colors duration-200 py-1.5 px-0.5 relative group text-sm"
         aria-expanded={isOpen}
       >
         <span>{label}</span>
         <ChevronDown
-          className={`w-4 h-4 transition-transform duration-200 ${
+          className={`w-3.5 h-3.5 transition-transform duration-200 ${
             isOpen ? "rotate-180 text-[#DC143C]" : "group-hover:text-[#DC143C]"
           }`}
         />
@@ -42,18 +42,18 @@ function DropdownMenu({ label, items, isOpen, onMouseEnter, onMouseLeave }: Drop
 
       {/* Dropdown меню */}
       <div
-        className={`absolute top-full left-0 mt-2 min-w-[220px] bg-black/95 backdrop-blur-md rounded-lg shadow-2xl border border-red-900/30 overflow-hidden transition-all duration-300 ${
+        className={`absolute top-full left-0 mt-1.5 min-w-[180px] bg-black/95 backdrop-blur-md rounded-md shadow-2xl border border-red-900/30 overflow-hidden transition-all duration-300 ${
           isOpen
             ? "opacity-100 visible translate-y-0"
             : "opacity-0 invisible -translate-y-2"
         }`}
       >
-        <div className="py-2">
+        <div className="py-1.5">
           {items.map((item, index) => (
             <button
               key={index}
               onClick={item.onClick}
-              className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-[#DC143C]/20 transition-all duration-200 relative group"
+              className="w-full text-left px-3 py-2 text-xs text-gray-300 hover:text-white hover:bg-[#DC143C]/20 transition-all duration-200 relative group"
             >
               <span className="relative z-10">{item.label}</span>
               {/* Эффект подсветки слева */}
@@ -129,8 +129,8 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-black/90 backdrop-blur-md shadow-lg border-b border-red-900/20 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 pt-2">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="flex justify-between items-center h-12 pt-1">
           <div className="flex items-center shrink-0">
             <a
               href="/"
@@ -148,16 +148,16 @@ export function Header() {
               <img
                 src={logo}
                 alt="Кровь и вода"
-                className="h-12 w-auto"
+                className="h-9 w-auto"
               />
             </a>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 ml-auto">
+          <nav className="hidden md:flex items-center space-x-4 lg:space-x-5 ml-auto">
             <button
               onClick={navigateToHome}
-              className="text-gray-300 hover:text-[#DC143C] transition-colors duration-200 py-2 px-1 relative group"
+              className="text-gray-300 hover:text-[#DC143C] transition-colors duration-200 py-1.5 px-0.5 relative group text-sm"
             >
               <span>Главная</span>
               <span className="absolute bottom-0 left-0 h-0.5 bg-[#DC143C] w-0 group-hover:w-full transition-all duration-200" />
@@ -196,10 +196,10 @@ export function Header() {
             />
 
             {/* Desktop Action Buttons */}
-            <div className="flex items-center gap-3 lg:gap-4 ml-4">
+            <div className="flex items-center gap-2 lg:gap-3 ml-3">
               <a
                 href="/contacts"
-                className="px-4 py-2 text-sm font-medium bg-[#DC143C] text-white rounded-lg hover:bg-[#FF1744] transition-colors duration-200 shadow-lg shadow-red-900/30"
+                className="px-3 py-1.5 text-xs font-medium bg-[#DC143C] text-white rounded-md hover:bg-[#FF1744] transition-colors duration-200 shadow-lg shadow-red-900/30"
               >
                 Контакты
               </a>
@@ -218,13 +218,13 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-md hover:bg-gray-800 transition-colors"
+            className="md:hidden p-1.5 rounded-md hover:bg-gray-800 transition-colors"
             aria-label="Меню"
           >
             {isMenuOpen ? (
-              <X className="h-6 w-6 text-[#DC143C]" />
+              <X className="h-5 w-5 text-[#DC143C]" />
             ) : (
-              <Menu className="h-6 w-6 text-[#DC143C]" />
+              <Menu className="h-5 w-5 text-[#DC143C]" />
             )}
           </button>
         </div>
@@ -232,13 +232,13 @@ export function Header() {
         {/* Mobile Navigation */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+            isMenuOpen ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <nav className="pb-4 space-y-1 pt-2">
+          <nav className="pb-3 space-y-0.5 pt-1.5">
             <button
               onClick={navigateToHome}
-              className="block w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+              className="block w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
             >
               Главная
             </button>
@@ -249,11 +249,11 @@ export function Header() {
                 onClick={() =>
                   setActiveDropdown(activeDropdown === "love" ? null : "love")
                 }
-                className="flex items-center justify-between w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+                className="flex items-center justify-between w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
               >
                 <span>Любовь</span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
                     activeDropdown === "love" ? "rotate-180" : ""
                   }`}
                 />
@@ -261,16 +261,16 @@ export function Header() {
               <div
                 className={`overflow-hidden transition-all duration-300 ${
                   activeDropdown === "love"
-                    ? "max-h-[200px] opacity-100"
+                    ? "max-h-[140px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="pl-6 space-y-1">
+                <div className="pl-4 space-y-0.5">
                   {menuItems.love.map((item, index) => (
                     <button
                       key={index}
                       onClick={item.onClick}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
+                      className="block w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
                     >
                       {item.label}
                     </button>
@@ -285,11 +285,11 @@ export function Header() {
                 onClick={() =>
                   setActiveDropdown(activeDropdown === "faith" ? null : "faith")
                 }
-                className="flex items-center justify-between w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+                className="flex items-center justify-between w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
               >
                 <span>Вера</span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
                     activeDropdown === "faith" ? "rotate-180" : ""
                   }`}
                 />
@@ -297,16 +297,16 @@ export function Header() {
               <div
                 className={`overflow-hidden transition-all duration-300 ${
                   activeDropdown === "faith"
-                    ? "max-h-[200px] opacity-100"
+                    ? "max-h-[140px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="pl-6 space-y-1">
+                <div className="pl-4 space-y-0.5">
                   {menuItems.faith.map((item, index) => (
                     <button
                       key={index}
                       onClick={item.onClick}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
+                      className="block w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
                     >
                       {item.label}
                     </button>
@@ -321,11 +321,11 @@ export function Header() {
                 onClick={() =>
                   setActiveDropdown(activeDropdown === "covenant" ? null : "covenant")
                 }
-                className="flex items-center justify-between w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+                className="flex items-center justify-between w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
               >
                 <span>Завет</span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
                     activeDropdown === "covenant" ? "rotate-180" : ""
                   }`}
                 />
@@ -333,16 +333,16 @@ export function Header() {
               <div
                 className={`overflow-hidden transition-all duration-300 ${
                   activeDropdown === "covenant"
-                    ? "max-h-[200px] opacity-100"
+                    ? "max-h-[140px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="pl-6 space-y-1">
+                <div className="pl-4 space-y-0.5">
                   {menuItems.covenant.map((item, index) => (
                     <button
                       key={index}
                       onClick={item.onClick}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
+                      className="block w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
                     >
                       {item.label}
                     </button>
@@ -359,11 +359,11 @@ export function Header() {
                     activeDropdown === "freedom" ? null : "freedom"
                   )
                 }
-                className="flex items-center justify-between w-full text-left px-4 py-3 text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+                className="flex items-center justify-between w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
               >
                 <span>Свобода</span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
                     activeDropdown === "freedom" ? "rotate-180" : ""
                   }`}
                 />
@@ -371,16 +371,16 @@ export function Header() {
               <div
                 className={`overflow-hidden transition-all duration-300 ${
                   activeDropdown === "freedom"
-                    ? "max-h-[350px] opacity-100"
+                    ? "max-h-[245px] opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="pl-6 space-y-1">
+                <div className="pl-4 space-y-0.5">
                   {menuItems.freedom.map((item, index) => (
                     <button
                       key={index}
                       onClick={item.onClick}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
+                      className="block w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
                     >
                       {item.label}
                     </button>
@@ -393,7 +393,7 @@ export function Header() {
             <a
               href="/contacts"
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full text-left px-4 py-3 bg-[#DC143C]/20 text-white hover:bg-[#DC143C]/30 rounded-md transition-all duration-200 font-medium"
+              className="block w-full text-left px-3 py-2 text-sm bg-[#DC143C]/20 text-white hover:bg-[#DC143C]/30 rounded-md transition-all duration-200 font-medium"
             >
               Контакты
             </a>
