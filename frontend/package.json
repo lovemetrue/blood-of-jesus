@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "node -e \"require('fs').rmSync('node_modules/.vite', {recursive: true, force: true})\" && vite",
+    "dev:no-clear": "vite"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
