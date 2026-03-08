@@ -17,16 +17,16 @@ const PARTICLE_VERTEX = `
     float t = uTime + offset;
 
     float r = length(p.xz);
-    float radial = sin(r * 0.4 - t * 0.5) * 0.4;
-    float gridY = (sin(p.x + t) * 0.4 + cos(p.z + t * 0.7) * 0.3);
-    float gridX = sin(p.z + t * 0.6) * 0.2;
-    float gridZ = sin(p.x + t * 0.8) * 0.2;
+    float radial = sin(r * 0.4 - t * 0.5) * 0.22;
+    float gridY = (sin(p.x + t) * 0.22 + cos(p.z + t * 0.7) * 0.16);
+    float gridX = sin(p.z + t * 0.6) * 0.1;
+    float gridZ = sin(p.x + t * 0.8) * 0.1;
 
     p.y += radial + gridY;
     p.x += gridX;
     p.z += gridZ;
 
-    s *= 0.9 + 0.3 * sin(r * 0.2 + t * 0.4) + 0.2 * (1.0 - smoothstep(0.0, 25.0, r));
+    s *= 0.92 + 0.15 * sin(r * 0.2 + t * 0.4) + 0.12 * (1.0 - smoothstep(0.0, 25.0, r));
     s = max(s, 0.4);
 
     vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
@@ -84,7 +84,7 @@ function ParticleWave() {
   useFrame((state) => {
     const mat = mesh.current?.material as THREE.ShaderMaterial | undefined;
     if (mat?.uniforms?.uTime) {
-      mat.uniforms.uTime.value = state.clock.elapsedTime * 0.03;
+      mat.uniforms.uTime.value = state.clock.elapsedTime * 0.015;
     }
   });
 
@@ -136,7 +136,7 @@ function SceneContent() {
 export function Christian3DBackground() {
   return (
     <div
-      className="absolute inset-0 z-0"
+      className="fixed inset-0 z-0"
       style={{
         background: "linear-gradient(180deg, #0a0f1a 0%, #0f172a 40%, #1e1b4b 100%)",
       }}
