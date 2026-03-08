@@ -22,11 +22,13 @@ const PARTICLE_VERTEX = `
     float gridX = sin(p.z + t * 0.6) * 0.2;
     float gridZ = sin(p.x + t * 0.8) * 0.2;
 
-    p.y += radial + gridY;
-    p.x += gridX;
-    p.z += gridZ;
+    float topFade = 1.0 - smoothstep(0.0, 1.0, p.y);
+    float amp = 0.25 + 0.75 * topFade;
+    p.y += (radial + gridY) * amp;
+    p.x += gridX * amp;
+    p.z += gridZ * amp;
 
-    s *= 0.9 + 0.3 * sin(r * 0.2 + t * 0.4) + 0.2 * (1.0 - smoothstep(0.0, 25.0, r));
+    s *= 0.9 + 0.3 * sin(r * 0.2 + t * 0.4) * amp + 0.2 * (1.0 - smoothstep(0.0, 25.0, r));
     s = max(s, 0.4);
 
     vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
@@ -136,9 +138,10 @@ function SceneContent() {
 export function Christian3DBackground() {
   return (
     <div
-      className="absolute inset-0 z-0"
+      className="absolute inset-0 z-0 min-h-full"
       style={{
         background: "linear-gradient(180deg, #0a0f1a 0%, #0f172a 40%, #1e1b4b 100%)",
+        minHeight: "100vh",
       }}
       aria-hidden
     >

@@ -3,7 +3,11 @@ import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
+// При запуске npm run dev из blood-of-jesus собираем frontend/, а не корневой src/
+const projectRoot = path.resolve(__dirname, 'frontend')
+
 export default defineConfig({
+  root: projectRoot,
   plugins: [
     react(),
     tailwindcss(),
@@ -16,8 +20,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      // Alias @ to the src directory
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(projectRoot, 'src'),
     },
   },
 })

@@ -322,7 +322,7 @@ export default function App() {
       <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
       <div className="min-h-screen relative overflow-hidden">
         <Christian3DBackground />
-        <div className="relative z-10">
+        <div className="relative z-10 min-h-full">
           <Header />
           <AnimatePresence mode="wait">
             <motion.div
