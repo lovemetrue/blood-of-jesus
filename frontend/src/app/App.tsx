@@ -25,7 +25,7 @@ import { DEFAULT_KEYWORDS, getSEOForPath } from "@/app/seo";
 import { isMenuContentRoute } from "@/app/routes";
 import { pageTransition } from "@/app/motionVariants";
 import { motion, AnimatePresence } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const goHome = () => window.history.pushState({}, "", "/");
 
@@ -37,6 +37,10 @@ export default function App() {
   const showDonations = false; // Временно отключено
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [contentPagePath, setContentPagePath] = useState<string | null>(null);
+  const contentColumnRef = useRef<HTMLDivElement>(null);
+  const [contentColumnHeight, setContentColumnHeight] = useState(0);
+  const [sentinelBottom, setSentinelBottom] = useState(0);
+  const SENTINEL_ID = "content-end-sentinel";
 
   useEffect(() => {
     // Нормализуем URL при загрузке (убираем trailing slash, кроме корня)
@@ -106,6 +110,79 @@ export default function App() {
       });
     });
   }, []);
+
+  // Высота обёртки фона: максимум из scrollHeight колонки и нижней границы маячка после футера
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const debug = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "1";
+
+  useEffect(() => {
+    const el = contentColumnRef.current;
+    if (!el) return;
+    const update = () => setContentColumnHeight(el.scrollHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    const t1 = setTimeout(update, 150);
+    const t2 = setTimeout(update, 500);
+    const t3 = setTimeout(update, 1200);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener("resize", update);
+    };
+  }, [showDocuments, showContacts, showPaymentSuccess, contentPagePath]);
+
+  useEffect(() => {
+    const update = () => {
+      const sentinel = document.getElementById(SENTINEL_ID);
+      if (!sentinel) return;
+      const bottom = sentinel.getBoundingClientRect().bottom + window.scrollY;
+      if (debug) {
+        console.log("[BG debug] sentinel bottom:", bottom, "scrollY:", window.scrollY);
+      }
+      setSentinelBottom(Math.round(bottom));
+    };
+    const t0 = setTimeout(update, 0);
+    const t1 = setTimeout(update, 200);
+    const t2 = setTimeout(update, 600);
+    const t3 = setTimeout(update, 1500);
+    const raf = requestAnimationFrame(update);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const sentinel = document.getElementById(SENTINEL_ID);
+    if (sentinel) {
+      update();
+      const ro = new ResizeObserver(update);
+      ro.observe(sentinel.parentElement ?? sentinel);
+      return () => {
+        ro.disconnect();
+        cancelAnimationFrame(raf);
+        clearTimeout(t0);
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+        window.removeEventListener("scroll", update);
+        window.removeEventListener("resize", update);
+      };
+    }
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t0);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [showDocuments, showContacts, showPaymentSuccess, contentPagePath, debug]);
+
+  const wrapperMinHeight =
+    contentColumnHeight > 0 || sentinelBottom > 0
+      ? `max(100vh, ${Math.max(contentColumnHeight, sentinelBottom)}px)`
+      : "100vh";
 
   // Прокрутка к секции при переходе по ссылке с хешем (/#materials, /#about)
   useEffect(() => {
@@ -320,10 +397,16 @@ export default function App() {
   return (
     <>
       <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
-      <div className="min-h-screen relative overflow-hidden">
-        <Christian3DBackground />
-        <div className="relative z-10 min-h-full">
-          <Header />
+      <div className="min-h-screen overflow-x-hidden">
+        <div ref={wrapperRef} className="relative w-full" style={{ minHeight: wrapperMinHeight }}>
+          <Christian3DBackground
+            debug={debug}
+            contentColumnHeight={contentColumnHeight}
+            sentinelBottom={sentinelBottom}
+            wrapperMinHeightPx={Math.max(contentColumnHeight, sentinelBottom)}
+          />
+          <div ref={contentColumnRef} className="relative z-10">
+            <Header />
           <AnimatePresence mode="wait">
             <motion.div
               key={pageKey}
@@ -368,7 +451,9 @@ export default function App() {
               )}
             </motion.div>
           </AnimatePresence>
-          <Footer />
+            <Footer />
+            <div id={SENTINEL_ID} aria-hidden className="pointer-events-none" />
+          </div>
         </div>
       </div>
     </>

@@ -1,158 +1,236 @@
 /**
- * Minimal 3D background: particle wave grid (based on CodePen WebGL Point Waves).
- * React Three Fiber. Static or very slow wave, minimal.
+ * 3D background: тёмный CSS-градиент + плавающие 3D объекты (икосаэдры, плоская земля с куполом).
  */
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const PARTICLE_VERTEX = `
-  attribute float scale;
-  attribute float offset;
-  uniform float uTime;
-
-  void main() {
-    vec3 p = position;
-    float s = scale;
-    float t = uTime + offset;
-
-    float r = length(p.xz);
-    float radial = sin(r * 0.4 - t * 0.5) * 0.4;
-    float gridY = (sin(p.x + t) * 0.4 + cos(p.z + t * 0.7) * 0.3);
-    float gridX = sin(p.z + t * 0.6) * 0.2;
-    float gridZ = sin(p.x + t * 0.8) * 0.2;
-
-    float topFade = 1.0 - smoothstep(0.0, 1.0, p.y);
-    float amp = 0.25 + 0.75 * topFade;
-    p.y += (radial + gridY) * amp;
-    p.x += gridX * amp;
-    p.z += gridZ * amp;
-
-    s *= 0.9 + 0.3 * sin(r * 0.2 + t * 0.4) * amp + 0.2 * (1.0 - smoothstep(0.0, 25.0, r));
-    s = max(s, 0.4);
-
-    vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-    gl_PointSize = s * 11.0 * (1.0 / -mvPosition.z);
-    gl_Position = projectionMatrix * mvPosition;
-  }
-`;
-
-const PARTICLE_FRAGMENT = `
-  void main() {
-    float d = length(gl_PointCoord - 0.5) * 2.0;
-    float a = 1.0 - smoothstep(0.2, 1.0, d);
-    gl_FragColor = vec4(1.0, 0.98, 0.96, 0.7 * a);
-  }
-`;
-
-function ParticleWave() {
-  const mesh = useRef<THREE.Points>(null);
-
-  const { positions, scales, offsets, count } = useMemo(() => {
-    const gap = 0.38;
-    const amountX = 100;
-    const amountY = 100;
-    const particleNum = amountX * amountY;
-    const particlePositions = new Float32Array(particleNum * 3);
-    const particleScales = new Float32Array(particleNum);
-    const particleOffsets = new Float32Array(particleNum);
-    let i = 0;
-    let j = 0;
-    const centerX = (amountX * gap) / 2;
-    const centerZ = (amountY * gap) / 2;
-    for (let ix = 0; ix < amountX; ix++) {
-      for (let iy = 0; iy < amountY; iy++) {
-        const x = ix * gap - centerX;
-        const z = iy * gap - centerZ;
-        const r = Math.sqrt(x * x + z * z);
-        const dome = 1.2 * Math.exp(-(r * r) / 350);
-        particlePositions[i] = x;
-        particlePositions[i + 1] = dome;
-        particlePositions[i + 2] = z;
-        particleScales[j] = 0.7 + 0.5 * Math.random();
-        particleOffsets[j] = Math.random() * 6.28;
-        i += 3;
-        j++;
-      }
-    }
-    return {
-      positions: particlePositions,
-      scales: particleScales,
-      offsets: particleOffsets,
-      count: particleNum,
-    };
-  }, []);
-
-  useFrame((state) => {
-    const mat = mesh.current?.material as THREE.ShaderMaterial | undefined;
-    if (mat?.uniforms?.uTime) {
-      mat.uniforms.uTime.value = state.clock.elapsedTime * 0.03;
+// ——— Floating 3D shapes (wireframe / transparent) ———
+function FloatingShape({
+  shape,
+  position,
+  rotationSpeed,
+  color,
+  scale,
+}: {
+  shape: "icosahedron" | "torus";
+  position: [number, number, number];
+  rotationSpeed: [number, number, number];
+  color: string;
+  scale: number;
+}) {
+  const mesh = useRef<THREE.Mesh>(null);
+  useFrame((_, delta) => {
+    if (mesh.current) {
+      mesh.current.rotation.x += rotationSpeed[0] * delta;
+      mesh.current.rotation.y += rotationSpeed[1] * delta;
+      mesh.current.rotation.z += rotationSpeed[2] * delta;
     }
   });
 
-  const shaderMaterial = useMemo(
-    () =>
-      new THREE.ShaderMaterial({
-        transparent: true,
-        depthWrite: false,
-        vertexShader: PARTICLE_VERTEX,
-        fragmentShader: PARTICLE_FRAGMENT,
-        uniforms: {
-          uTime: { value: 0 },
-        },
-      }),
-    []
+  return (
+    <mesh ref={mesh} position={position} scale={scale} layers={0}>
+      {shape === "icosahedron" ? (
+        <icosahedronGeometry args={[1, 0]} />
+      ) : (
+        <torusGeometry args={[1, 0.35, 16, 48]} />
+      )}
+      <meshBasicMaterial
+        color={color}
+        transparent
+        opacity={0.20}
+        depthWrite={false}
+        wireframe
+      />
+    </mesh>
   );
+}
+
+// Плоская земля: диск + купол (полусфера), на куполе — солнце и луна одинакового размера
+function FloatingFlatEarth({
+  position,
+  rotationSpeed,
+  color,
+  scale,
+}: {
+  position: [number, number, number];
+  rotationSpeed: [number, number, number];
+  color: string;
+  scale: number;
+}) {
+  const group = useRef<THREE.Group>(null);
+  const domeRadius = 1;
+  const discHeight = 0.06;
+  const discTopY = discHeight / 0.5;
+  //const domeBaseY= discHeight / 2 + domeRadius / 2;
+
+  useFrame((_, delta) => {
+    if (group.current) {
+      group.current.rotation.x += rotationSpeed[0] * delta;
+      group.current.rotation.y += rotationSpeed[1] * delta;
+      group.current.rotation.z += rotationSpeed[2] * delta;
+    }
+  });
+
+  // Купол: полусфера с основанием ровно на верхней грани диска (y = discTopY).
+  // В Three.js полусфера theta 0..PI/2: основание в local y=0, верх в y=radius. Позиция меша = основание.
+  const domeMeshY = discTopY;
+  const toDomeSurface = (theta: number, phi: number) => [
+    domeRadius * Math.sin(theta) * Math.sin(phi),
+    domeMeshY + domeRadius * Math.cos(theta),
+    domeRadius * Math.sin(theta) * Math.cos(phi),
+  ] as [number, number, number];
+  const sunPos = toDomeSurface(0.5, 0.35);
+  const moonPos = toDomeSurface(0.55, 2.7);
+  const sunMoonRadius = 0.14;
 
   return (
-    <points ref={mesh} position={[0, 0, -3]} rotation={[-0.3, 0, 0]}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
+    <group ref={group} position={position} scale={scale} rotation={[0.6, 0.2, 0]} layers={0}>
+      {/* Диск — плоская земля */}
+      <mesh position={[0, 0, 0]}>
+        <cylinderGeometry args={[1, 1, discHeight, 32]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.08}
+          depthWrite={false}
+          wireframe
         />
-        <bufferAttribute
-          attach="attributes-scale"
-          count={count}
-          array={scales}
-          itemSize={1}
+      </mesh>
+      {/* Купол — полусфера вплотную к диску: основание = верх диска */}
+      <mesh position={[0, domeMeshY, 0]}>
+        <sphereGeometry args={[domeRadius, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.16}
+          depthWrite={false}
+          wireframe
         />
-        <bufferAttribute
-          attach="attributes-offset"
-          count={count}
-          array={offsets}
-          itemSize={1}
+      </mesh>
+      {/* Солнце на куполе */}
+      <mesh position={sunPos}>
+        <sphereGeometry args={[sunMoonRadius, 16, 12]} />
+        <meshBasicMaterial
+          color="#e8c090"
+          transparent
+          opacity={0.58}
+          depthWrite={false}
+          wireframe
         />
-      </bufferGeometry>
-      <primitive object={shaderMaterial} attach="material" />
-    </points>
+      </mesh>
+      {/* Луна на куполе, такой же размер */}
+      <mesh position={moonPos}>
+        <sphereGeometry args={[sunMoonRadius, 16, 12]} />
+        <meshBasicMaterial
+          color="#a0a0c8"
+          transparent
+          opacity={0.25}
+          depthWrite={false}
+          wireframe
+        />
+      </mesh>
+    </group>
+  );
+}
+
+function FloatingShapes() {
+  return (
+    <group>
+      <FloatingShape
+        shape="icosahedron"
+        position={[3.5, 1.2, -6]}
+        rotationSpeed={[0.02, 0.03, 0.01]}
+        color="#c9a0a0"
+        scale={1.8}
+      />
+      <FloatingFlatEarth
+        position={[-2.1, -0.8, -5]}
+        rotationSpeed={[-0.015, 0.025, 0.01]}
+        color="#a080b0"
+        scale={1.2}
+      />
+      <FloatingShape
+        shape="icosahedron"
+        position={[0, 2.5, -7]}
+        rotationSpeed={[0.01, -0.02, 0.015]}
+        color="#6a5080"
+        scale={0.9}
+      />
+    </group>
   );
 }
 
 function SceneContent() {
-  return <ParticleWave />;
+  return <FloatingShapes />;
 }
 
-export function Christian3DBackground() {
+type Christian3DBackgroundProps = {
+  debug?: boolean;
+  contentColumnHeight?: number;
+  sentinelBottom?: number;
+  wrapperMinHeightPx?: number;
+};
+
+export function Christian3DBackground({
+  debug,
+  contentColumnHeight = 0,
+  sentinelBottom = 0,
+  wrapperMinHeightPx = 0,
+}: Christian3DBackgroundProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  useEffect(() => {
+    if (!debug || !containerRef.current) return;
+    const el = containerRef.current;
+    const update = () => setContainerHeight(el.offsetHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [debug]);
+
   return (
-    <div
-      className="absolute inset-0 z-0 min-h-full"
-      style={{
-        background: "linear-gradient(180deg, #0a0f1a 0%, #0f172a 40%, #1e1b4b 100%)",
-        minHeight: "100vh",
-      }}
-      aria-hidden
-    >
-      <Canvas
-        camera={{ position: [0, 0, 8], fov: 60 }}
-        dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+    <>
+      <div
+        ref={containerRef}
+        className="absolute inset-0 z-0 w-full"
+        style={{
+          background:
+            "linear-gradient(180deg, #050508 0%, #080b12 25%, #0a0f1a 50%, #0d0d18 75%, #030306 100%)",
+        }}
+        aria-hidden
       >
-        <color attach="background" args={["#050510"]} />
-        <SceneContent />
-      </Canvas>
-    </div>
+        {debug && (
+          <div
+            className="absolute left-0 right-0 z-10 h-1 bg-red-500"
+            style={{ bottom: 0 }}
+            aria-hidden
+          />
+        )}
+        <Canvas
+          camera={{ position: [0, 0, 8], fov: 60 }}
+          dpr={[1, 1.5]}
+          gl={{ antialias: true, alpha: true }}
+          resize={{ debounce: 0 }}
+        >
+          <SceneContent />
+        </Canvas>
+      </div>
+      {debug && (
+        <div
+          className="fixed bottom-4 left-4 right-4 z-[100] rounded-lg border-2 border-red-500 bg-black/90 p-3 font-mono text-xs text-white"
+          aria-live="polite"
+        >
+          <div>contentColumn scrollHeight: {contentColumnHeight}px</div>
+          <div>sentinel bottom (Y): {sentinelBottom}px</div>
+          <div>wrapper minHeight used: max(100vh, {wrapperMinHeightPx}px)</div>
+          <div>background container offsetHeight: {containerHeight}px</div>
+          <div>document.scrollHeight: {typeof document !== "undefined" ? document.documentElement.scrollHeight : "—"}</div>
+          <div className="mt-1 text-red-400">?debug=1 — удалить после отладки</div>
+        </div>
+      )}
+    </>
   );
 }

@@ -14,7 +14,7 @@ export function PaymentSuccess({ onBack }: { onBack: () => void }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden pt-16">
+    <div className="min-h-screen bg-transparent relative overflow-hidden pt-16">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl shadow-red-900/10 p-8 sm:p-12 border-2 border-gray-800 text-center">
           {/* Иконка успеха */}
