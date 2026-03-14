@@ -10,7 +10,6 @@ on:
 
 jobs:
   # ========== ТЕСТИРОВАНИЕ ==========
-  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
