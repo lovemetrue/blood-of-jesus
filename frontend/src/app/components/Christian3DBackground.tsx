@@ -1,7 +1,7 @@
 /**
  * 3D background: тёмный CSS-градиент + плавающие 3D объекты (икосаэдры, плоская земля с куполом).
  */
-import React, { useRef, useMemo, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -46,7 +46,7 @@ function FloatingShape({
   );
 }
 
-// Плоская земля: диск + купол (полусфера), на куполе — солнце и луна одинакового размера
+// Плоская земля: диск + купол, на куполе — солнце и луна (луна на 10% меньше солнца)
 function FloatingFlatEarth({
   position,
   rotationSpeed,
@@ -61,8 +61,11 @@ function FloatingFlatEarth({
   const group = useRef<THREE.Group>(null);
   const domeRadius = 1;
   const discHeight = 0.06;
-  const discTopY = discHeight / 0.5;
-  //const domeBaseY= discHeight / 2 + domeRadius / 2;
+  const discTopY = discHeight / 2;
+  const domeMeshY = discTopY;
+
+  const sunRadius = 0.14;
+  const moonRadius = sunRadius * 0.9;
 
   useFrame((_, delta) => {
     if (group.current) {
@@ -72,9 +75,6 @@ function FloatingFlatEarth({
     }
   });
 
-  // Купол: полусфера с основанием ровно на верхней грани диска (y = discTopY).
-  // В Three.js полусфера theta 0..PI/2: основание в local y=0, верх в y=radius. Позиция меша = основание.
-  const domeMeshY = discTopY;
   const toDomeSurface = (theta: number, phi: number) => [
     domeRadius * Math.sin(theta) * Math.sin(phi),
     domeMeshY + domeRadius * Math.cos(theta),
@@ -82,11 +82,9 @@ function FloatingFlatEarth({
   ] as [number, number, number];
   const sunPos = toDomeSurface(0.5, 0.35);
   const moonPos = toDomeSurface(0.55, 2.7);
-  const sunMoonRadius = 0.14;
 
   return (
     <group ref={group} position={position} scale={scale} rotation={[0.6, 0.2, 0]} layers={0}>
-      {/* Диск — плоская земля */}
       <mesh position={[0, 0, 0]}>
         <cylinderGeometry args={[1, 1, discHeight, 32]} />
         <meshBasicMaterial
@@ -97,35 +95,32 @@ function FloatingFlatEarth({
           wireframe
         />
       </mesh>
-      {/* Купол — полусфера вплотную к диску: основание = верх диска */}
       <mesh position={[0, domeMeshY, 0]}>
         <sphereGeometry args={[domeRadius, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.16}
+          opacity={0.12}
           depthWrite={false}
           wireframe
         />
       </mesh>
-      {/* Солнце на куполе */}
       <mesh position={sunPos}>
-        <sphereGeometry args={[sunMoonRadius, 16, 12]} />
+        <sphereGeometry args={[sunRadius, 16, 12]} />
         <meshBasicMaterial
           color="#e8c090"
           transparent
-          opacity={0.58}
+          opacity={0.28}
           depthWrite={false}
           wireframe
         />
       </mesh>
-      {/* Луна на куполе, такой же размер */}
       <mesh position={moonPos}>
-        <sphereGeometry args={[sunMoonRadius, 16, 12]} />
+        <sphereGeometry args={[moonRadius, 16, 12]} />
         <meshBasicMaterial
           color="#a0a0c8"
           transparent
-          opacity={0.25}
+          opacity={0.20}
           depthWrite={false}
           wireframe
         />
@@ -141,12 +136,12 @@ function FloatingShapes() {
         shape="icosahedron"
         position={[3.5, 1.2, -6]}
         rotationSpeed={[0.02, 0.03, 0.01]}
-        color="#c9a0a0"
+        color="#6a5080"
         scale={1.8}
       />
       <FloatingFlatEarth
-        position={[-2.1, -0.8, -5]}
-        rotationSpeed={[-0.015, 0.025, 0.01]}
+        position={[-2.1, -1.4, -5]}
+        rotationSpeed={[0, 0.030, 0.001]}
         color="#a080b0"
         scale={1.2}
       />

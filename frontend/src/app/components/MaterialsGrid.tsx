@@ -1,6 +1,6 @@
 import { Download, Book, FileCheck } from 'lucide-react';
 import { motion } from 'motion/react';
-import { fadeSlideUp, viewportOnce, hoverScale, staggerContainer, staggerItem } from '@/app/motionVariants';
+import { hoverScale } from '@/app/motionVariants';
 
 const materials = [
   {
@@ -45,52 +45,30 @@ export function MaterialsGrid() {
   };
 
   return (
-    <motion.section
+    <section
       id="materials"
       className="py-16 sm:py-20 lg:py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-transparent"
       aria-labelledby="materials-heading"
-      initial={fadeSlideUp.initial}
-      whileInView={fadeSlideUp.inView}
-      viewport={viewportOnce}
-      transition={fadeSlideUp.transition}
     >
       <div className="max-w-[68rem] mx-auto">
         <div className="text-center mb-12 lg:mb-16">
-          <motion.h2
+          <h2
             id="materials-heading"
-            initial={fadeSlideUp.initial}
-            whileInView={fadeSlideUp.inView}
-            viewport={viewportOnce}
-            transition={fadeSlideUp.transition}
             className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3 px-2"
           >
             Материалы для обучения
-          </motion.h2>
-          <motion.p
-            initial={fadeSlideUp.initial}
-            whileInView={fadeSlideUp.inView}
-            viewport={viewportOnce}
-            transition={fadeSlideUp.transition}
-            className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto px-2"
-          >
+          </h2>
+          <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto px-2">
             Бесплатные ресурсы для вашего духовного роста и освобождения
-          </motion.p>
+          </p>
         </div>
 
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-[68rem] mx-auto"
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="inView"
-          viewport={{ once: true, amount: 0.1 }}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-[68rem] mx-auto">
           {materials.map((material) => {
             const Icon = material.icon;
             return (
               <motion.article
                 key={material.id}
-                variants={staggerItem}
-                transition={{ duration: 0.4 }}
                 whileHover={hoverScale.whileHover}
                 whileTap={hoverScale.whileTap}
                 className="bg-gray-900/50 backdrop-blur-sm border-2 border-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 hover:border-[#DC143C] hover:shadow-xl hover:shadow-red-900/20 transition-all duration-300 group flex flex-col h-full"
@@ -122,8 +100,8 @@ export function MaterialsGrid() {
               </motion.article>
             );
           })}
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
