@@ -110,7 +110,7 @@ export function Header() {
     ],
     faith: [
       { label: "В обетования", onClick: () => navigateToPage("/faith/promises") },
-      { label: "Наследие Авраама", onClick: () => navigateToPage("/faith/inheritance") },
+      { label: "В наследие", onClick: () => navigateToPage("/faith/inheritance") },
       { label: "В ожидания Бога", onClick: () => navigateToPage("/faith/expectations") },
     ],
     covenant: [
