@@ -45,7 +45,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/#materials" className="text-red-100 hover:text-white transition-colors text-xs">
+                <a href="/materials/guides" className="text-red-100 hover:text-white transition-colors text-xs">
                   Материалы
                 </a>
               </li>

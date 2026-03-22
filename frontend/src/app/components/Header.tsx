@@ -73,7 +73,7 @@ export function Header() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
   // TODO: Раскомментировать когда добавим пожертвования
   // const isOnSubPage = pathname !== '/' && (pathname === '/donations' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
-  const isOnSubPage = pathname !== '/' && (pathname === '/contacts' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/'));
+  const isOnSubPage = pathname !== '/' && (pathname === '/contacts' || pathname === '/documents' || pathname === '/payment/success' || pathname.startsWith('/love/') || pathname.startsWith('/faith/') || pathname.startsWith('/covenant/') || pathname.startsWith('/freedom/') || pathname.startsWith('/materials/'));
 
   const navigateToHome = () => {
     if (isOnSubPage) {
@@ -124,6 +124,11 @@ export function Header() {
       { label: "От демонического угнетения", onClick: () => navigateToPage("/freedom/demonic") },
       { label: "От рабства греха", onClick: () => navigateToPage("/freedom/sin") },
       { label: "От проклятий", onClick: () => navigateToPage("/freedom/curses") },
+    ],
+    materials: [
+      { label: "Руководства", onClick: () => navigateToPage("/materials/guides") },
+      { label: "Молитвы", onClick: () => navigateToPage("/materials/prayers") },
+      { label: "Свидетельства", onClick: () => navigateToPage("/materials/testimonies") },
     ],
   };
 
@@ -195,6 +200,14 @@ export function Header() {
               onMouseLeave={() => setActiveDropdown(null)}
             />
 
+            <DropdownMenu
+              label="Материалы"
+              items={menuItems.materials}
+              isOpen={activeDropdown === "materials"}
+              onMouseEnter={() => setActiveDropdown("materials")}
+              onMouseLeave={() => setActiveDropdown(null)}
+            />
+
             {/* Desktop Action Buttons */}
             <div className="flex items-center gap-2 lg:gap-3 ml-3">
               <a
@@ -232,7 +245,7 @@ export function Header() {
         {/* Mobile Navigation */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isMenuOpen ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
+            isMenuOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <nav className="pb-3 space-y-0.5 pt-1.5">
@@ -377,6 +390,44 @@ export function Header() {
               >
                 <div className="pl-4 space-y-0.5">
                   {menuItems.freedom.map((item, index) => (
+                    <button
+                      key={index}
+                      onClick={item.onClick}
+                      className="block w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-white hover:bg-[#DC143C]/10 rounded-md transition-all duration-200"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Материалы */}
+            <div className="relative">
+              <button
+                onClick={() =>
+                  setActiveDropdown(
+                    activeDropdown === "materials" ? null : "materials"
+                  )
+                }
+                className="flex items-center justify-between w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#DC143C]/20 hover:text-white rounded-md transition-all duration-200"
+              >
+                <span>Материалы</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    activeDropdown === "materials" ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  activeDropdown === "materials"
+                    ? "max-h-[140px] opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="pl-4 space-y-0.5">
+                  {menuItems.materials.map((item, index) => (
                     <button
                       key={index}
                       onClick={item.onClick}

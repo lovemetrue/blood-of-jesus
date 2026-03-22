@@ -1,6 +1,8 @@
 import { Header } from "@/app/components/Header";
 import { Hero } from "@/app/components/Hero";
-import { MaterialsGrid } from "@/app/components/MaterialsGrid";
+import { MaterialsGuidePage } from "@/app/components/MaterialsGuidePage";
+import { MaterialsPrayersPage } from "@/app/components/MaterialsPrayersPage";
+import { MaterialsTestimonyPage } from "@/app/components/MaterialsTestimonyPage";
 import { AboutUsSection } from "@/app/components/AboutUsSection";
 import { ContactsPage } from "@/app/components/ContactsPage";
 import { DocumentsPage } from "@/app/components/DocumentsPage";
@@ -184,11 +186,11 @@ export default function App() {
       ? `max(100vh, ${Math.max(contentColumnHeight, sentinelBottom)}px)`
       : "100vh";
 
-  // Прокрутка к секции при переходе по ссылке с хешем (/#materials, /#about)
+  // Прокрутка к секции при переходе по ссылке с хешем (/#about, /#home)
   useEffect(() => {
     if (showDocuments || showContacts || showDonations || showPaymentSuccess || contentPagePath) return;
     const hash = window.location.hash.slice(1);
-    if (hash === 'materials' || hash === 'about' || hash === 'home') {
+    if (hash === 'about' || hash === 'home') {
       const timer = setTimeout(() => {
         document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -290,7 +292,7 @@ export default function App() {
 
     const handleMenuContentLink = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const link = target.closest('a[href^="/love/"], a[href^="/faith/"], a[href^="/covenant/"], a[href^="/freedom/"]');
+      const link = target.closest('a[href^="/love/"], a[href^="/faith/"], a[href^="/covenant/"], a[href^="/freedom/"], a[href^="/materials/"]');
       if (link) {
         const href = (link as HTMLAnchorElement).getAttribute('href');
         if (href && isMenuContentRoute(href)) {
@@ -306,7 +308,7 @@ export default function App() {
 
     const handleHomeLink = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const link = target.closest('a[href="/"], a[href="/#materials"], a[href="/#about"], a[href="/#home"]');
+      const link = target.closest('a[href="/"], a[href="/#about"], a[href="/#home"]');
       if (link) {
         e.preventDefault();
         setShowDocuments(false);
@@ -316,7 +318,7 @@ export default function App() {
         const href = (link as HTMLAnchorElement).getAttribute('href') || '/';
         window.history.pushState({}, '', href);
         const hash = href.includes('#') ? href.split('#')[1] : '';
-        if (hash && (hash === 'materials' || hash === 'about' || hash === 'home')) {
+        if (hash && (hash === 'about' || hash === 'home')) {
           setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' }), 100);
         }
       }
@@ -389,6 +391,12 @@ export default function App() {
         return <FreedomDemonicPage onBack={onBack} />;
       case "/freedom/sin":
         return <PlaceholderPage title="От рабства греха" onBack={onBack} />;
+      case "/materials/guides":
+        return <MaterialsGuidePage onBack={onBack} />;
+      case "/materials/prayers":
+        return <MaterialsPrayersPage onBack={onBack} />;
+      case "/materials/testimonies":
+        return <MaterialsTestimonyPage onBack={onBack} />;
       default:
         return null;
     }
@@ -445,7 +453,6 @@ export default function App() {
               {!showPaymentSuccess && !showDocuments && !showContacts && !contentPagePath && (
                 <main>
                   <Hero />
-                  <MaterialsGrid />
                   <AboutUsSection />
                 </main>
               )}

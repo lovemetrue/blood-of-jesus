@@ -101,7 +101,7 @@ export function FreedomDemonicPage({ onBack }: { onBack: () => void }) {
         </li>
         <li className={step}>
           <span className={emoji}>💔</span>
-          <span className={block}>молитва разрушения нечестивых душевных связей (статья «ДУШЕВНЫЕ СВЯЗИ» в <a href="/Руководство_по_освобождению_Джон_Экхарт.docx" download="Руководство_по_освобождению_Джон_Экхарт.docx" className="text-[#DC143C] hover:underline underline-offset-2">руководстве</a>)</span>
+          <span className={block}>молитва разрушения нечестивых душевных связей (статья «ДУШЕВНЫЕ СВЯЗИ» в <a href="/materials/Руководство_по_освобождению_Джон_Экхарт.docx" download="Руководство_по_освобождению_Джон_Экхарт.docx" className="text-[#DC143C] hover:underline underline-offset-2">руководстве</a>)</span>
         </li>
         <li className={step}>
           <span className={emoji}>🔨</span>

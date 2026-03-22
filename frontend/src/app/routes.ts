@@ -16,6 +16,9 @@ export const MENU_CONTENT_ROUTES = [
   "/freedom/demonic",
   "/freedom/sin",
   "/freedom/curses",
+  "/materials/guides",
+  "/materials/prayers",
+  "/materials/testimonies",
 ] as const;
 
 export type MenuContentRoute = (typeof MENU_CONTENT_ROUTES)[number];

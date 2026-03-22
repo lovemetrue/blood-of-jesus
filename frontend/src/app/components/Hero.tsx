@@ -37,11 +37,10 @@ export function Hero() {
               Служение освобождения, изгнания демонов и исцеления.
             </motion.p>
             <motion.button
-              onClick={() =>
-                document
-                  .getElementById("materials")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+              onClick={() => {
+                window.history.pushState({}, "", "/materials/guides");
+                window.dispatchEvent(new PopStateEvent("popstate"));
+              }}
               whileHover={hoverScaleCrimson.whileHover}
               whileTap={hoverScaleCrimson.whileTap}
               transition={hoverScaleCrimson.transition}
