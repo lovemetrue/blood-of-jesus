@@ -2,6 +2,7 @@ import { Heart, Shield, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import heroImage from "@/assets/logo-4fS-_4Sj.png.jpeg";
 import { fadeSlideUp, viewportOnce, hoverScaleCrimson, hoverScale, staggerContainer, staggerItem } from "@/app/motionVariants";
+import BorderGlow from "./BorderGlow";
 
 export function Hero() {
   return (
@@ -58,11 +59,25 @@ export function Hero() {
             transition={fadeSlideUp.transition}
           >
             <div className="transform origin-center w-full flex justify-center lg:justify-end">
-              <img
-                src={heroImage}
-                alt="Агнец Божий - Агнус Деи, несущий крест и знамя с надписью 'Вот Агнец Божий, Который берет на Себя грех мира'"
-                className="w-full max-w-[405px] h-auto min-h-[158px] sm:min-h-[210px] md:min-h-[240px] lg:min-h-[262px] object-cover rounded-xl shadow-2xl shadow-red-900/30"
-              />
+              <BorderGlow
+                edgeSensitivity={30}
+                glowColor="210 90 96"
+                backgroundColor="transparent"
+                borderRadius={16}
+                glowRadius={36}
+                glowIntensity={1}
+                coneSpread={24}
+                animated={false}
+                colors={["#93c5fd", "#c4b5fd", "#f9a8d4"]}
+                fillOpacity={0.3}
+                className="w-full max-w-[405px]"
+              >
+                <img
+                  src={heroImage}
+                  alt="Агнец Божий - Агнус Деи, несущий крест и знамя с надписью 'Вот Агнец Божий, Который берет на Себя грех мира'"
+                  className="w-full h-auto min-h-[158px] sm:min-h-[210px] md:min-h-[240px] lg:min-h-[262px] object-cover rounded-xl shadow-2xl shadow-red-900/30"
+                />
+              </BorderGlow>
             </div>
           </motion.div>
         </div>
