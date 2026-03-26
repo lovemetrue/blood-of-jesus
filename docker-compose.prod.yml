@@ -4,7 +4,7 @@
 # network_mode: host для backend — нужен IPv6 для SMTP Яндекса (IPv4 заблокирован провайдером)
 services:
   db:
-    image: postgres:16-alpine
+    image: dhi.io/postgres:17-alpine3.22
     container_name: bloodofjesus-db
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -21,7 +21,7 @@ services:
       retries: 5
 
   valkey:
-    image: valkey/valkey:7.2-alpine
+    image: valkey/valkey:7.2-alpine3.23
     container_name: bloodofjesus-valkey
     ports:
       - "127.0.0.1:6379:6379"
@@ -67,8 +67,42 @@ services:
     depends_on:
       - backend
 
+  # Лёгкий сканер CVE для образов стека (Trivy). Не стартует с `up` — только с профилем scan.
+  # Запуск на ВМ: docker compose -f docker-compose.prod.yml --profile scan run --rm trivy-scan
+  # В cron (раз в сутки): 0 4 * * * cd /path/to/project && docker compose -f docker-compose.prod.yml --profile scan run --rm trivy-scan >> /var/log/trivy-bloodofjesus.log 2>&1
+  trivy-scan:
+    image: aquasec/trivy:0.58.2
+    container_name: bloodofjesus-trivy-scan
+    profiles: ["scan"]
+    env_file:
+      - .env
+    environment:
+      TRIVY_CACHE_DIR: /root/.cache/trivy
+      TRIVY_TIMEOUT: 10m
+    volumes:
+      - trivy_cache:/root/.cache/trivy
+      - ./trivy-reports:/reports
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        mkdir -p /reports
+        TS="$$(date -u +%Y%m%dT%H%M%SZ)"
+        REPORT_PATH="/reports/trivy_$${TS}.txt"
+        echo "Writing report to: $${REPORT_PATH}"
+        echo "=== Backend ${DOCKERHUB_IMAGE}-backend:${IMAGE_TAG} ==="
+        trivy image --scanners vuln --no-progress --exit-code 0 --severity HIGH,CRITICAL "${DOCKERHUB_IMAGE}-backend:${IMAGE_TAG}" | tee -a "$${REPORT_PATH}"
+        echo "=== Frontend ${DOCKERHUB_IMAGE}-frontend:${IMAGE_TAG} ==="
+        trivy image --scanners vuln --no-progress --exit-code 0 --severity HIGH,CRITICAL "${DOCKERHUB_IMAGE}-frontend:${IMAGE_TAG}" | tee -a "$${REPORT_PATH}"
+        echo "=== postgres:16-alpine3.23 ==="
+        trivy image --scanners vuln --no-progress --exit-code 0 --severity HIGH,CRITICAL postgres:16-alpine3.23 | tee -a "$${REPORT_PATH}"
+        echo "=== valkey/valkey:7.2-alpine3.23 ==="
+        trivy image --scanners vuln --no-progress --exit-code 0 --severity HIGH,CRITICAL valkey/valkey:7.2-alpine3.23 | tee -a "$${REPORT_PATH}"
+        echo "=== Готово ==="
+
 volumes:
   postgres_data:
   static_volume:
   media_volume:
   valkey_data:
+  trivy_cache:

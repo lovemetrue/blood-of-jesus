@@ -18,7 +18,7 @@ npm install
 npm run dev
 ```
 
-Сайт: http://localhost:5173
+Сайт: [http://localhost:5173](http://localhost:5173)
 
 ### Фронтенд + бэкенд (Docker)
 
@@ -33,16 +33,24 @@ DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose build
 docker compose up -d
 ```
 
-- Сайт: http://localhost:8080  
-- Бэкенд/API: http://localhost:8000  
+- Сайт: [http://localhost:8080](http://localhost:8080)  
+- Бэкенд/API: [http://localhost:8000](http://localhost:8000)  
 - Миграции: `docker compose exec backend python manage.py migrate`  
 - Суперпользователь: `docker compose exec backend python manage.py createsuperuser`
 
 ## Деплой
 
 - Настройка сервера и деплой: см. [deploy/DEPLOY.md](deploy/DEPLOY.md)
-- ЮKassa (вебхуки): [YOOKASSA_WEBHOOK_SETUP.md](YOOKASSA_WEBHOOK_SETUP.md)
 
-## Лицензия и атрибуты
+## Security: сканирование образов (Trivy)
 
-См. [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+В `docker-compose.prod.yml` есть сервис `trivy-scan` (профиль `scan`). Он сканирует прод-образы backend/frontend и базовые образы `postgres`/`valkey` на **HIGH/CRITICAL**.
+
+Запуск (на сервере, из папки с `docker-compose.prod.yml`):
+
+```bash
+docker compose -f docker-compose.prod.yml --profile scan run --rm trivy-scan
+```
+
+Отчёты сохраняются в `./trivy-reports/` (внутри проекта) с именами вида `trivy_YYYYMMDDTHHMMSSZ.txt`.
+

@@ -58,6 +58,36 @@ docker-compose exec backend python manage.py createsuperuser
 certbot --nginx -d bloodofjesus.ru -d www.bloodofjesus.ru
 ```
 
+## Trivy (сканирование уязвимостей образов)
+
+В `docker-compose.prod.yml` есть сервис `trivy-scan` под профилем `scan`. Он:
+- сканирует образы `backend`/`frontend` (по `DOCKERHUB_IMAGE`/`IMAGE_TAG` из `.env`)
+- сканирует базовые `postgres`/`valkey`
+- сохраняет отчёт в папку `./trivy-reports/` на сервере
+
+Ручной запуск:
+
+```bash
+cd /var/www/bloodofjesus
+docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml --profile scan run --rm trivy-scan
+ls -la trivy-reports/
+```
+
+Регулярный запуск (cron, пример раз в сутки в 04:00 UTC):
+
+```bash
+crontab -e
+```
+
+Добавьте строку:
+
+```bash
+0 4 * * * cd /var/www/bloodofjesus && docker compose -f docker-compose.prod.yml --profile scan run --rm trivy-scan >> /var/log/trivy-bloodofjesus.log 2>&1
+```
+
+Если нужен «строгий» режим (падать при HIGH/CRITICAL) — в команде Trivy замените `--exit-code 0` на `--exit-code 1`.
+
 ## Настройка DNS
 
 Добавьте A-записи для bloodofjesus.ru и www.bloodofjesus.ru на IP: 85.198.81.59
