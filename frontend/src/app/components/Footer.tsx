@@ -1,4 +1,5 @@
 import { Youtube, Send, Mail, Phone, MapPin, FileText } from "lucide-react";
+import saintPetersburgMap from "../../assets/saint_petersburg_midnight_blue_20260325_162812.png";
 
 export function Footer() {
   return (

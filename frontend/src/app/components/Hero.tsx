@@ -47,7 +47,7 @@ export function Hero() {
               transition={hoverScaleCrimson.transition}
               className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm bg-[#DC143C] text-white rounded-full hover:bg-[#FF1744] transition-colors shadow-lg hover:shadow-xl shadow-red-900/50"
             >
-              Начать обучение
+              Начать сражение
             </motion.button>
           </div>
 

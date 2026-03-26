@@ -254,7 +254,7 @@ function TwinkleField() {
       </bufferGeometry>
       <pointsMaterial
         color="#dbe4ff"
-        size={0.032}
+        size={0.0132}
         sizeAttenuation
         map={starTexture}
         alphaMap={starTexture}
