@@ -8,7 +8,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:1.27-alpine3.23
+FROM nginx:1.27-alpine
 
 # Подтягиваем security-fix'ы Alpine пакетов (zlib/expat и т.п.)
 RUN apk --no-cache upgrade
