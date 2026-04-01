@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16-alpine
+        image: dhi.io/postgres:17-alpine3.22
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -91,6 +91,22 @@ jobs:
           path: |
             backend/coverage.xml
             backend/.coverage
+
+  dependency-submission:
+    # ========== DEPENDENCY SUBMISSION (DEPENDABOT ALERTS) ==========
+    # Нативная подача зависимостей в GitHub Dependency Graph на каждый push,
+    # чтобы Dependabot alerts были максимально точными без PR-флоу.
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Component detection (dependency submission)
+        uses: advanced-security/component-detection-dependency-submission-action@v0.1.1
 
   # ========== СБОРКА И ПУШ В DOCKER HUB ==========
   build-and-push:
