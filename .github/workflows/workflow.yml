@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: dhi.io/postgres:17-alpine3.22
+        image: postgres:17-alpine3.22
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
