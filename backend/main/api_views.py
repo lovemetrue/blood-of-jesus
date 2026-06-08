@@ -45,11 +45,11 @@ def _send_contact_notifications(contact):
         pass
 
     # Автоответ отправителю
-    subject_reply = 'Служение «Кровь Иисуса» — благодарим за обращение'
+    subject_reply = 'Служение: «Кровь Христа» — благодарим за обращение'
     body_reply = (
         f'Здравствуйте, {contact.name}!\n\n'
         'Мы очень рады помогать телу Христа и благодарим вас за доверие — до скорой встречи!\n\n'
-        'С уважением,\nСлужение «Кровь Иисуса»'
+        'С уважением,\nСлужение: «Кровь Христа»'
     )
     try:
         send_mail(
@@ -188,7 +188,7 @@ def yokassa_webhook(request):
                                 f'Здравствуйте!\n\n'
                                 f'Благодарим вас за пожертвование в размере {donation.amount} руб.\n\n'
                                 f'Ваше пожертвование поможет нам распространять Евангелие свободы и исцеления.\n\n'
-                                f'С уважением,\nСлужение «Кровь Иисуса»'
+                                f'С уважением,\nСлужение: «Кровь Христа»'
                             ),
                             from_email=settings.DEFAULT_FROM_EMAIL,
                             recipient_list=[donation.email],
@@ -284,7 +284,7 @@ def create_donation(request):
             payment = create_yookassa_payment(
                 amount=amount,
                 donation_id=donation.id,
-                description='Пожертвование на служение «Кровь Иисуса»',
+                description='Пожертвование на Служение: «Кровь Христа»',
                 email=email,
                 payment_method=payment_method
             )
@@ -298,7 +298,7 @@ def create_donation(request):
                     payment = create_yookassa_payment(
                         amount=amount,
                         donation_id=donation.id,
-                        description='Пожертвование на служение «Кровь Иисуса»',
+                        description='Пожертвование на Служение: «Кровь Христа»',
                         email=email,
                         payment_method='card'
                     )

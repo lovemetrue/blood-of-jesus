@@ -78,7 +78,7 @@ def create_yookassa_payment(amount, donation_id, description, email=None, idempo
         payment_data["receipt"] = {
             "customer": {"email": email},
             "items": [{
-                "description": "Пожертвование на служение «Кровь Иисуса»",
+                "description": "Пожертвование на Служение: «Кровь Христа»",
                 "quantity": "1.00",
                 "amount": {
                     "value": f"{amount:.2f}",
@@ -117,7 +117,7 @@ def create_donation(request):
             payment = create_yookassa_payment(
                 amount=amount,
                 donation_id=donation.id,
-                description='Пожертвование на служение',
+                description='Пожертвование на Служение освобождения',
                 email=email
             )
             donation.payment_id = payment.id

@@ -147,7 +147,7 @@ export function Header() {
             >
               <img
                 src={logo}
-                alt="Кровь и вода"
+                alt="Кровь Христа - Служение освобождения"
                 className="h-12 w-auto"
               />
             </a>

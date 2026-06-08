@@ -80,7 +80,7 @@ export function DonationSection() {
             <Heart className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
           </div>
           <h2 id="donations-heading" className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 px-2">
-            Поддержать служение
+            Поддержать Служение освобождения
           </h2>
           <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto px-2">
             Ваши пожертвования помогают распространять Евангелие свободы и исцеления для тех, кто в этом нуждается
