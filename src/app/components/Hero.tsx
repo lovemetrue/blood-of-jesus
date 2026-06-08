@@ -17,8 +17,7 @@ export function Hero() {
               вот Агнец Божий, Который берет на Себя грех мира
             </h1>
             <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
-              Служение освобождения, изгнания демонов
-              и исцеления через любовь силу Святого Духа
+              Служение освобождения
             </p>
             <button
               onClick={() =>

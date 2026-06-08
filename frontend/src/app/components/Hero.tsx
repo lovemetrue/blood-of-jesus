@@ -35,7 +35,7 @@ export function Hero() {
               transition={fadeSlideUp.transition}
               className="text-sm sm:text-base text-gray-300 leading-relaxed"
             >
-              Служение освобождения, изгнания демонов и исцеления.
+              Служение освобождения
             </motion.p>
             <motion.button
               onClick={() => {
