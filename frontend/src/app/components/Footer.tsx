@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-lg font-bold mb-3">
-              Служение: «Кровь Христа»
+              Служение освобождения: «Кровь Христа»
             </h3>
             <p className="text-red-100 leading-relaxed text-xs mb-3">
               Освобождение и восстановления через любовь Иисуса Христа.
