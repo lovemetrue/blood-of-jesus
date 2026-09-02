@@ -1,42 +1,32 @@
 import { Heart, Shield, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import heroImage from "@/assets/logo-4fS-_4Sj.png.jpeg";
-import { fadeSlideUp, viewportOnce, hoverScaleCrimson, hoverScale, staggerContainer, staggerItem } from "@/app/motionVariants";
+import { hoverScaleCrimson, hoverScale, staggerContainer, staggerItem } from "@/app/motionVariants";
 import BorderGlow from "./BorderGlow";
 
+// Первый экран рисуется сразу, без проявления из opacity: 0. Появление «по
+// попаданию во вьюпорт» здесь означало бы, что заголовок и картинка невидимы
+// до первого срабатывания IntersectionObserver — на медленной загрузке это
+// читается как пустая страница. Скролл-ревил оставлен блоку с преимуществами:
+// он лежит ниже сгиба, там анимация и должна быть.
 export function Hero() {
   return (
-    <motion.section
+    <section
       id="home"
       className="pt-16 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24 bg-transparent mt-0"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <div className="max-w-[68rem] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
         {/* Hero with Image */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-12 lg:mb-16">
           <div className="order-2 lg:order-1 space-y-4 sm:space-y-5 lg:space-y-6">
-            <motion.h1
-              initial={fadeSlideUp.initial}
-              whileInView={fadeSlideUp.inView}
-              viewport={viewportOnce}
-              transition={{ ...fadeSlideUp.transition, duration: 0.45 }}
-              className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-white leading-tight"
-            >
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-white leading-tight">
               На другой день видит Иоанн идущего к нему Иисуса и говорит:
               <br />
               вот Агнец Божий, Который берет на Себя грех мира
-            </motion.h1>
-            <motion.p
-              initial={fadeSlideUp.initial}
-              whileInView={fadeSlideUp.inView}
-              viewport={viewportOnce}
-              transition={fadeSlideUp.transition}
-              className="text-sm sm:text-base text-gray-300 leading-relaxed"
-            >
+            </h1>
+            <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
               Служение освобождения
-            </motion.p>
+            </p>
             <motion.button
               onClick={() => {
                 window.history.pushState({}, "", "/materials/guides");
@@ -51,13 +41,7 @@ export function Hero() {
             </motion.button>
           </div>
 
-          <motion.div
-            className="order-1 lg:order-2 flex justify-center lg:justify-end"
-            initial={fadeSlideUp.initial}
-            whileInView={fadeSlideUp.inView}
-            viewport={viewportOnce}
-            transition={fadeSlideUp.transition}
-          >
+          <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
             <div className="transform origin-center w-full flex justify-center lg:justify-end">
               <BorderGlow
                 edgeSensitivity={30}
@@ -72,14 +56,21 @@ export function Hero() {
                 fillOpacity={0.3}
                 className="w-full max-w-[405px]"
               >
+                {/* LCP-элемент первого экрана: width/height задают пропорцию,
+                    чтобы место под картинку резервировалось до её загрузки,
+                    fetchpriority поднимает её в очереди запросов. */}
                 <img
                   src={heroImage}
                   alt="Агнец Божий - Агнус Деи, несущий крест и знамя с надписью 'Вот Агнец Божий, Который берет на Себя грех мира'"
+                  width={652}
+                  height={900}
+                  fetchpriority="high"
+                  decoding="async"
                   className="w-full h-auto min-h-[158px] sm:min-h-[210px] md:min-h-[240px] lg:min-h-[262px] object-cover rounded-xl shadow-2xl shadow-red-900/30"
                 />
               </BorderGlow>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Features */}
@@ -142,6 +133,6 @@ export function Hero() {
           </motion.div>
         </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 }

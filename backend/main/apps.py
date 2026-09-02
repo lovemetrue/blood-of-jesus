@@ -7,5 +7,6 @@ class MainConfig(AppConfig):
     verbose_name = 'Основное приложение'
 
     def ready(self):
-        """Импортируем сигналы при запуске приложения"""
+        """Импортируем сигналы и проверки конфигурации при запуске приложения"""
         import main.signals  # noqa
+        import main.checks  # noqa

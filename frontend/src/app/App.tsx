@@ -21,96 +21,111 @@ import { LoveNeighborPage } from "@/app/components/LoveNeighborPage";
 import { FreedomDemonicPage } from "@/app/components/FreedomDemonicPage";
 import { PlaceholderPage } from "@/app/components/PlaceholderPage";
 import { Footer } from "@/app/components/Footer";
-import { Christian3DBackground } from "@/app/components/Christian3DBackground";
 import { SEOHead } from "@/app/components/SEOHead";
 import { DEFAULT_KEYWORDS, getSEOForPath } from "@/app/seo";
 import { isMenuContentRoute } from "@/app/routes";
 import { pageTransition } from "@/app/motionVariants";
 import { motion, AnimatePresence } from "motion/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
+
+// three.js + @react-three/fiber — это ~900 КБ из бандла. В критическом пути им
+// делать нечего: градиент фона уже нарисован на body из CSS, а звёздное поле
+// подгружается отдельным чанком и проявляется, когда будет готово.
+const Christian3DBackground = lazy(() =>
+  import("@/app/components/Christian3DBackground").then((m) => ({ default: m.Christian3DBackground }))
+);
 
 const goHome = () => window.history.pushState({}, "", "/");
 
+type Route =
+  | { kind: "home" }
+  | { kind: "documents" }
+  | { kind: "contacts" }
+  | { kind: "payment" }
+  | { kind: "content"; path: string };
+
+const HOME: Route = { kind: "home" };
+
+/**
+ * Разбирает текущий URL в маршрут. Одна функция на все три точки входа
+ * (первый рендер, popstate, клики по ссылкам) — раньше эта развилка была
+ * скопирована дважды и разъезжалась при правках.
+ */
+function resolveRoute(): Route {
+  const pathname = window.location.pathname.replace(/\/$/, "") || "/";
+  const { hash, search } = window.location;
+
+  if (pathname === "/documents" || hash === "#documents") return { kind: "documents" };
+  if (pathname === "/contacts") return { kind: "contacts" };
+  if (pathname === "/payment/success" || search.includes("donation=success")) return { kind: "payment" };
+  if (isMenuContentRoute(pathname)) return { kind: "content", path: pathname };
+  return HOME;
+}
+
+/** Пожертвования временно отключены: /donations уводим на главную. */
+function isDisabledDonationRoute() {
+  const pathname = window.location.pathname.replace(/\/$/, "") || "/";
+  return pathname === "/donations" || window.location.hash === "#donations";
+}
+
+/** Убирает хвостовой слэш, кроме корня. Вызывается до первого рендера. */
+function normalizeUrl() {
+  const path = window.location.pathname;
+  if (path !== "/" && path.endsWith("/")) {
+    window.history.replaceState({}, "", path.slice(0, -1) + window.location.search + window.location.hash);
+  }
+}
+
 export default function App() {
-  const [showDocuments, setShowDocuments] = useState(false);
-  const [showContacts, setShowContacts] = useState(false);
+  // Маршрут вычисляется синхронно в первом же рендере. Когда это делалось в
+  // useEffect, любая прямая ссылка успевала отрисовать главную и только потом
+  // уезжала в переход на нужный раздел — лишний кадр и лишняя анимация.
+  const [route, setRoute] = useState<Route>(() => {
+    if (typeof window === "undefined") return HOME;
+    normalizeUrl();
+    return resolveRoute();
+  });
   // TODO: Раскомментировать когда добавим пожертвования
-  // const [showDonations, setShowDonations] = useState(false);
   const showDonations = false; // Временно отключено
-  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
-  const [contentPagePath, setContentPagePath] = useState<string | null>(null);
+  const showDocuments = route.kind === "documents";
+  const showContacts = route.kind === "contacts";
+  const showPaymentSuccess = route.kind === "payment";
+  const contentPagePath = route.kind === "content" ? route.path : null;
   const contentColumnRef = useRef<HTMLDivElement>(null);
   const [contentColumnHeight, setContentColumnHeight] = useState(0);
   const [sentinelBottom, setSentinelBottom] = useState(0);
   const SENTINEL_ID = "content-end-sentinel";
 
   useEffect(() => {
-    // Нормализуем URL при загрузке (убираем trailing slash, кроме корня)
-    const currentPath = window.location.pathname;
-    if (currentPath !== '/' && currentPath.endsWith('/')) {
-      const normalizedPath = currentPath.slice(0, -1);
-      window.history.replaceState({}, '', normalizedPath + window.location.search + window.location.hash);
-    }
-    
-    // Проверяем URL для открытия страницы документов
-    // Нормализуем pathname (убираем trailing slash)
-    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-    const hash = window.location.hash;
-    const search = window.location.search;
-    
-    if (pathname === '/documents' || hash === '#documents') {
-      setShowDocuments(true);
-      setShowContacts(false);
-      setShowPaymentSuccess(false);
-      setContentPagePath(null);
-    } else if (pathname === '/contacts') {
-      setShowContacts(true);
-      setShowDocuments(false);
-      setShowPaymentSuccess(false);
-      setContentPagePath(null);
-    } else if (pathname === '/donations' || hash === '#donations') {
-      // TODO: Раскомментировать когда добавим пожертвования
-      // setShowDonations(true);
-      // setShowDocuments(false);
-      // setShowPaymentSuccess(false);
-      // setContentPagePath(null);
-      // Временно перенаправляем на главную
-      window.location.href = '/';
-    } else if (pathname === '/payment/success' || search.includes('donation=success')) {
-      setShowPaymentSuccess(true);
-      setShowDocuments(false);
-      setShowContacts(false);
-      setContentPagePath(null);
-    } else if (isMenuContentRoute(pathname)) {
-      setContentPagePath(pathname);
-      setShowDocuments(false);
-      setShowContacts(false);
-      setShowPaymentSuccess(false);
-    } else {
-      setShowDocuments(false);
-      setShowContacts(false);
-      setShowPaymentSuccess(false);
-      setContentPagePath(null);
-    }
+    if (isDisabledDonationRoute()) window.location.href = "/";
+  }, []);
 
-    // Русскоязычные сообщения валидации для обязательных полей
-    const inputs = document.querySelectorAll('input[required], textarea[required]');
-    inputs.forEach((input) => {
-      (input as HTMLInputElement).addEventListener('invalid', function(e) {
-        e.preventDefault();
-        if (!(e.target as HTMLInputElement).validity.valid) {
-          if ((e.target as HTMLInputElement).validity.valueMissing) {
-            (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, заполните это поле');
-          } else if ((e.target as HTMLInputElement).validity.typeMismatch && (e.target as HTMLInputElement).type === 'email') {
-            (e.target as HTMLInputElement).setCustomValidity('Пожалуйста, введите корректный email адрес');
-          }
-        }
-      });
-      
-      (input as HTMLInputElement).addEventListener('input', function() {
-        (this as HTMLInputElement).setCustomValidity('');
-      });
-    });
+  useEffect(() => {
+    // Русскоязычные сообщения валидации. Через делегирование на document, а не
+    // обходом input[required] при монтировании: формы появляются позже (форма
+    // обратной связи живёт на /contacts), и разовый обход их не видел.
+    // Событие invalid не всплывает — слушаем в фазе перехвата.
+    const onInvalid = (e: Event) => {
+      const field = e.target as HTMLInputElement | HTMLTextAreaElement | null;
+      if (!field || !("validity" in field) || field.validity.valid) return;
+      e.preventDefault();
+      if (field.validity.valueMissing) {
+        field.setCustomValidity("Пожалуйста, заполните это поле");
+      } else if (field.validity.typeMismatch && (field as HTMLInputElement).type === "email") {
+        field.setCustomValidity("Пожалуйста, введите корректный email адрес");
+      }
+    };
+    const onInput = (e: Event) => {
+      const field = e.target as HTMLInputElement | HTMLTextAreaElement | null;
+      if (field && "setCustomValidity" in field) field.setCustomValidity("");
+    };
+
+    document.addEventListener("invalid", onInvalid, true);
+    document.addEventListener("input", onInput, true);
+    return () => {
+      document.removeEventListener("invalid", onInvalid, true);
+      document.removeEventListener("input", onInput, true);
+    };
   }, []);
 
   // Высота обёртки фона: максимум из scrollHeight колонки и нижней границы маячка после футера
@@ -201,45 +216,11 @@ export default function App() {
   // Обработчик изменений истории браузера (назад/вперед)
   useEffect(() => {
     const handlePopState = () => {
-      // Нормализуем pathname (убираем trailing slash)
-      const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-      const hash = window.location.hash;
-      const search = window.location.search;
-      
-      if (pathname === '/documents' || hash === '#documents') {
-        setShowDocuments(true);
-        setShowContacts(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
-      } else if (pathname === '/contacts') {
-        setShowContacts(true);
-        setShowDocuments(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
-      } else if (pathname === '/donations' || hash === '#donations') {
-        // TODO: Раскомментировать когда добавим пожертвования
-        // setShowDonations(true);
-        // setShowDocuments(false);
-        // setShowPaymentSuccess(false);
-        // setContentPagePath(null);
-        // Временно перенаправляем на главную
-        window.location.href = '/';
-      } else if (pathname === '/payment/success' || search.includes('donation=success')) {
-        setShowPaymentSuccess(true);
-        setShowDocuments(false);
-        setShowContacts(false);
-        setContentPagePath(null);
-      } else if (isMenuContentRoute(pathname)) {
-        setContentPagePath(pathname);
-        setShowDocuments(false);
-        setShowContacts(false);
-        setShowPaymentSuccess(false);
-      } else {
-        setShowDocuments(false);
-        setShowContacts(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
+      if (isDisabledDonationRoute()) {
+        window.location.href = "/";
+        return;
       }
+      setRoute(resolveRoute());
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -248,120 +229,75 @@ export default function App() {
     };
   }, []);
 
-  // Обработчик клика на ссылку документов и контактов
+  // Перехват кликов по внутренним ссылкам: один делегированный обработчик на
+  // document вместо четырёх, каждый из которых заново обходил дерево через
+  // closest на каждый клик по странице.
   useEffect(() => {
-    const handleDocumentLink = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href="/documents"]');
-      if (link) {
-        e.preventDefault();
-        setShowDocuments(true);
-        setShowContacts(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
-        window.history.pushState({}, '', '/documents');
+    const MENU_CONTENT_SELECTOR =
+      'a[href^="/love/"], a[href^="/faith/"], a[href^="/covenant/"], a[href^="/freedom/"], a[href^="/materials/"]';
+    const SELECTOR = [
+      'a[href="/documents"]',
+      'a[href="/contacts"]',
+      'button[data-contacts-link]',
+      'a[href="/"]',
+      'a[href="/#about"]',
+      'a[href="/#home"]',
+      MENU_CONTENT_SELECTOR,
+    ].join(', ');
+
+    const handleClick = (e: MouseEvent) => {
+      // Не перехватываем модифицированные клики и не-левую кнопку: открытие
+      // в новой вкладке должно работать как обычная ссылка.
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const el = (e.target as HTMLElement | null)?.closest<HTMLElement>(SELECTOR);
+      if (!el) return;
+
+      const href = el.getAttribute('href') ?? (el.matches('button[data-contacts-link]') ? '/contacts' : null);
+      if (!href) return;
+
+      let next: Route;
+      if (href === '/documents') next = { kind: 'documents' };
+      else if (href === '/contacts') next = { kind: 'contacts' };
+      else if (isMenuContentRoute(href)) next = { kind: 'content', path: href };
+      else next = HOME;
+
+      e.preventDefault();
+      setRoute(next);
+      window.history.pushState({}, '', href);
+
+      const hash = href.includes('#') ? href.split('#')[1] : '';
+      if (hash === 'about' || hash === 'home') {
+        setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' }), 100);
       }
     };
 
-    const handleContactsLink = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href="/contacts"], button[data-contacts-link]');
-      if (link) {
-        e.preventDefault();
-        setShowContacts(true);
-        setShowDocuments(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
-        window.history.pushState({}, '', '/contacts');
-      }
-    };
-
-    // TODO: Раскомментировать когда добавим пожертвования
-    // const handleDonationLink = (e: MouseEvent) => {
-    //   const target = e.target as HTMLElement;
-    //   const link = target.closest('a[href="/donations"], button[data-donation-link]');
-    //   if (link) {
-    //     e.preventDefault();
-    //     setShowDonations(true);
-    //     setShowDocuments(false);
-    //     setShowPaymentSuccess(false);
-    //     setContentPagePath(null);
-    //     window.history.pushState({}, '', '/donations');
-    //   }
-    // };
-
-    const handleMenuContentLink = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href^="/love/"], a[href^="/faith/"], a[href^="/covenant/"], a[href^="/freedom/"], a[href^="/materials/"]');
-      if (link) {
-        const href = (link as HTMLAnchorElement).getAttribute('href');
-        if (href && isMenuContentRoute(href)) {
-          e.preventDefault();
-          setContentPagePath(href);
-          setShowDocuments(false);
-          setShowContacts(false);
-          setShowPaymentSuccess(false);
-          window.history.pushState({}, '', href);
-        }
-      }
-    };
-
-    const handleHomeLink = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href="/"], a[href="/#about"], a[href="/#home"]');
-      if (link) {
-        e.preventDefault();
-        setShowDocuments(false);
-        setShowContacts(false);
-        setShowPaymentSuccess(false);
-        setContentPagePath(null);
-        const href = (link as HTMLAnchorElement).getAttribute('href') || '/';
-        window.history.pushState({}, '', href);
-        const hash = href.includes('#') ? href.split('#')[1] : '';
-        if (hash && (hash === 'about' || hash === 'home')) {
-          setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' }), 100);
-        }
-      }
-    };
-
-    document.addEventListener('click', handleDocumentLink);
-    document.addEventListener('click', handleContactsLink);
-    document.addEventListener('click', handleMenuContentLink);
-    document.addEventListener('click', handleHomeLink);
-    return () => {
-      document.removeEventListener('click', handleDocumentLink);
-      document.removeEventListener('click', handleContactsLink);
-      document.removeEventListener('click', handleMenuContentLink);
-      document.removeEventListener('click', handleHomeLink);
-    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
   }, []);
 
-  const pageKey = showPaymentSuccess
-    ? "payment"
-    : showDocuments
-      ? "documents"
-      : showContacts
-        ? "contacts"
-        : contentPagePath ?? "home";
+  const pageKey = route.kind === "content" ? route.path : route.kind;
 
-  const seo =
-    showPaymentSuccess
-      ? getSEOForPath("/payment/success")
-      : showDocuments
-        ? getSEOForPath("/documents")
-        : showContacts
-          ? getSEOForPath("/contacts")
-          : contentPagePath
-            ? getSEOForPath(contentPagePath)
-            : getSEOForPath("/");
+  const seo = getSEOForPath(
+    route.kind === "payment"
+      ? "/payment/success"
+      : route.kind === "documents"
+        ? "/documents"
+        : route.kind === "contacts"
+          ? "/contacts"
+          : route.kind === "content"
+            ? route.path
+            : "/"
+  );
+
+  /** Возврат на главную из любого раздела. */
+  const backHome = () => {
+    setRoute(HOME);
+    goHome();
+  };
 
   const renderContentPage = () => {
     if (!contentPagePath) return null;
-    const onBack = () => {
-      setContentPagePath(null);
-      goHome();
-      window.dispatchEvent(new PopStateEvent("popstate"));
-    };
+    const onBack = backHome;
     switch (contentPagePath) {
       case "/faith/inheritance":
         return <HeritagePage onBack={onBack} />;
@@ -407,15 +343,22 @@ export default function App() {
       <SEOHead title={seo.title} description={seo.description} keywords={DEFAULT_KEYWORDS} />
       <div className="min-h-screen overflow-x-hidden">
         <div ref={wrapperRef} className="relative w-full" style={{ minHeight: wrapperMinHeight }}>
-          <Christian3DBackground
-            debug={debug}
-            contentColumnHeight={contentColumnHeight}
-            sentinelBottom={sentinelBottom}
-            wrapperMinHeightPx={Math.max(contentColumnHeight, sentinelBottom)}
-          />
+          {/* Фолбэк — тот же градиент, что и на body: пока грузится чанк с WebGL,
+              слой фона уже на месте и ничего не мигает. */}
+          <Suspense fallback={<div className="site-backdrop absolute inset-0 z-0 w-full" aria-hidden />}>
+            <Christian3DBackground
+              debug={debug}
+              contentColumnHeight={contentColumnHeight}
+              sentinelBottom={sentinelBottom}
+              wrapperMinHeightPx={Math.max(contentColumnHeight, sentinelBottom)}
+            />
+          </Suspense>
           <div ref={contentColumnRef} className="relative z-10">
             <Header />
-          <AnimatePresence mode="wait">
+          {/* initial={false} — первую страницу показываем сразу, без проявления
+              из opacity: 0. Анимация остаётся только на переходах между
+              разделами, где она читается как намеренная. */}
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={pageKey}
               initial={pageTransition.initial}
@@ -423,34 +366,13 @@ export default function App() {
               exit={pageTransition.exit}
               transition={pageTransition.transition}
             >
-              {showPaymentSuccess && (
-                <PaymentSuccess
-                  onBack={() => {
-                    setShowPaymentSuccess(false);
-                    window.history.pushState({}, "", "/");
-                  }}
-                />
-              )}
-              {!showPaymentSuccess && showDocuments && (
-                <DocumentsPage
-                  onBack={() => {
-                    setShowDocuments(false);
-                    goHome();
-                    window.dispatchEvent(new PopStateEvent("popstate"));
-                  }}
-                />
-              )}
-              {!showPaymentSuccess && !showDocuments && showContacts && (
-                <ContactsPage
-                  onBack={() => {
-                    setShowContacts(false);
-                    goHome();
-                    window.dispatchEvent(new PopStateEvent("popstate"));
-                  }}
-                />
-              )}
-              {!showPaymentSuccess && !showDocuments && !showContacts && contentPagePath && renderContentPage()}
-              {!showPaymentSuccess && !showDocuments && !showContacts && !contentPagePath && (
+              {/* Маршруты взаимоисключающие по типу Route, поэтому цепочка
+                  проверок «а не показан ли другой раздел» больше не нужна. */}
+              {route.kind === "payment" && <PaymentSuccess onBack={backHome} />}
+              {route.kind === "documents" && <DocumentsPage onBack={backHome} />}
+              {route.kind === "contacts" && <ContactsPage onBack={backHome} />}
+              {route.kind === "content" && renderContentPage()}
+              {route.kind === "home" && (
                 <main>
                   <Hero />
                   <AboutUsSection />

@@ -294,6 +294,9 @@ export function Christian3DBackground({
 }: Christian3DBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
+  // Канвас пуст, пока WebGL не отдал первый кадр. Показываем его только после
+  // этого — иначе на монтировании поверх готового фона мигает прозрачный слой.
+  const [canvasReady, setCanvasReady] = useState(false);
 
   useEffect(() => {
     if (!debug || !containerRef.current) return;
@@ -307,15 +310,9 @@ export function Christian3DBackground({
 
   return (
     <>
-      <div
-        ref={containerRef}
-        className="absolute inset-0 z-0 w-full"
-        style={{
-          background:
-            "radial-gradient(1000px 600px at 20% 12%, #05070d 0%, rgba(6, 7, 13, 0.035) 42%, transparent 70%), linear-gradient(180deg, #000000 0%, #010102 24%, #080d18 58%, #080913 100%)",
-        }}
-        aria-hidden
-      >
+      {/* Градиент берётся из --site-backdrop: тот же, что уже нарисован на body
+          до загрузки JS. Поэтому монтирование этого слоя визуально незаметно. */}
+      <div ref={containerRef} className="site-backdrop absolute inset-0 z-0 w-full" aria-hidden>
         {debug && (
           <div
             className="absolute left-0 right-0 z-10 h-1 bg-red-500"
@@ -324,11 +321,16 @@ export function Christian3DBackground({
           />
         )}
         <Canvas
-          className="z-[2]"
+          className="z-[2] transition-opacity duration-700"
+          style={{ opacity: canvasReady ? 1 : 0 }}
           camera={{ position: [0, 0, 8], fov: 56 }}
           dpr={[1, 1.5]}
           gl={{ antialias: true, alpha: true }}
           resize={{ debounce: 0 }}
+          onCreated={({ gl }) => {
+            gl.setClearAlpha(0);
+            setCanvasReady(true);
+          }}
         >
           <SceneContent />
         </Canvas>

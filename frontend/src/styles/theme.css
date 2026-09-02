@@ -2,8 +2,18 @@
 
 :root {
   --font-size: 16px;
-  --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
+  /* Сайт всегда тёмный. Если здесь окажется светлый цвет, браузер успеет
+     покрасить белый кадр до монтирования React — то самое «белое моргание».
+     Эти же значения продублированы инлайном в index.html, чтобы первый кадр
+     был тёмным ещё до загрузки этого файла. */
+  --background: #000000;
+  --foreground: oklch(0.985 0 0);
+  /* Единый источник правды для фона сайта: используется и body (до JS),
+     и слоем Christian3DBackground (после монтирования). Значения обязаны
+     совпадать — иначе на монтировании будет заметен скачок цвета. */
+  --site-backdrop:
+    radial-gradient(1000px 600px at 20% 12%, #05070d 0%, rgba(6, 7, 13, 0.035) 42%, transparent 70%),
+    linear-gradient(180deg, #000000 0%, #010102 24%, #080d18 58%, #080913 100%);
   --card: #ffffff;
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -119,6 +129,13 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Фон сайта. Один класс на два потребителя: body (красит первый кадр ещё до
+   загрузки JS) и обёртка Christian3DBackground (держит WebGL-канвас). */
+.site-backdrop {
+  background: var(--site-backdrop);
+  background-color: var(--background);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -126,6 +143,7 @@
 
   body {
     @apply bg-background text-foreground;
+    background-image: var(--site-backdrop);
   }
 
   /**
@@ -136,6 +154,10 @@
   html {
     font-size: var(--font-size);
     min-height: 100vh;
+    /* Тёмные системные элементы (скроллбары, автозаполнение) — иначе они
+       вспыхивают светлым на тёмном фоне. */
+    color-scheme: dark;
+    background-color: var(--background);
   }
 
   body,

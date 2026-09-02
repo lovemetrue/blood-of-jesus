@@ -128,6 +128,42 @@ CONTACT_NOTIFY_EMAIL = config('CONTACT_NOTIFY_EMAIL', default='jesusthehealer@ya
 # Адрес «написать нам» в автоответе отправителю (показывается на сайте)
 CONTACT_REPLY_ADDRESS = config('CONTACT_REPLY_ADDRESS', default='jesusthehealer@yandex.ru')
 
+# Логи приложения в stdout контейнера: docker logs bloodofjesus-backend.
+# Без явного конфига у логгеров main.* нет своего обработчика, и сообщения
+# уровня INFO (в т.ч. «письмо отправлено») просто теряются.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {name}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'main': {
+            'handlers': ['console'],
+            'level': config('APP_LOG_LEVEL', default='INFO'),
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
 YOOKASSA_SHOP_ID = config('YOOKASSA_SHOP_ID', default='')
 YOOKASSA_SECRET_KEY = config('YOOKASSA_SECRET_KEY', default='')
 SITE_URL = config('SITE_URL', default='https://bloodofjesus.ru')

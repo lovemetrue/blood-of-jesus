@@ -1,24 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Кровь Христа - служение освобождения</title>
 
-  <!DOCTYPE html>
-  <html lang="ru">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Кровь Христа - служение освобождения</title>
-      
-      <!-- Favicons -->
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
-      <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png" />
-      <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
-      <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-      <link rel="manifest" href="/manifest.json" />
-      <meta name="theme-color" content="#DC143C" />
-    </head>
+    <!--
+      Критический фон. Инлайном и до всех <link> — потому что браузер красит
+      первый кадр, как только разберёт <head>, задолго до того как выполнится
+      бандл и смонтируется React. Если тёмного фона здесь нет, этот первый
+      кадр белый: то самое «белое моргание» перед появлением сайта.
+      Значения должны совпадать с --background / --site-backdrop в
+      src/styles/theme.css.
+    -->
+    <style>
+      html {
+        color-scheme: dark;
+        background-color: #000000;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background-color: #000000;
+        background-image:
+          radial-gradient(1000px 600px at 20% 12%, #05070d 0%, rgba(6, 7, 13, 0.035) 42%, transparent 70%),
+          linear-gradient(180deg, #000000 0%, #010102 24%, #080d18 58%, #080913 100%);
+      }
+    </style>
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicons/favicon-48x48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#DC143C" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

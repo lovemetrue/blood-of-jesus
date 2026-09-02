@@ -8,12 +8,20 @@ from django.views.decorators.cache import cache_page
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.cache import cache
+from django.db import connection
 
 logger = logging.getLogger(__name__)
 
 
 def _send_contact_notifications(contact):
-    """Отправка уведомлений при новой заявке: админу (jesusthehealer@yandex.ru) и автоответ отправителю."""
+    """Отправляет уведомления о новой заявке: админу и автоответ отправителю.
+
+    Возвращает список (получатель, ошибка|None) по каждому письму. Ошибки НЕ
+    глушатся: раньше здесь стояли fail_silently=True и `except Exception: pass`,
+    из-за чего неверный пароль, закрытый порт или незаданный EMAIL_BACKEND
+    выглядели ровно как успешная отправка — ни в ответе API, ни в логах не
+    оставалось следа. Диагностировать «письма не приходят» было нечем.
+    """
     admin_email = (
         getattr(settings, 'CONTACT_NOTIFY_EMAIL', '') or
         getattr(settings, 'ADMIN_EMAIL', '') or
@@ -21,46 +29,63 @@ def _send_contact_notifications(contact):
     )
     from_email = settings.DEFAULT_FROM_EMAIL
     if not admin_email:
-        return
-
-    # Уведомление администратору
-    subject_admin = f'[bloodofjesus.ru] Новая заявка от {contact.name}'
-    body_admin = (
-        f'Поступила новая заявка с сайта.\n\n'
-        f'Имя: {contact.name}\n'
-        f'Email: {contact.email}\n'
-        f'Телефон: {contact.phone or "—"}\n\n'
-        f'Сообщение:\n{contact.message}\n\n'
-        f'Ответьте на это письмо или зайдите в админку: {getattr(settings, "SITE_URL", "")}/admin/'
-    )
-    try:
-        send_mail(
-            subject_admin,
-            body_admin,
-            from_email,
-            [admin_email],
-            fail_silently=True,
+        logger.error(
+            'Уведомление о заявке #%s не отправлено: не задан адрес получателя '
+            '(CONTACT_NOTIFY_EMAIL / ADMIN_EMAIL).', contact.pk
         )
-    except Exception:
-        pass
+        return [(None, 'не задан адрес получателя')]
 
-    # Автоответ отправителю
-    subject_reply = 'Служение: «Кровь Христа» — благодарим за обращение'
-    body_reply = (
-        f'Здравствуйте, {contact.name}!\n\n'
-        'Мы очень рады помогать телу Христа и благодарим вас за доверие — до скорой встречи!\n\n'
-        'С уважением,\nСлужение: «Кровь Христа»'
-    )
-    try:
-        send_mail(
-            subject_reply,
-            body_reply,
-            from_email,
-            [contact.email],
-            fail_silently=True,
+    if settings.EMAIL_BACKEND.endswith('console.EmailBackend'):
+        logger.warning(
+            'EMAIL_BACKEND=%s — письма только печатаются в лог и никуда не уходят. '
+            'Для реальной отправки задайте в .env: '
+            'EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend',
+            settings.EMAIL_BACKEND,
         )
-    except Exception:
-        pass
+
+    messages = [
+        (
+            admin_email,
+            f'[bloodofjesus.ru] Новая заявка от {contact.name}',
+            (
+                f'Поступила новая заявка с сайта.\n\n'
+                f'Имя: {contact.name}\n'
+                f'Email: {contact.email}\n'
+                f'Телефон: {contact.phone or "—"}\n\n'
+                f'Сообщение:\n{contact.message}\n\n'
+                f'Ответьте на это письмо или зайдите в админку: {getattr(settings, "SITE_URL", "")}/admin/'
+            ),
+        ),
+        (
+            contact.email,
+            'Служение: «Кровь Христа» — благодарим за обращение',
+            (
+                f'Здравствуйте, {contact.name}!\n\n'
+                'Мы очень рады помогать телу Христа и благодарим вас за доверие — до скорой встречи!\n\n'
+                'С уважением,\nСлужение: «Кровь Христа»'
+            ),
+        ),
+    ]
+
+    results = []
+    for recipient, subject, body in messages:
+        try:
+            sent = send_mail(subject, body, from_email, [recipient], fail_silently=False)
+            if sent:
+                logger.info('Письмо о заявке #%s отправлено на %s', contact.pk, recipient)
+                results.append((recipient, None))
+            else:
+                # Бэкенд отчитался «0 писем» без исключения — тоже провал.
+                logger.error('Письмо о заявке #%s на %s не отправлено (бэкенд вернул 0)', contact.pk, recipient)
+                results.append((recipient, 'бэкенд вернул 0 отправленных писем'))
+        except Exception as e:
+            logger.exception(
+                'Ошибка отправки письма о заявке #%s на %s через %s:%s (backend=%s): %s',
+                contact.pk, recipient, settings.EMAIL_HOST, settings.EMAIL_PORT,
+                settings.EMAIL_BACKEND, e,
+            )
+            results.append((recipient, f'{type(e).__name__}: {e}'))
+    return results
 
 
 @csrf_exempt
@@ -94,13 +119,27 @@ def contact_submit(request):
         from .models import ContactMessage
         try:
             contact_obj = ContactMessage.objects.get(pk=contact_pk)
-            _send_contact_notifications(contact_obj)
+            results = _send_contact_notifications(contact_obj)
+            failed = [r for r in results if r[1]]
+            if failed:
+                logger.error(
+                    'Заявка #%s сохранена, но письма не доставлены: %s. '
+                    'Заявку видно в админке: %s/admin/main/contactmessage/',
+                    contact_pk, failed, getattr(settings, 'SITE_URL', ''),
+                )
         except Exception as e:
             logger.exception('Contact notifications failed: %s', e)
+        finally:
+            # Поток живёт дольше запроса и держит своё соединение с БД —
+            # без этого коннекты копятся до лимита postgres.
+            connection.close()
 
     thread = threading.Thread(target=send_notifications_async, daemon=True)
     thread.start()
 
+    # Заявка сохранена в БД — для посетителя это и есть «отправлено», письмо
+    # лишь дублирует её служению. Провал доставки видно в логах контейнера
+    # (docker logs bloodofjesus-backend) и через manage.py send_test_contact_email.
     return JsonResponse({'success': True, 'message': 'Спасибо! Ваше сообщение отправлено.'})
 
 
